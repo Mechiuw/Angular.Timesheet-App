@@ -10,7 +10,7 @@ import {
   ValidatorFn,
   AbstractControl,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { Overtime } from '../../model/timesheet';
@@ -30,7 +30,7 @@ import { OvertimeService } from '../../services/overtime.service';
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
-  providers: [provideNativeDateAdapter()],
+  providers: [provideNativeDateAdapter(), CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormComponent implements OnInit {
@@ -49,12 +49,12 @@ export class FormComponent implements OnInit {
     { validators: this.endTimeValidator() }
   );
 
-  descriptionOptions: { value: string; rate: number }[] = [
-    { value: 'Interview Kandidat Bootcamp', rate: 30000 },
-    { value: 'InstructorLed Basic', rate: 50000 },
-    { value: 'InstructorLed Intermediate', rate: 50000 },
-    { value: 'Overtime Kelas Karyawan', rate: 50000 },
-    { value: 'Other', rate: 50000 },
+  descriptionOptions: { id: number; desc: string; fee: number }[] = [
+    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
+    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
+    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
+    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
+    { id: 5, desc: 'Other', fee: 50000 },
   ];
   constructor(private readonly OvertimeService: OvertimeService) {}
   ngOnInit(): void {
@@ -102,18 +102,16 @@ export class FormComponent implements OnInit {
     };
   }
 
-  // Calculate total based on time difference and rate
   calculateTotal(): void {
     const startTime = this.overtimeForm.get('startTime')?.value;
     const endTime = this.overtimeForm.get('endTime')?.value;
     const description = this.overtimeForm.get('description')?.value;
 
     if (startTime && endTime && description) {
-      const rate =
-        this.descriptionOptions.find((option) => option.value === description)
-          ?.rate || 0;
+      const fee =
+        this.descriptionOptions.find((option) => option.id === description)
+          ?.fee || 0;
 
-      // Convert time to Date objects
       const start = new Date(`1970-01-01T${startTime}:00`);
       const end = new Date(`1970-01-01T${endTime}:00`);
 
@@ -127,14 +125,13 @@ export class FormComponent implements OnInit {
         (end.getTime() - start.getTime()) / (1000 * 60 * 60)
       );
 
-      // Calculate total
-      if (overtimeHours >= 2 && rate == 30000) {
+      if (overtimeHours >= 2 && fee == 30000) {
         const total = overtimeHours * 50000;
         return this.overtimeForm
           .get('total')
           ?.setValue(total, { emitEvent: false });
       }
-      const total = overtimeHours * rate;
+      const total = overtimeHours * fee;
       this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
     }
   }

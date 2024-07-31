@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Overtime } from '../model/timesheet';
+import { IOvertimeService } from './iovertime.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class OvertimeService {
+export class OvertimeService implements IOvertimeService {
   constructor() {}
 
   today = new Date();
   works: Overtime[] = [];
-  totalPay: number = 0;
+  private totalPaySubject = new BehaviorSubject<number>(0);
 
   List(): Observable<Overtime[]> {
     return new Observable((observer) => {
@@ -31,6 +32,7 @@ export class OvertimeService {
         this.works[existingIndex] = overtime;
       } else {
         this.works.push(overtime);
+        this.calculateTotalPay();
       }
       observer.next();
       observer.complete();
@@ -41,6 +43,7 @@ export class OvertimeService {
     return new Observable<void>((observer) => {
       try {
         this.works = this.works.filter((t) => t.id !== id);
+        this.calculateTotalPay();
         observer.next();
       } catch (error: any) {
         observer.error(`TodoService.Toggle.Erorr: ${error.message}`);
@@ -62,5 +65,17 @@ export class OvertimeService {
       this.today.getMonth(),
       this.today.getDate() - 1
     );
+  }
+
+  getTotalPay(): Observable<number> {
+    return this.totalPaySubject.asObservable();
+  }
+
+  private calculateTotalPay(): void {
+    const totalPay = this.works.reduce(
+      (sum, curr) => sum + (curr.total || 0),
+      0
+    );
+    this.totalPaySubject.next(totalPay);
   }
 }

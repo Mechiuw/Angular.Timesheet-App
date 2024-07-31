@@ -12,7 +12,7 @@
         [matDatepicker]="picker"
         formControlName="selectedDate"
       />
-      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-hint class="text-slate-800 dark:text-white">MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle
         matIconSuffix
         [for]="picker"
@@ -55,9 +55,9 @@
       <mat-select formControlName="description">
         <mat-option
           *ngFor="let option of descriptionOptions"
-          [value]="option.value"
+          [value]="option.id"
         >
-          {{ option.value }}
+          {{ option.desc }}
         </mat-option>
       </mat-select>
     </mat-form-field>
@@ -67,7 +67,7 @@
       <input
         matInput
         formControlName="total"
-        placeholder="Total amount"
+        placeholder="Total amount "
         type="number"
         readonly
       />
