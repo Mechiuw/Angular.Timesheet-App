@@ -25,7 +25,6 @@ export class ListComponent {
 
   ngOnInit() {
     this.OvertimeService.List().subscribe((data) => {
-      console.log('Data received in ngOnInit():', data);
       this.overtimeForm = data;
     });
   }

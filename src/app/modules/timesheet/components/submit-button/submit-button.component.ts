@@ -8,4 +8,8 @@ import { TimesheetService } from '../../services/timesheet.service';
   templateUrl: './submit-button.component.html',
   styleUrl: './submit-button.component.scss',
 })
-export class SubmitButtonComponent {}
+export class SubmitButtonComponent {
+  onclick() {
+    alert('Button clicked');
+  }
+}

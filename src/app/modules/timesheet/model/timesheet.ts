@@ -12,8 +12,8 @@ export interface Timesheet {
 export interface Overtime {
   id?: any;
   date: Date;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   description: number;
   total: number;
 }

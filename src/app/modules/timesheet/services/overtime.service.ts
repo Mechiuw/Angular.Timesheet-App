@@ -12,10 +12,11 @@ export class OvertimeService implements IOvertimeService {
   today = new Date();
   works: Overtime[] = [];
   private totalPaySubject = new BehaviorSubject<number>(0);
+  private sortedOvertime = new BehaviorSubject<Overtime[]>([]);
 
   List(): Observable<Overtime[]> {
     return new Observable((observer) => {
-      observer.next(this.works);
+      observer.next((this.works = this.sortedOvertime.value));
     });
   }
 
@@ -33,6 +34,7 @@ export class OvertimeService implements IOvertimeService {
       } else {
         this.works.push(overtime);
         this.calculateTotalPay();
+        this.sortOvertimes();
       }
       observer.next();
       observer.complete();
@@ -44,6 +46,7 @@ export class OvertimeService implements IOvertimeService {
       try {
         this.works = this.works.filter((t) => t.id !== id);
         this.calculateTotalPay();
+        this.sortOvertimes();
         observer.next();
       } catch (error: any) {
         observer.error(`TodoService.Toggle.Erorr: ${error.message}`);
@@ -77,5 +80,24 @@ export class OvertimeService implements IOvertimeService {
       0
     );
     this.totalPaySubject.next(totalPay);
+  }
+
+  private sortOvertimes(): void {
+    const sort = this.works.sort((a, b) => {
+      const toMinutes = (time: string) => {
+        const [hours, minutes] = time.split(':').map(Number);
+        return hours * 60 + minutes;
+      };
+
+      const dateComparison = a.date.getTime() - b.date.getTime();
+      if (dateComparison !== 0) return dateComparison;
+
+      const startComparison = toMinutes(a.startTime) - toMinutes(b.startTime);
+      if (startComparison !== 0) return startComparison;
+
+      return toMinutes(a.endTime) - toMinutes(b.endTime);
+    });
+
+    this.sortedOvertime.next(sort);
   }
 }
