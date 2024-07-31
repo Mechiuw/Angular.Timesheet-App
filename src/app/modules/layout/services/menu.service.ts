@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import {MenuItem, SubMenuItem} from "../../../core/models/menu.model";
+import { MenuItem, SubMenuItem } from '../../../core/models/menu.model';
 import {Menu} from "../../../core/constants/menu";
 
 @Injectable({
@@ -12,11 +12,18 @@ export class MenuService implements OnDestroy {
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
+  private role:string = 'Admin';
+  private menu:MenuItem[] = Menu.pages;
+
+  // filteredMenus(role:string) {
+  //   this.menus.filter
+  // }
 
   constructor(private router: Router) {
-    /** Set dynamic menu */
-    this._pagesMenu.set(Menu.pages);
 
+    /** Set dynamic menu by role */
+    this._pagesMenu.set(this.filterMenuByRole(this.menu,this.role));
+  
     let sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         /** Expand menu base on active route */
@@ -83,6 +90,28 @@ export class MenuService implements OnDestroy {
       matrixParams: 'ignored',
     });
   }
+
+// Filter function
+private filterMenuByRole(menu: MenuItem[], role: string): MenuItem[] {
+  // Helper function to filter sub-menu items
+  function filterSubMenuItems(items: SubMenuItem[], role: string): SubMenuItem[] {
+    return items
+      .filter(item => item.role.includes(role))  // Filter based on role
+      .map(item => ({
+        ...item,
+        children: item.children ? filterSubMenuItems(item.children, role) : []  // Recur for children
+      }))
+      .filter(item => item.children.length > 0 || item.role.includes(role));  // Ensure that items with children are included if they match the role
+  }
+
+  return menu
+    .map(menuItem => ({
+      ...menuItem,
+      items: filterSubMenuItems(menuItem.items, role)  // Apply filter to each menu item's sub-items
+    }))
+    .filter(menuItem => menuItem.items.length > 0);  // Ensure that only menu items with filtered sub-items are included
+}
+
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
