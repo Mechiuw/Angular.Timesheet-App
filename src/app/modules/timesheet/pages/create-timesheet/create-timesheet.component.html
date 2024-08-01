@@ -1,0 +1,23 @@
+<div class="sticky top-0 z-10 bg-slate-100 dark:bg-[#0f172a]">
+  <div
+    class="border-b-solid mb-0 rounded-t-2xl border-b-0 border-b-transparent p-6 pb-0"
+  >
+    <div class="flex justify-between">
+      <h6 class="font-bold text-primary">Timesheet Form</h6>
+      <h6 class="font-bold text-primary">Date: {{ date | date }}</h6>
+    </div>
+
+    <div class="flex justify-between">
+      <app-total-pay [totalPay]="totalPay"></app-total-pay>
+      <app-submit-button />
+    </div>
+  </div>
+
+  <div class="p-5">
+    <app-form />
+  </div>
+</div>
+
+<div class="px-5">
+  <app-list [overtimeForm]="overtimeForm" [delete]="remove.bind(this)" />
+</div>

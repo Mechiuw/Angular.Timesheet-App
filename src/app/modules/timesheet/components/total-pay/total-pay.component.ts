@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { OvertimeService } from '../../services/overtime.service';
 import { CommonModule } from '@angular/common';
 
@@ -9,18 +9,6 @@ import { CommonModule } from '@angular/common';
   templateUrl: './total-pay.component.html',
   styleUrls: ['./total-pay.component.scss'],
 })
-export class TotalPayComponent implements OnInit {
-  totalPay: number = 0;
-
-  constructor(private overtimeService: OvertimeService) {}
-
-  ngOnInit() {
-    this.overtimeService.getTotalPay().subscribe((total) => {
-      this.totalPay = total;
-    });
-  }
-
-  load() {
-    this.ngOnInit();
-  }
+export class TotalPayComponent {
+  @Input() totalPay: number = 0;
 }

@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { OvertimeService } from '../../services/overtime.service';
+import { Component, Input } from '@angular/core';
 import { Overtime } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 
@@ -11,9 +10,8 @@ import { CommonModule } from '@angular/common';
   styleUrl: './list.component.scss',
 })
 export class ListComponent {
-  constructor(private readonly OvertimeService: OvertimeService) {}
-
-  overtimeForm: Overtime[] = [];
+  @Input() overtimeForm: Overtime[] = [];
+  @Input() delete!: (id: any) => void;
 
   descriptionOptions: { id: number; desc: string; fee: number }[] = [
     { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
@@ -22,18 +20,6 @@ export class ListComponent {
     { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
     { id: 5, desc: 'Other', fee: 50000 },
   ];
-
-  ngOnInit() {
-    this.OvertimeService.List().subscribe((data) => {
-      this.overtimeForm = data;
-    });
-  }
-
-  remove(id: any) {
-    this.OvertimeService.Delete(id).subscribe(() => {
-      this.ngOnInit();
-    });
-  }
 
   getWorkDescription(id: number): string {
     const option = this.descriptionOptions.find((opt) => opt.id === id);

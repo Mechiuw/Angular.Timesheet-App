@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LayoutComponent } from './layout.component';
-import { TimesheetComponent } from '../timesheet/timesheet.component';
+import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/create-timesheet.component';
+import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 
 const routes: Routes = [
   {
@@ -28,7 +29,11 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        component: TimesheetComponent,
+        component: CreateTimesheetComponent,
+      },
+      {
+        path: ':id',
+        component: UpdateTimesheetComponent,
       },
     ],
   },

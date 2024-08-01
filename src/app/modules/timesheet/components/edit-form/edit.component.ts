@@ -1,25 +1,32 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { provideNativeDateAdapter } from '@angular/material/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { TimesheetService } from '../../services/timesheet.service';
+import { Overtime, Timesheet } from '../../model/timesheet';
+import { OvertimeUpdateService } from '../../services/overtime-update.service';
+import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {
-  ReactiveFormsModule,
-  FormGroup,
-  FormControl,
-  ValidatorFn,
-  AbstractControl,
-  Validators,
-} from '@angular/forms';
-import { CommonModule, CurrencyPipe } from '@angular/common';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
-import { Overtime } from '../../model/timesheet';
-import { OvertimeService } from '../../services/overtime.service';
-import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
-  selector: 'app-form',
+  selector: 'app-edit',
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -31,15 +38,30 @@ import { ValidationMessageComponent } from '../validation-message/validation-mes
     MatSelectModule,
     ValidationMessageComponent,
   ],
-  templateUrl: './form.component.html',
-  styleUrl: './form.component.scss',
+  templateUrl: './edit.component.html',
+  styleUrls: ['./edit.component.scss'],
   providers: [provideNativeDateAdapter(), CurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormComponent implements OnInit {
+export class EditComponent implements OnInit {
+  ngOnInit(): void {
+    this.minDate = this.updateService.getMinDate();
+    this.maxDate = this.updateService.getMaxDate();
+
+    this.overtimeForm.valueChanges.subscribe(() => {
+      this.calculateTotal();
+    });
+  }
+
+  private readonly route: ActivatedRoute = inject(ActivatedRoute);
+  private readonly timesheetService: TimesheetService =
+    inject(TimesheetService);
+  private readonly updateService: OvertimeUpdateService = inject(
+    OvertimeUpdateService
+  );
+
   minDate: Date | null = null;
   maxDate: Date | null = null;
-
   overtimeForm: FormGroup = new FormGroup(
     {
       id: new FormControl(0),
@@ -59,15 +81,6 @@ export class FormComponent implements OnInit {
     { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
     { id: 5, desc: 'Other', fee: 50000 },
   ];
-  constructor(private readonly OvertimeService: OvertimeService) {}
-  ngOnInit(): void {
-    this.minDate = this.OvertimeService.getMinDate();
-    this.maxDate = this.OvertimeService.getMaxDate();
-
-    this.overtimeForm.valueChanges.subscribe(() => {
-      this.calculateTotal();
-    });
-  }
 
   saveOvertime() {
     if (this.overtimeForm.pristine)
@@ -95,7 +108,7 @@ export class FormComponent implements OnInit {
       workID: formValue.workID,
       total: formValue.total,
     };
-    this.OvertimeService.Save(overtime).subscribe(() => {
+    this.updateService.Update(overtime).subscribe(() => {
       // console.log({ overtime });
       this.overtimeForm.reset();
     });

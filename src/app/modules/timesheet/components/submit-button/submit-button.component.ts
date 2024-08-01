@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
 import { OvertimeService } from '../../services/overtime.service';
 import { Overtime, Timesheet, Status } from '../../model/timesheet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-submit-button',
@@ -16,7 +17,8 @@ export class SubmitButtonComponent implements OnInit {
 
   constructor(
     private readonly overtimeService: OvertimeService,
-    private readonly timesheetService: TimesheetService
+    private readonly timesheetService: TimesheetService,
+    private readonly router: Router
   ) {}
   ngOnInit(): void {
     this.overtimeService.List().subscribe((data) => {
@@ -42,5 +44,9 @@ export class SubmitButtonComponent implements OnInit {
       console.log('Timesheet detail: ', timesheet);
       this.overtimeService.clearWorks();
     }
+  }
+
+  onclickpage(): void {
+    this.router.navigate(['/timesheets/1']);
   }
 }
