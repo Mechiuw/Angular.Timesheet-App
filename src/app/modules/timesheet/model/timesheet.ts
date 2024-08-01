@@ -15,10 +15,10 @@ export interface Overtime {
   startTime: Date;
   endTime: Date;
   workID: number;
-  total: number;
+  total?: number;
 }
 
-const enum Status {
+export enum Status {
   Pending = 'Pending',
   OnProgress = 'OnProgress',
   Approved = 'Approved',

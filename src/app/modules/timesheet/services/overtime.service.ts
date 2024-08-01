@@ -16,7 +16,8 @@ export class OvertimeService implements IOvertimeService {
 
   List(): Observable<Overtime[]> {
     return new Observable((observer) => {
-      observer.next((this.works = this.sortedOvertime.value));
+      this.sortOvertimes();
+      observer.next(this.works);
     });
   }
 
@@ -84,11 +85,6 @@ export class OvertimeService implements IOvertimeService {
 
   private sortOvertimes(): void {
     const sort = this.works.sort((a, b) => {
-      const toMinutes = (time: string) => {
-        const [hours, minutes] = time.split(':').map(Number);
-        return hours * 60 + minutes;
-      };
-
       const dateComparison = a.date.getTime() - b.date.getTime();
       if (dateComparison !== 0) return dateComparison;
 
@@ -99,5 +95,11 @@ export class OvertimeService implements IOvertimeService {
     });
 
     this.sortedOvertime.next(sort);
+  }
+
+  clearWorks(): void {
+    this.works.splice(0, this.works.length);
+    this.calculateTotalPay();
+    this.sortOvertimes();
   }
 }
