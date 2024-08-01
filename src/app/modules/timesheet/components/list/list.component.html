@@ -57,17 +57,17 @@
                 <td
                   class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"
                 >
-                  {{ item.startTime }}
+                  {{ item.startTime | date : "HH:mm" }}
                 </td>
                 <td
                   class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle text-sm leading-normal shadow-transparent dark:border-white/40"
                 >
-                  {{ item.endTime }}
+                  {{ item.endTime | date : "HH:mm" }}
                 </td>
                 <td
                   class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"
                 >
-                  {{ getWorkDescription(item.description) }}
+                  {{ getWorkDescription(item.workID) }}
                 </td>
                 <td
                   class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"

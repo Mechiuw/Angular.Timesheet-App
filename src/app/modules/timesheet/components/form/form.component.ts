@@ -43,7 +43,7 @@ export class FormComponent implements OnInit {
       selectedDate: new FormControl(null),
       startTime: new FormControl(null),
       endTime: new FormControl(null),
-      description: new FormControl(null),
+      workID: new FormControl(null),
       total: new FormControl(0),
     },
     { validators: this.endTimeValidator() }
@@ -69,19 +69,33 @@ export class FormComponent implements OnInit {
   saveOvertime() {
     if (this.overtimeForm.valid) {
       const formValue = this.overtimeForm.value;
+      const selectedDate = formValue.selectedDate;
+      const startTimeISO = this.convertTimeToISO(
+        selectedDate,
+        formValue.startTime
+      );
+      const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
 
       const overtime: Overtime = {
         id: new Date().getTime(),
         date: formValue.selectedDate,
-        startTime: formValue.startTime,
-        endTime: formValue.endTime,
-        description: formValue.description,
+        startTime: startTimeISO,
+        endTime: endTimeISO,
+        workID: formValue.workID,
         total: formValue.total,
       };
       this.OvertimeService.Save(overtime).subscribe(() => {
+        console.log({ overtime });
         this.overtimeForm.reset();
       });
     }
+  }
+
+  convertTimeToISO(date: Date, time: string): Date {
+    const [hours, minutes] = time.split(':').map(Number);
+    const convert = new Date(date);
+    convert.setHours(hours, minutes, 0, 0);
+    return convert;
   }
 
   // Custom validator function
@@ -105,7 +119,7 @@ export class FormComponent implements OnInit {
   calculateTotal(): void {
     const startTime = this.overtimeForm.get('startTime')?.value;
     const endTime = this.overtimeForm.get('endTime')?.value;
-    const description = this.overtimeForm.get('description')?.value;
+    const description = this.overtimeForm.get('workID')?.value;
 
     if (startTime && endTime && description) {
       const fee =

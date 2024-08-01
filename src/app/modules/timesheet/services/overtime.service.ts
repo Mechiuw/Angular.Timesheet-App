@@ -92,10 +92,10 @@ export class OvertimeService implements IOvertimeService {
       const dateComparison = a.date.getTime() - b.date.getTime();
       if (dateComparison !== 0) return dateComparison;
 
-      const startComparison = toMinutes(a.startTime) - toMinutes(b.startTime);
+      const startComparison = a.startTime.getTime() - b.startTime.getTime();
       if (startComparison !== 0) return startComparison;
 
-      return toMinutes(a.endTime) - toMinutes(b.endTime);
+      return a.endTime.getTime() - b.endTime.getTime();
     });
 
     this.sortedOvertime.next(sort);
