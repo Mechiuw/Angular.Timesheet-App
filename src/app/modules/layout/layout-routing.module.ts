@@ -26,10 +26,8 @@ const routes: Routes = [
   {
     path: 'approvals',
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () => import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
-
-
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];

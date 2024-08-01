@@ -24,6 +24,7 @@
     "angular-svg-icon": "^13.0.0",
     "apexcharts": "^3.35.3",
     "ng-apexcharts": "^1.7.1",
+    "primeicons": "^7.0.0",
     "primeng": "^17.18.6",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
