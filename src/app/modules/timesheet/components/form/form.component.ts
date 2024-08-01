@@ -9,12 +9,14 @@ import {
   FormControl,
   ValidatorFn,
   AbstractControl,
+  Validators,
 } from '@angular/forms';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { Overtime } from '../../model/timesheet';
 import { OvertimeService } from '../../services/overtime.service';
+import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 
 @Component({
   selector: 'app-form',
@@ -27,6 +29,7 @@ import { OvertimeService } from '../../services/overtime.service';
     CommonModule,
     NgxMaterialTimepickerModule,
     MatSelectModule,
+    ValidationMessageComponent,
   ],
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss',
@@ -40,10 +43,10 @@ export class FormComponent implements OnInit {
   overtimeForm: FormGroup = new FormGroup(
     {
       id: new FormControl(0),
-      selectedDate: new FormControl(null),
-      startTime: new FormControl(null),
-      endTime: new FormControl(null),
-      workID: new FormControl(null),
+      selectedDate: new FormControl(null, [Validators.required]),
+      startTime: new FormControl(null, [Validators.required]),
+      endTime: new FormControl(null, [Validators.required]),
+      workID: new FormControl(null, [Validators.required]),
       total: new FormControl(0),
     },
     { validators: this.endTimeValidator() }
@@ -67,28 +70,33 @@ export class FormComponent implements OnInit {
   }
 
   saveOvertime() {
-    if (this.overtimeForm.valid) {
-      const formValue = this.overtimeForm.value;
-      const selectedDate = formValue.selectedDate;
-      const startTimeISO = this.convertTimeToISO(
-        selectedDate,
-        formValue.startTime
-      );
-      const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
-
-      const overtime: Overtime = {
-        id: new Date().getTime(),
-        date: formValue.selectedDate,
-        startTime: startTimeISO,
-        endTime: endTimeISO,
-        workID: formValue.workID,
-        total: formValue.total,
-      };
-      this.OvertimeService.Save(overtime).subscribe(() => {
-        // console.log({ overtime });
-        this.overtimeForm.reset();
-      });
+    if (this.overtimeForm.pristine) {
+      alert('All form fields must be filled out.');
+      return;
     }
+    if (this.overtimeForm.invalid)
+      return alert('Start time must be earlier than end time');
+
+    const formValue = this.overtimeForm.value;
+    const selectedDate = formValue.selectedDate;
+    const startTimeISO = this.convertTimeToISO(
+      selectedDate,
+      formValue.startTime
+    );
+    const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
+
+    const overtime: Overtime = {
+      id: new Date().getTime(),
+      date: formValue.selectedDate,
+      startTime: startTimeISO,
+      endTime: endTimeISO,
+      workID: formValue.workID,
+      total: formValue.total,
+    };
+    this.OvertimeService.Save(overtime).subscribe(() => {
+      // console.log({ overtime });
+      this.overtimeForm.reset();
+    });
   }
 
   convertTimeToISO(date: Date, time: string): Date {
@@ -110,7 +118,7 @@ export class FormComponent implements OnInit {
         new Date(`1970-01-01T${endTime}:00`) <
           new Date(`1970-01-01T${startTime}:00`)
       ) {
-        return { endTimeBeforeStart: true };
+        return { endTimeValidator: true };
       }
       return null;
     };
@@ -148,5 +156,12 @@ export class FormComponent implements OnInit {
       const total = overtimeHours * fee;
       this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
     }
+  }
+
+  isFormValid(field: string): boolean {
+    const control: AbstractControl = this.overtimeForm.get(
+      field
+    ) as AbstractControl;
+    return control && control.invalid && (control.dirty || control.touched);
   }
 }

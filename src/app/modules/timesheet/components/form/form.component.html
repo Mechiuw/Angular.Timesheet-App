@@ -20,7 +20,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <div class="mb-2 flex items-center justify-center gap-3">
+    <div class="flex items-center justify-center gap-3">
       <div>
         <input
           class="w-24"
@@ -32,9 +32,10 @@
           readonly
         />
         <ngx-material-timepicker #startTimePicker></ngx-material-timepicker>
+        <p class="mt-1 text-center font-bold text-primary">Start time</p>
       </div>
 
-      <p class="font-bold text-primary">:</p>
+      <p class="mb-7 font-bold text-primary">:</p>
 
       <div>
         <input
@@ -47,6 +48,7 @@
           readonly
         />
         <ngx-material-timepicker #endTimePicker></ngx-material-timepicker>
+        <p class="mt-1 text-center font-bold text-primary">End time</p>
       </div>
     </div>
 
@@ -88,4 +90,24 @@
       </svg>
     </button>
   </form>
+  <app-validation-message
+    *ngIf="isFormValid('selectedDate')"
+    [control]="overtimeForm.get('selectedDate')"
+    label="Date"
+  />
+  <app-validation-message
+    *ngIf="isFormValid('workID')"
+    [control]="overtimeForm.get('workID')"
+    label="Description"
+  />
+  <app-validation-message
+    *ngIf="isFormValid('startTime')"
+    [control]="overtimeForm.get('startTime')"
+    label="Start Time"
+  />
+  <app-validation-message
+    *ngIf="isFormValid('endTime')"
+    [control]="overtimeForm.get('endTime')"
+    label="End Time"
+  />
 </div>
