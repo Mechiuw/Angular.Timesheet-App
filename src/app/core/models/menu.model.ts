@@ -12,6 +12,6 @@ export interface SubMenuItem {
   route?: string | null;
   expanded?: boolean;
   active?: boolean;
-  role: Array<String>;
+  role: string[];
   children?: Array<SubMenuItem>;
 }
