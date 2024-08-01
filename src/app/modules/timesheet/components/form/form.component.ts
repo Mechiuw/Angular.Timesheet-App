@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Overtime } from '../../model/timesheet';
 import { OvertimeService } from '../../services/overtime.service';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { TimesheetService } from '../../services/timesheet.service';
 
 @Component({
   selector: 'app-form',
@@ -39,6 +40,7 @@ import { ValidationMessageComponent } from '../validation-message/validation-mes
 export class FormComponent implements OnInit {
   minDate: Date | null = null;
   maxDate: Date | null = null;
+  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
 
   overtimeForm: FormGroup = new FormGroup(
     {
@@ -52,18 +54,14 @@ export class FormComponent implements OnInit {
     { validators: this.endTimeValidator() }
   );
 
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [
-    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
-    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
-    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
-    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
-    { id: 5, desc: 'Other', fee: 50000 },
-  ];
-  constructor(private readonly OvertimeService: OvertimeService) {}
+  constructor(
+    private readonly OvertimeService: OvertimeService,
+    private readonly timesheetService: TimesheetService
+  ) {}
   ngOnInit(): void {
     this.minDate = this.OvertimeService.getMinDate();
     this.maxDate = this.OvertimeService.getMaxDate();
-
+    this.descriptionOptions = this.timesheetService.GetWorkOptions();
     this.overtimeForm.valueChanges.subscribe(() => {
       this.calculateTotal();
     });

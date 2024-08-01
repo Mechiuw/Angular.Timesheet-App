@@ -47,13 +47,12 @@ export class EditComponent implements OnInit {
   ngOnInit(): void {
     this.minDate = this.updateService.getMinDate();
     this.maxDate = this.updateService.getMaxDate();
-
+    this.descriptionOptions = this.timesheetService.GetWorkOptions();
     this.overtimeForm.valueChanges.subscribe(() => {
       this.calculateTotal();
     });
   }
 
-  private readonly route: ActivatedRoute = inject(ActivatedRoute);
   private readonly timesheetService: TimesheetService =
     inject(TimesheetService);
   private readonly updateService: OvertimeUpdateService = inject(
@@ -62,6 +61,7 @@ export class EditComponent implements OnInit {
 
   minDate: Date | null = null;
   maxDate: Date | null = null;
+  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
   overtimeForm: FormGroup = new FormGroup(
     {
       id: new FormControl(0),
@@ -73,14 +73,6 @@ export class EditComponent implements OnInit {
     },
     { validators: this.endTimeValidator() }
   );
-
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [
-    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
-    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
-    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
-    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
-    { id: 5, desc: 'Other', fee: 50000 },
-  ];
 
   saveOvertime() {
     if (this.overtimeForm.pristine)

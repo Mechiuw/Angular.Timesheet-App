@@ -2,20 +2,22 @@ import { Injectable } from '@angular/core';
 import { IOvertimeUpdateService } from './iovertinmeUpdate.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Overtime } from '../model/timesheet';
+import { TimesheetService } from './timesheet.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OvertimeUpdateService implements IOvertimeUpdateService {
-  constructor() {}
+  constructor(private readonly timesheetService: TimesheetService) {}
 
   today = new Date();
   works: Overtime[] = [];
+  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
   private totalPaySubject = new BehaviorSubject<number>(0);
   private sortedOvertime = new BehaviorSubject<Overtime[]>([]);
 
   List(): Observable<Overtime[]> {
-    return this.sortedOvertime.asObservable(); // Emit sorted overtime records
+    return this.sortedOvertime.asObservable();
   }
 
   GetWorks(works: Overtime[]): Observable<void> {
@@ -23,8 +25,10 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       this.works.splice(0, this.works.length);
       works.forEach((work) => {
         work.id = this.generateId();
+        work.total = this.calculateWorkTotal(work);
         this.works.push(work);
       });
+
       this.calculateTotalPay();
       this.sortOvertimes();
       observer.next();
@@ -108,6 +112,25 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
     return this.works.length > 0
       ? Math.max(...this.works.map((work) => work.id || 0)) + 1
       : 1;
+  }
+
+  private calculateWorkTotal(work: Overtime): number {
+    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+    const description = this.descriptionOptions.find(
+      (option) => option.id === work.workID
+    );
+    if (!description) return 0;
+
+    const start = work.startTime.getTime();
+    const end = work.endTime.getTime();
+    const hours = Math.floor((end - start) / (1000 * 60 * 60));
+    let total = hours * description.fee;
+
+    if (description.id === 1 && hours >= 2) {
+      total = hours * 50000;
+    }
+
+    return total;
   }
 
   clearWorks(): void {

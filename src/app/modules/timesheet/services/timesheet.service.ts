@@ -31,6 +31,18 @@ export class TimesheetService implements ITimesheetService {
     },
   ];
 
+  private readonly descriptionOptions: {
+    id: number;
+    desc: string;
+    fee: number;
+  }[] = [
+    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
+    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
+    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
+    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
+    { id: 5, desc: 'Other', fee: 50000 },
+  ];
+
   GetTimesheet(): Observable<Timesheet[]> {
     throw new Error('Method not implemented.');
   }
@@ -47,5 +59,9 @@ export class TimesheetService implements ITimesheetService {
   }
   DeleteTimesheet(id: number): Observable<void> {
     throw new Error('Method not implemented.');
+  }
+
+  GetWorkOptions(): { id: number; desc: string; fee: number }[] {
+    return this.descriptionOptions;
   }
 }

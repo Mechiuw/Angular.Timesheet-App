@@ -35,6 +35,7 @@ export class SubmitButtonComponent implements OnInit {
     if (confirm) {
       const timesheet: Timesheet = {
         userId: 1,
+        createdAt: new Date(Date.now()),
         confirmedManagerBy: 'ManagerName',
         confirmedBenefitBy: 'BenefitName',
         works: this.timesheetDetails.map(({ total, ...overtime }) => overtime),
