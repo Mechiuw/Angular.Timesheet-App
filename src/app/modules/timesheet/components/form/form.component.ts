@@ -70,10 +70,12 @@ export class FormComponent implements OnInit {
   }
 
   saveOvertime() {
-    if (this.overtimeForm.pristine) {
-      alert('All form fields must be filled out.');
-      return;
-    }
+    if (this.overtimeForm.pristine)
+      return alert('All form fields must be filled out.pristine');
+
+    if (this.hasEmptyField())
+      return alert('All form fields must be filled out');
+
     if (this.overtimeForm.invalid)
       return alert('Start time must be earlier than end time');
 
@@ -147,7 +149,7 @@ export class FormComponent implements OnInit {
         (end.getTime() - start.getTime()) / (1000 * 60 * 60)
       );
 
-      if (overtimeHours >= 2 && fee == 30000) {
+      if (overtimeHours >= 2 && description == 1) {
         const total = overtimeHours * 50000;
         return this.overtimeForm
           .get('total')
@@ -163,5 +165,17 @@ export class FormComponent implements OnInit {
       field
     ) as AbstractControl;
     return control && control.invalid && (control.dirty || control.touched);
+  }
+
+  hasEmptyField(): boolean {
+    const controls = this.overtimeForm.controls;
+    for (const name in controls) {
+      if (name !== 'id' && name !== 'total' && !controls[name].value) {
+        console.log(`Field '${name}' is empty.`);
+        return true;
+      }
+    }
+    console.log('No fields are empty except for "total".');
+    return false;
   }
 }

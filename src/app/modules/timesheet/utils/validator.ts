@@ -1,5 +1,5 @@
 export const VALIDATION_MESSAGE: any = {
-  required: 'Kolom %s tidak boleh kosong',
+  required: ' %s field cannot be empty',
   endTimeValidator: 'End time tidak boleh sebelum start time',
 };
 

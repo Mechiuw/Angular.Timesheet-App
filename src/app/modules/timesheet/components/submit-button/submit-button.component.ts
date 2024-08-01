@@ -39,7 +39,7 @@ export class SubmitButtonComponent implements OnInit {
         status: Status.Pending,
       };
 
-      // console.log('Timesheet detail: ', timesheet);
+      console.log('Timesheet detail: ', timesheet);
       this.overtimeService.clearWorks();
     }
   }
