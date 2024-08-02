@@ -46,9 +46,19 @@ export class TimesheetService implements ITimesheetService {
   GetTimesheet(): Observable<Timesheet[]> {
     throw new Error('Method not implemented.');
   }
+
   GetTimsheetById(id: number): Observable<Timesheet> {
-    const timesheet = this.dummyData.find((t) => t.id === id);
-    return of(timesheet!);
+    return new Observable<Timesheet>((observer) => {
+      setTimeout(() => {
+        const timesheet = this.dummyData.find((t) => t.id === id);
+        if (timesheet) {
+          observer.next(timesheet);
+          observer.complete();
+        } else {
+          observer.error('Timesheet not found');
+        }
+      }, 5000);
+    });
   }
 
   SaveTimesheet(timesheet: Timesheet): Observable<void> {

@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import { Overtime, Timesheet } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
@@ -8,6 +8,7 @@ import { UpdateButtonComponent } from '../../components/update-button/update-but
 import { TotalPayComponent } from '../../components/total-pay/total-pay.component';
 import { FormComponent } from '../../components/form/form.component';
 import { ListComponent } from '../../components/list/list.component';
+import { LoadingComponent } from '../../components/loading/loading.component';
 
 @Component({
   selector: 'app-update-timesheet',
@@ -18,6 +19,7 @@ import { ListComponent } from '../../components/list/list.component';
     TotalPayComponent,
     FormComponent,
     ListComponent,
+    LoadingComponent,
   ],
   templateUrl: './update-timesheet.component.html',
   styleUrls: ['./update-timesheet.component.scss'],
@@ -26,10 +28,12 @@ export class UpdateTimesheetComponent implements OnInit {
   private readonly updateService = inject(OvertimeUpdateService);
   private readonly timesheetService = inject(TimesheetService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   timesheetId: number = 0;
   overtimeForm: Overtime[] = [];
   totalPay: number = 0;
+  isLoading: boolean = true;
 
   ngOnInit(): void {
     this.route.params.subscribe({
@@ -42,22 +46,24 @@ export class UpdateTimesheetComponent implements OnInit {
 
   fetchAndInitData(): void {
     this.timesheetService.GetTimsheetById(this.timesheetId).subscribe({
-      next: (timesheet: Timesheet) => {
-        if (timesheet && timesheet.works) {
-          this.updateService.GetWorks(timesheet.works).subscribe({
+      next: (response: Timesheet) => {
+        if (response) {
+          this.updateService.GetWorks(response.works).subscribe({
             next: () => {
               this.updateService.List().subscribe((works) => {
                 this.overtimeForm = works;
                 this.getTotal();
               });
+              this.isLoading = false;
             },
             error: (err) => console.error('Error adding works', err),
           });
-        } else {
-          console.warn('No works found in timesheet.');
         }
       },
-      error: (err) => console.error('Error fetching timesheet', err),
+      error: (err) => {
+        console.error('Error fetching timesheet', err);
+        this.router.navigate(['errors/404']);
+      },
     });
   }
 
