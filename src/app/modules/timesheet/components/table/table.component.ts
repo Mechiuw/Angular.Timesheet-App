@@ -24,6 +24,6 @@ export class TableComponent {
   }
 
   viewTimesheet(id: number) {
-    alert('View Timesheet: ' + id);
+    this.router.navigate(['/timesheets/view/' + id]);
   }
 }

@@ -1,1 +1,10 @@
-<p>detail-timesheet works!</p>
+<div>
+  <p>detail-timesheet works!</p>
+  <p>{{ detailTimesheet.id }}</p>
+
+  <p>work id</p>
+  @for (item of detailTimesheet.works; track $index) {
+  <p>{{ item.workID }}</p>
+  }
+  <p>{{ detailTimesheet.status }}</p>
+</div>
