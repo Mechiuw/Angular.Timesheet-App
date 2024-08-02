@@ -3,15 +3,15 @@
     <thead class="sticky top-10 bg-slate-100 dark:bg-[#0f172a] dark:text-white">
       <tr>
         <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> Date Created </span>
+          <span class="border-b-4 border-primary pb-1"> No. </span>
         </th>
         <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> Work </span>
+          <span class="border-b-4 border-primary pb-1"> Date Created </span>
         </th>
         <th class="border-b-2 border-gray-300 p-3 text-left">
           <span class="border-b-4 border-primary pb-1"> Status </span>
         </th>
-        <th class="border-b-2 border-gray-300 p-3 text-left">
+        <th class="border-b-2 border-gray-300 py-3 ps-6 text-left">
           <span class="border-b-4 border-primary pb-1"> Action </span>
         </th>
         <th class="border-b-2 border-gray-300 p-3 text-left">
@@ -21,18 +21,23 @@
     </thead>
 
     <tbody class="dark:text-white">
-      <tr>
-        <td class="border-b-2 border-gray-300 p-3">2022-01-01</td>
-        <td class="border-b-2 border-gray-300 p-3">Work 1</td>
-        <td class="border-b-2 border-gray-300 p-3">Status 1</td>
+      <tr *ngFor="let item of dataTable; let i = index">
+        <td class="border-b-2 border-gray-300 p-3">{{ i + 1 }}.</td>
+        <td class="border-b-2 border-gray-300 p-3">
+          {{ item.createdAt | date }}
+        </td>
+        <td class="border-b-2 border-gray-300 p-3">{{ item.status }}</td>
         <td class="border-b-2 border-gray-300 p-3">
           <div class="flex gap-2">
-            <button>
+            <button
+              class="rounded-md bg-green-600 px-2 py-1 text-white"
+              (click)="editTimesheet(item.id)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="size-6"
+                class="size-5"
               >
                 <path
                   d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z"
@@ -43,12 +48,15 @@
               </svg>
             </button>
 
-            <button>
+            <button
+              class="rounded-md bg-rose-500 px-2 py-1 text-white"
+              (click)="deleteTimesheet(item.id)"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                class="size-6"
+                class="size-5"
               >
                 <path
                   fill-rule="evenodd"
@@ -63,6 +71,7 @@
         <td class="border-b-2 border-gray-300 p-3">
           <button
             class="flex gap-1 rounded-md bg-cyan-500 px-3 py-1 text-white"
+            (click)="viewTimesheet(item.id)"
           >
             <p class="">View</p>
 
