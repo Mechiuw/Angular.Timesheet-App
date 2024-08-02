@@ -133,6 +133,19 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
     return total;
   }
 
+  getDetail(works: Overtime[]): Overtime[] {
+    const data: Overtime[] = [];
+    works.forEach((work) => {
+      work.id = this.generateId();
+      work.total = this.calculateWorkTotal(work);
+      data.push(work);
+    });
+
+    this.calculateTotalPay();
+    this.sortOvertimes();
+    return data;
+  }
+
   clearWorks(): void {
     this.works.splice(0, this.works.length);
     this.calculateTotalPay();

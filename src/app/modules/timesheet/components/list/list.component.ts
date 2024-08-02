@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { Overtime } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
+import { TimesheetService } from '../../services/timesheet.service';
 
 @Component({
   selector: 'app-list',
@@ -9,17 +10,17 @@ import { CommonModule } from '@angular/common';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
 })
-export class ListComponent {
+export class ListComponent implements OnInit {
   @Input() overtimeForm: Overtime[] = [];
   @Input() delete!: (id: any) => void;
 
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [
-    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
-    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
-    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
-    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
-    { id: 5, desc: 'Other', fee: 50000 },
-  ];
+  private readonly timesheetService = inject(TimesheetService);
+
+  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+
+  ngOnInit(): void {
+    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+  }
 
   getWorkDescription(id: number): string {
     const option = this.descriptionOptions.find((opt) => opt.id === id);
