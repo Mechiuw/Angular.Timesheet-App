@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { Overtime, Status, Timesheet } from '../../model/timesheet';
 
@@ -10,6 +10,7 @@ import { Overtime, Status, Timesheet } from '../../model/timesheet';
   styleUrl: './update-button.component.scss',
 })
 export class UpdateButtonComponent implements OnInit {
+  @Output() formSubmitted = new EventEmitter<void>();
   ngOnInit(): void {
     this.update.List().subscribe((data) => {
       this.timesheetDetails = data;
@@ -39,7 +40,8 @@ export class UpdateButtonComponent implements OnInit {
         status: Status.Pending,
       };
 
-      console.log('Timesheet detail: ', timesheet);
+      // console.log('Timesheet detail: ', timesheet);
+      this.formSubmitted.emit();
       this.update.clearWorks();
     }
   }

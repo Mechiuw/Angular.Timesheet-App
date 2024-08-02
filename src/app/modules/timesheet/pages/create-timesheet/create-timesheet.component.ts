@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { SubmitButtonComponent } from '../../components/submit-button/submit-button.component';
 import { TotalPayComponent } from '../../components/total-pay/total-pay.component';
 import { ListComponent } from '../../components/list/list.component';
@@ -21,6 +21,7 @@ import { Overtime } from '../../model/timesheet';
   styleUrl: './create-timesheet.component.scss',
 })
 export class CreateTimesheetComponent implements OnInit {
+  @ViewChild(FormComponent) formComponent!: FormComponent;
   private readonly overtimeService = inject(OvertimeService);
 
   overtimeForm: Overtime[] = [];
@@ -48,5 +49,11 @@ export class CreateTimesheetComponent implements OnInit {
     this.overtimeService.Delete(id).subscribe(() => {
       this.initData();
     });
+  }
+
+  handleFormSubmitted() {
+    if (this.formComponent) {
+      this.formComponent.resetForm();
+    }
   }
 }

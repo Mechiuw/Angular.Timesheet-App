@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import { Overtime, Timesheet } from '../../model/timesheet';
@@ -27,6 +27,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./update-timesheet.component.scss'],
 })
 export class UpdateTimesheetComponent implements OnInit {
+  @ViewChild(FormComponent) formComponent!: FormComponent;
+
   private readonly updateService = inject(OvertimeUpdateService);
   private readonly timesheetService = inject(TimesheetService);
   private readonly route = inject(ActivatedRoute);
@@ -81,5 +83,11 @@ export class UpdateTimesheetComponent implements OnInit {
 
   remove(id: number): void {
     this.updateService.Delete(id).subscribe(() => {});
+  }
+
+  handleFormSubmitted() {
+    if (this.formComponent) {
+      this.formComponent.resetForm();
+    }
   }
 }

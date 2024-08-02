@@ -9,12 +9,12 @@
 
     <div class="flex justify-between">
       <app-total-pay [totalPay]="totalPay"></app-total-pay>
-      <app-submit-button />
+      <app-submit-button (formSubmitted)="handleFormSubmitted()" />
     </div>
   </div>
 
   <div class="p-5">
-    <app-form />
+    <app-form #formComponent />
   </div>
 </div>
 

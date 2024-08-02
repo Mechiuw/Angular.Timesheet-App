@@ -182,4 +182,8 @@ export class EditComponent implements OnInit {
 
     return false;
   }
+
+  resetForm() {
+    this.overtimeForm.reset();
+  }
 }

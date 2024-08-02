@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
 import { OvertimeService } from '../../services/overtime.service';
 import { Overtime, Timesheet, Status } from '../../model/timesheet';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-submit-button',
@@ -12,13 +11,13 @@ import { Router } from '@angular/router';
   styleUrl: './submit-button.component.scss',
 })
 export class SubmitButtonComponent implements OnInit {
+  @Output() formSubmitted = new EventEmitter<void>();
   timesheet: Timesheet = {} as Timesheet;
   timesheetDetails: Overtime[] = [];
 
   constructor(
     private readonly overtimeService: OvertimeService,
-    private readonly timesheetService: TimesheetService,
-    private readonly router: Router
+    private readonly timesheetService: TimesheetService
   ) {}
   ngOnInit(): void {
     this.overtimeService.List().subscribe((data) => {
@@ -42,12 +41,9 @@ export class SubmitButtonComponent implements OnInit {
         status: Status.Pending,
       };
 
-      console.log('Timesheet detail: ', timesheet);
+      // console.log('Timesheet detail: ', timesheet);
+      this.formSubmitted.emit();
       this.overtimeService.clearWorks();
     }
-  }
-
-  onclickpage(): void {
-    this.router.navigate(['/timesheets/1']);
   }
 }

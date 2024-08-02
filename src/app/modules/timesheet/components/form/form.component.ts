@@ -175,4 +175,8 @@ export class FormComponent implements OnInit {
 
     return false;
   }
+
+  resetForm() {
+    this.overtimeForm.reset();
+  }
 }
