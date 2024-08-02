@@ -9,6 +9,7 @@ import { TotalPayComponent } from '../../components/total-pay/total-pay.componen
 import { FormComponent } from '../../components/form/form.component';
 import { ListComponent } from '../../components/list/list.component';
 import { LoadingComponent } from '../../components/loading/loading.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-update-timesheet',
@@ -20,6 +21,7 @@ import { LoadingComponent } from '../../components/loading/loading.component';
     FormComponent,
     ListComponent,
     LoadingComponent,
+    CommonModule,
   ],
   templateUrl: './update-timesheet.component.html',
   styleUrls: ['./update-timesheet.component.scss'],
@@ -30,21 +32,23 @@ export class UpdateTimesheetComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
+  date: Date = new Date();
   timesheetId: number = 0;
   overtimeForm: Overtime[] = [];
   totalPay: number = 0;
   isLoading: boolean = true;
+  getData: boolean = false;
 
   ngOnInit(): void {
     this.route.params.subscribe({
       next: (params) => {
         this.timesheetId = +params['id'];
-        this.fetchAndInitData();
+        this.fetchData();
       },
     });
   }
 
-  fetchAndInitData(): void {
+  fetchData(): void {
     this.timesheetService.GetTimsheetById(this.timesheetId).subscribe({
       next: (response: Timesheet) => {
         if (response) {
@@ -55,6 +59,7 @@ export class UpdateTimesheetComponent implements OnInit {
                 this.getTotal();
               });
               this.isLoading = false;
+              this.getData = true;
             },
             error: (err) => console.error('Error adding works', err),
           });
@@ -62,7 +67,8 @@ export class UpdateTimesheetComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching timesheet', err);
-        this.router.navigate(['errors/404']);
+        this.isLoading = false;
+        this.getData = false;
       },
     });
   }
