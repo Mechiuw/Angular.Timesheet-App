@@ -1,26 +1,7 @@
 <div class="mx-auto px-4 py-4 lg:container sm:px-8">
   <!-- Header -->
-  <app-nft-header></app-nft-header>
+  <app-nft-header [title]="title" [subtitle]="subtitle"></app-nft-header>
 
   <!-- Timesheet Table -->
-  <div nft-auctions-table class="md:col-span-2 xl:col-span-3 my-4"></div>
-
-  <div
-    class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4"
-  >
-    <!-- Dual Card -->
-    <div nft-dual-card [nft]="nft[0]" class="md:col-span-2"></div>
-    <!-- end Dual Card -->
-    <!-- Single Card -->
-    <div nft-single-card [nft]="nft[1]"></div>
-    <!-- end Single Card -->
-    <!-- Single Card -->
-    <div nft-single-card [nft]="nft[2]"></div>
-    <!-- end Single Card -->
-    <!-- Single Card -->
-    <div nft-chart-card class="md:col-span-2 xl:col-span-1"></div>
-    <!-- end Single Card -->
-    <!-- Auctions Table -->
-    <div nft-auctions-table class="md:col-span-2 xl:col-span-3"></div>
-  </div>
+  <app-timesheet-table [timesheets]="timesheets" [route]="route" [role]="role"></app-timesheet-table>
 </div>

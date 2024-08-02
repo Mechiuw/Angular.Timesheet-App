@@ -1,0 +1,83 @@
+<div class="card">
+  <!-- Table Detail -->
+  <p-table
+    #dt
+    [value]="timesheetDetails"
+    [rows]="5"
+    [globalFilterFields]="['name']"
+    [rowHover]="true"
+    dataKey="id"
+  >
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          pSortableColumn="no"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          No
+        </th>
+        <th
+          pSortableColumn="date"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Start Time <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="date"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          End Time <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="name"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Name <p-sortIcon field="name" />
+        </th>
+        <th
+          pSortableColumn="fee"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Fee <p-sortIcon field="fee" />
+        </th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-timesheetDetail let-i="rowIndex">
+      <tr>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ i + 1 }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheetDetail.startTime | date : "HH:mm" }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheetDetail.endTime | date : "HH:mm" }}
+          </span>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <span class="mb-1 text-sm font-semibold text-foreground">{{
+              timesheetDetail.workId
+            }}</span>
+            <span class="text-xs font-semibold text-muted-foreground/50">{{
+              timesheetDetail.workId
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheetDetail.fee | currency : "USD" }}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

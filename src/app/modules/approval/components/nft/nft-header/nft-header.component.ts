@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'app-nft-header',
-    templateUrl: './nft-header.component.html',
-    standalone: true,
+  selector: 'app-nft-header',
+  templateUrl: './nft-header.component.html',
+  standalone: true,
 })
-export class NftHeaderComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
+export class NftHeaderComponent {
+  // Data from Parent
+  @Input() title!: string;
+  @Input() subtitle!: string;
 }

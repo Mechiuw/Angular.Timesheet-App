@@ -11,7 +11,16 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'ApprovalComponent', pathMatch: 'full' },
       { path: 'on-progress', component: OnProgressComponent },
-      { path: 'history', component: HistoryComponent },
+      {
+        path: 'history',
+        component: HistoryComponent,
+        children: [
+          {
+            path: ':timesheetId',
+            component: HistoryComponent,
+          },
+        ],
+      },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },
@@ -19,6 +28,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ApprovalRoutingModule { }
+export class ApprovalRoutingModule {}

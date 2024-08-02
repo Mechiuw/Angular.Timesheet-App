@@ -1,0 +1,331 @@
+<div class="card">
+  <!-- Export Button -->
+  <p-toolbar styleClass="mb-4 gap-2 p-4">
+    <ng-template pTemplate="left">
+      <span class="text-lg text-muted-foreground">
+        {{ role }} & {{ route }} & Selected {{ selectedTimesheet?.id }}
+      </span>
+    </ng-template>
+
+    <ng-template pTemplate="right">
+      <button
+        class="hover:bg-primary-600 flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+      >
+        <i class="pi pi-upload mr-1" style="font-size: 0.8rem"></i>
+        Export to PDF
+      </button>
+    </ng-template>
+  </p-toolbar>
+
+  <!-- Table -->
+  <p-table
+    #dt
+    [value]="timesheets"
+    [rows]="5"
+    [paginator]="true"
+    [globalFilterFields]="['name']"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    [rowsPerPageOptions]="[5, 10, 100]"
+  >
+    <!-- Search Input  -->
+    <ng-template pTemplate="caption">
+      <div class="align-center flex justify-end">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            placeholder="Search by User"
+            style="height: 2.5rem; width: 15rem"
+          />
+        </span>
+      </div>
+    </ng-template>
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          pSortableColumn="no"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          No
+        </th>
+        <th
+          pSortableColumn="date"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Date <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="name"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Name <p-sortIcon field="name" />
+        </th>
+        <th
+          pSortableColumn="fee"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Fee <p-sortIcon field="fee" />
+        </th>
+        <th
+          pSortableColumn="status"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Status <p-sortIcon field="status" />
+        </th>
+        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
+        <th
+          *ngIf="
+            role === 'benefit' || (route === 'history' && role === 'manager')
+          "
+          pSortableColumn="manager"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Manager <p-sortIcon field="manager" />
+        </th>
+        <!-- Column Benefit -> Authority Benefit Team and Route History -->
+        <th
+          *ngIf="route === 'history' && role === 'benefit'"
+          pSortableColumn="benefit"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Benefit <p-sortIcon field="benefit" />
+        </th>
+        <th class="text-center text-sm font-semibold text-muted-foreground">
+          Detail
+        </th>
+        <!-- Column Action -> Authority Benefit Team and Route History or Route On Progress -->
+        <th
+          *ngIf="
+            route === 'on-progress' ||
+            (route === 'history' && role === 'benefit')
+          "
+          class="text-center text-sm font-semibold text-muted-foreground"
+        >
+          Action
+        </th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-timesheet let-i="rowIndex">
+      <tr>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ i + 1 }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.createdAt | date : "dd/MM/yyyy" }}
+          </span>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <span class="mb-1 text-sm font-semibold text-foreground">{{
+              timesheet.user
+            }}</span>
+            <span class="text-xs font-semibold text-muted-foreground/50">{{
+              timesheet.user
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.totalFee | currency : "USD" }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.status }}
+          </span>
+        </td>
+        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
+        <td
+          *ngIf="
+            role === 'benefit' || (route === 'history' && role === 'manager')
+          "
+        >
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.manager }}
+          </span>
+        </td>
+        <!-- Column Benefit -> Authority Benefit Team and Route History -->
+        <td *ngIf="route === 'history' && role === 'benefit'">
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.benefit }}
+          </span>
+        </td>
+        <td>
+          <div class="flex justify-center">
+            <button
+              (click)="showDialogDetail(timesheet)"
+              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              pTooltip="Timesheet Detail"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-file" style="font-size: 1rem"></i>
+            </button>
+          </div>
+        </td>
+        <!-- Column Action -> Authority Benefit Team and Route History -->
+        <td *ngIf="route === 'history' && role === 'benefit'">
+          <div class="flex justify-center">
+            <button
+              (click)="showDialogPrint(timesheet)"
+              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              pTooltip="Print Timesheet"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-file-export" style="font-size: 1rem"></i>
+            </button>
+          </div>
+        </td>
+        <!-- Column Action -> Route On Progress -->
+        <td *ngIf="route === 'on-progress'">
+          <!-- Button Action -> Approve or Deny -> Manager -->
+          <div *ngIf="role === 'manager'" class="flex flex-row justify-center">
+            <button
+              (click)="showDialogConfirm(timesheet)"
+              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="Approve Timesheet"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
+            </button>
+            <button
+              (click)="showDialogConfirm(timesheet)"
+              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="Reject Timesheet"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-times" style="font-size: 1rem"></i>
+            </button>
+          </div>
+          <!-- Button Action -> Settelement or Reject -> Manager -->
+          <div *ngIf="role === 'benefit'" class="flex flex-row justify-center">
+            <button
+              (click)="showDialogConfirm(timesheet)"
+              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="Settel Timesheet"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
+            </button>
+            <button
+              (click)="showDialogConfirm(timesheet)"
+              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="Reject Timesheet"
+              tooltipPosition="bottom"
+            >
+              <i class="pi pi-times" style="font-size: 1rem"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <!-- Detail Item Modal -->
+  <div class="card justify-content-center flex">
+    <p-dialog
+      header="Detail Timesheet"
+      [(visible)]="visibleDetail"
+      [modal]="true"
+      [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+      [style]="{ width: '50vw' }"
+      [draggable]="false"
+      [resizable]="false"
+      [maximizable]="true"
+    >
+      <!-- Modal Header -->
+      <ng-template pTemplate="header">
+        <div
+          class="align-items-center justify-content-center flex inline-flex flex-col gap-2"
+        >
+          <h3 class="text-md font-semibold text-foreground">
+            Timesheet Details
+          </h3>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >Timesheet #{{ selectedTimesheet?.id }}</span
+          >
+        </div>
+      </ng-template>
+
+      <!-- Detail Table -->
+      <app-timesheet-detail-table
+        [timesheetDetails]="selectedTimesheet?.detail"
+      ></app-timesheet-detail-table>
+    </p-dialog>
+  </div>
+
+  <!-- Confirm Action Modal -->
+  <div class="card justify-content-center flex">
+    <p-dialog
+      header="Update Timesheet"
+      [modal]="true"
+      [(visible)]="visibleConfirm"
+      [style]="{ width: '25rem' }"
+    >
+      <span class="mb-5 block text-muted-foreground"
+        >Update Timesheet : {{ selectedTimesheet?.id }} -
+        {{ selectedTimesheet?.user }}</span
+      >
+      <div class="flex justify-end gap-2">
+        <button
+          (click)="visibleConfirm = false"
+          href="#"
+          class="flex h-7 items-center justify-center rounded-md bg-card bg-gray-500 px-2 text-sm text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="visibleConfirm = false"
+          href="#"
+          class="flex h-7 items-center justify-center rounded-md bg-card bg-green-600 px-2 text-sm text-muted-foreground text-white hover:bg-muted hover:text-foreground"
+        >
+          Yes
+        </button>
+      </div>
+    </p-dialog>
+  </div>
+
+  <!-- Print Timesheet Modal -->
+  <div class="card justify-content-center flex">
+    <p-dialog
+      header="Print Timesheet"
+      [(visible)]="visiblePrint"
+      [modal]="true"
+      [style]="{ width: '100%', height: '100vh' }"
+      [draggable]="false" 
+      [resizable]="false"
+      [maximizable]="true"
+      (onHide)="onDialogPrintClose()"
+      class="dialog-print"
+    >
+      <!-- Modal Header -->
+      <ng-template pTemplate="header">
+        <div
+          class="align-items-center justify-content-center flex inline-flex flex-col gap-2"
+        >
+          <h3 class="text-md font-semibold text-foreground">
+            Timesheet Details
+          </h3>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >Timesheet #{{ selectedTimesheet?.id }}</span
+          >
+        </div>
+      </ng-template>
+
+      <!-- Detail Table -->
+      <app-timesheet-detail-table
+        [timesheetDetails]="selectedTimesheet?.detail"
+      ></app-timesheet-detail-table>
+    </p-dialog>
+  </div>
+</div>

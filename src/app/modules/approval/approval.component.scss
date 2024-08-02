@@ -1,0 +1,104 @@
+// Start Custom Style from Prime Ng
+
+// Toolbar
+::ng-deep .p-toolbar {
+    @apply bg-background;
+    border: none;
+}
+
+// Input
+::ng-deep .p-inputtext {
+    @apply bg-background text-muted-foreground;
+
+
+    // placeholder
+    &::placeholder {
+        @apply text-muted-foreground;
+    }
+}
+
+// Table
+::ng-deep .p-datatable {
+    @apply bg-background;
+
+    .p-datatable-header {
+        @apply bg-background;
+        border: none;
+    }
+
+    .p-datatable-thead {
+        @apply bg-background;
+
+        th {
+            @apply bg-background;
+        }
+
+        .p-sortable-column {
+            @apply bg-background;
+
+            .p-sortable-column-icon {
+                @apply text-muted-foreground;
+            }
+        }
+    }
+
+    .p-datatable-tbody {
+        @apply bg-background;
+
+        tr {
+            @apply bg-background;
+        }
+    }
+
+    // .p-datatable-footer {
+    //     @apply bg-background;
+    //     border: none;
+    // }
+}
+
+// Paginator
+::ng-deep .p-paginator {
+    @apply text-sm font-semibold text-muted-foreground bg-background;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    .p-paginator-page {
+        @apply text-sm font-semibold text-muted-foreground;
+    }
+
+    .p-paginator-current {
+        @apply text-sm font-semibold text-muted-foreground;
+    }
+
+    .p-paginator-page.p-highlight {
+        @apply bg-primary text-white;
+        padding: 0rem;
+    }
+
+    .p-paginator-rpp-options {
+        @apply bg-background;
+        height: 3rem;
+
+    }
+}
+
+// Dialog
+::ng-deep .p-dialog {
+    @apply bg-background text-muted-foreground;
+    border: white 1px solid;
+
+    .p-dialog-header {
+        @apply bg-background;
+
+        .p-dialog-title {
+            @apply text-muted-foreground;
+        }
+    }
+
+    .p-dialog-content {
+        @apply bg-background;
+    }
+}
+
+// End Custom Style from Prime Ng
