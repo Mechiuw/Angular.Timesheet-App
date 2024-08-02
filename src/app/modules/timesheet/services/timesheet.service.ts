@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ITimesheetService } from './itimesheet.service';
-import { Observable, of } from 'rxjs';
-import { Overtime, Status, Timesheet } from '../model/timesheet';
+import { Observable } from 'rxjs';
+import { Status, Timesheet } from '../model/timesheet';
 
 @Injectable({
   providedIn: 'root',

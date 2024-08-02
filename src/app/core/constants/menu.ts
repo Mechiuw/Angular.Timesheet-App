@@ -9,7 +9,7 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Dashboard',
-          route: '/dashboard'
+          route: '/dashboard',
         },
         // {
         //   icon: 'assets/icons/heroicons/outline/lock-closed.svg',
@@ -35,7 +35,7 @@ export class Menu {
       ],
     },
     {
-      group: "Master",
+      group: 'Master',
       separator: true,
       items: [
         {
@@ -48,16 +48,20 @@ export class Menu {
           label: 'Works',
           route: '/works',
         },
-      ]
+      ],
     },
     {
-      group: "Timesheet",
+      group: 'Timesheet',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
+          children: [
+            { label: 'New Form', route: '/timesheets/create' },
+            { label: 'List', route: '/timesheets/list' },
+          ],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
@@ -67,10 +71,9 @@ export class Menu {
             { label: 'On Progress', route: '/approvals/on-progress' },
             { label: 'History', route: '/approvals/history' },
           ],
-        }
-      ]
-    }
-
+        },
+      ],
+    },
 
     // {
     //   group: 'Collaboration',

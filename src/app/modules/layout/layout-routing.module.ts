@@ -4,6 +4,7 @@ import { LayoutComponent } from './layout.component';
 import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/create-timesheet.component';
 import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
+import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/detail-timesheet.component';
 
 const routes: Routes = [
   {
@@ -28,18 +29,10 @@ const routes: Routes = [
     path: 'timesheets',
     component: LayoutComponent,
     children: [
-      {
-        path: 'list',
-        component: ListTimesheetComponent,
-      },
-      {
-        path: '',
-        component: CreateTimesheetComponent,
-      },
-      {
-        path: ':id',
-        component: UpdateTimesheetComponent,
-      },
+      { path: 'create', component: CreateTimesheetComponent },
+      { path: 'list', component: ListTimesheetComponent },
+      { path: 'view/:id', component: DetailTimesheetComponent },
+      { path: 'update/:id', component: UpdateTimesheetComponent },
     ],
   },
   {

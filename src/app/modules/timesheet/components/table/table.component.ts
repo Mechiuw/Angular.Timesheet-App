@@ -16,7 +16,7 @@ export class TableComponent {
   @Input() dataTable: Timesheet[] = [];
 
   editTimesheet(id: number) {
-    this.router.navigate(['/timesheets/' + id]);
+    this.router.navigate(['/timesheets/update/' + id]);
   }
 
   deleteTimesheet(id: number) {
