@@ -8,7 +8,8 @@ import { UserInfo } from "../../shared/models/user-info.model";
   providedIn: "root",
 })
 export class SessionService {
-  constructor(private readonly storage: Storage = sessionStorage) {}
+  private storage: Storage = sessionStorage
+  constructor() {}
   set(key: string, value: string): void {
     this.storage.setItem(key, value);
   }
@@ -45,7 +46,7 @@ export class SessionService {
     return token ? jwtDecode<JwtClaims>(token) : null
   }
 
-  public getUserInfo(): UserInfo | null {
+  public getCurrentUser(): UserInfo | null {
     const { id, email, username, roles } = this.getJwtClaims(this.get('token')) || {}
     return id && email && username && roles ? { id, email, username, roles } : null
   }
