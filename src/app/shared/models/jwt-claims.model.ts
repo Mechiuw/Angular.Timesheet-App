@@ -1,3 +1,5 @@
+import { UserInfo } from "./user-info.model";
+
 interface JwtStandardClaims {
   iss?: string; // Issuer
   sub?: string; // Subject
@@ -6,9 +8,4 @@ interface JwtStandardClaims {
   // Add any other standard JWT claims you might need
 }
 
-export interface JwtClaims extends JwtStandardClaims {
-  id: string;
-  email: string;
-  username: string;
-  roles: string;
-}
+export interface JwtClaims extends JwtStandardClaims, UserInfo {}

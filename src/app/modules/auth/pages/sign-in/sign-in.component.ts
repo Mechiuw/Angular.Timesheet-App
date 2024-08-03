@@ -53,14 +53,20 @@ export class SignInComponent implements OnInit {
       return;
     }
 
-    this._authService.login({ email, password }).subscribe({
-      next: () => {
-        // console.log(this._authService.currentUser);
-        this._router.navigate(['/dashboard']);
-      },
-      error: (error) => {
-        console.log(error);
-      },
+    // this._authService.login({ email, password }).subscribe({
+    //   next: () => {
+    //     // console.log(this._authService.currentUser);
+    //     this._router.navigate(['/dashboard']);
+    //   },
+    //   error: (error) => {
+    //     console.log(error);
+    //   },
+    // });
+
+    this._authService.loginDummy().subscribe((token) => {
+      console.log("SignIn.loginDummy : "+token);
+      console.log("SignIn.currentUser : "+ this._authService.currentUser?.email);
+      // this._router.navigate(['/dashboard']);
     });
   }
 }
