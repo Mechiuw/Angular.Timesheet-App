@@ -54,4 +54,8 @@ export class AuthService {
     this.currentUser$.next(null);
     this.sessionService.clearSession();
   }
+
+  activate(token: string): void{
+    
+  }
 }
