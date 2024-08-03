@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { AuthService } from '../../services/auth.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -17,7 +19,11 @@ export class SignInComponent implements OnInit {
   submitted = false;
   passwordTextType!: boolean;
 
-  constructor(private readonly _formBuilder: FormBuilder, private readonly _router: Router) {}
+  constructor(
+    private readonly _formBuilder: FormBuilder, 
+    private readonly _router: Router,
+    private readonly _authService: AuthService
+  ) {}
 
   onClick() {
     console.log('Button clicked');
@@ -47,6 +53,14 @@ export class SignInComponent implements OnInit {
       return;
     }
 
-    this._router.navigate(['/']);
+    this._authService.login({ email, password }).subscribe({
+      next: () => {
+        // console.log(this._authService.currentUser);
+        this._router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
 }
