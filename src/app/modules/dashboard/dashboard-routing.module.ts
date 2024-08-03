@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard.component';
 import { NftComponent } from './pages/nft/nft.component';
 import { PodcastComponent } from './pages/podcast/podcast.component';
+import { AuthService } from '../auth/services/auth.service';
 
 const routes: Routes = [
   {
