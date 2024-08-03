@@ -4,7 +4,6 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import { Overtime, Timesheet } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
@@ -24,6 +23,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-edit',
@@ -71,18 +71,18 @@ export class EditComponent implements OnInit {
       workID: new FormControl(null, [Validators.required]),
       total: new FormControl(0),
     },
-    { validators: this.endTimeValidator() }
+    { validators: this.TimeValidatorForm() }
   );
 
   saveOvertime() {
-    if (this.overtimeForm.pristine)
-      return alert('All form fields must be filled out.pristine');
-
     if (this.hasEmptyField())
-      return alert('All form fields must be filled out');
+      return this.errorAlert('All form fields must be filled out');
 
     if (this.overtimeForm.invalid)
-      return alert('Start time must be earlier than end time');
+      return this.errorAlert(' End time cannot be earlier than start time');
+
+    if (this.timeValidated())
+      return this.errorAlert('Minimum overtime of 1 hour');
 
     const formValue = this.overtimeForm.value;
     const selectedDate = formValue.selectedDate;
@@ -102,6 +102,11 @@ export class EditComponent implements OnInit {
     };
     this.updateService.Update(overtime).subscribe(() => {
       // console.log({ overtime });
+      Swal.fire({
+        icon: 'success',
+        text: 'Overtime saved successfully',
+        timer: 1000,
+      });
       this.overtimeForm.reset();
     });
   }
@@ -113,8 +118,22 @@ export class EditComponent implements OnInit {
     return convert;
   }
 
-  // Custom validator function
-  endTimeValidator(): ValidatorFn {
+  timeValidated(): boolean {
+    const start = this.overtimeForm.get('startTime')?.value;
+    const end = this.overtimeForm.get('endTime')?.value;
+
+    const startTime = new Date(`1970-01-01T${start}:00`).getTime();
+    const endTime = new Date(`1970-01-01T${end}:00`).getTime();
+
+    const diff = (endTime - startTime) / (1000 * 60 * 60);
+
+    if (diff <= 1) {
+      return true;
+    }
+    return false;
+  }
+
+  TimeValidatorForm(): ValidatorFn {
     return (formGroup: AbstractControl): { [key: string]: any } | null => {
       const startTime = formGroup.get('startTime')?.value;
       const endTime = formGroup.get('endTime')?.value;
@@ -185,5 +204,12 @@ export class EditComponent implements OnInit {
 
   resetForm() {
     this.overtimeForm.reset();
+  }
+
+  errorAlert(message: string) {
+    Swal.fire({
+      icon: 'error',
+      text: message,
+    });
   }
 }
