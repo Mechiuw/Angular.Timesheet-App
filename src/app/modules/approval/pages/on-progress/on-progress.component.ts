@@ -13,6 +13,9 @@ import { TimesheetEntry } from '../../model/timesheet';
   styleUrl: './on-progress.component.scss',
 })
 export class OnProgressComponent implements OnInit {
+  // Data Loading
+  isLoading: boolean = true;
+
   // NFT Header
   title: string = 'Timesheets Approvals';
   subtitle: string = 'On Progress';
@@ -25,7 +28,7 @@ export class OnProgressComponent implements OnInit {
 
   // Example Role (comment out if you want to use it)
   //role: string = 'manager';
-    role: string = "benefit";
+  role: string = 'benefit';
 
   // Generate Data
   generateDummyData() {
@@ -175,6 +178,9 @@ export class OnProgressComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.generateDummyData();
+    setTimeout(() => {
+      this.isLoading = false;
+      this.generateDummyData();
+    }, 3000);
   }
 }

@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { DetailTimesheetEntry, TimesheetEntry } from '../../../model/timesheet';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
@@ -7,11 +9,14 @@ import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timeshe
 @Component({
   selector: 'app-timesheet-modal-print',
   standalone: true,
-  imports: [DialogModule, TimesheetDetailTableComponent],
+  imports: [DialogModule, ToastModule, TimesheetDetailTableComponent],
   templateUrl: './timesheet-modal-print.component.html',
   styleUrl: './timesheet-modal-print.component.scss',
+  providers: [MessageService],
 })
 export class TimesheetModalPrintComponent implements OnInit {
+  constructor(private messageService: MessageService) {}
+
   // Data from Parent
   @Input() visiblePrint: boolean = false;
   @Input() paramTimesheetId: string | null = '';
@@ -19,6 +24,18 @@ export class TimesheetModalPrintComponent implements OnInit {
   // Data Timesheet
   selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
   timesheetDetails: DetailTimesheetEntry[] = [];
+
+  // Toast Notification Message
+  showInfo() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Info',
+      detail:
+        'Ctrl + P to Print and Uncheked Header and Footer in Option Print',
+      life: 5000,
+      styleClass: 'text-sm',
+    });
+  }
 
   ngOnInit(): void {
     // Generate Dummy Data
@@ -56,5 +73,10 @@ export class TimesheetModalPrintComponent implements OnInit {
         },
       ],
     };
+
+    // Show Toast Information after a slight delay to ensure rendering
+    setTimeout(() => {
+      this.showInfo();
+    }, 0);
   }
 }

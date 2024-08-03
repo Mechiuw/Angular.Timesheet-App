@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { TimesheetEntry } from '../../model/timesheet';
 import { TimesheetDetailTableComponent } from './timesheet-detail-table/timesheet-detail-table.component';
@@ -23,6 +24,7 @@ import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-
     ToolbarModule,
     InputTextModule,
     TooltipModule,
+    SkeletonModule,
     CommonModule,
     TimesheetDetailTableComponent,
     TimesheetModalPrintComponent,
@@ -39,6 +41,7 @@ export class TimesheetTableComponent implements OnInit {
   paramTimesheetId?: string | null;
 
   // Data from Parent
+  @Input() isLoading: boolean = true;
   @Input() timesheets: TimesheetEntry[] = [];
   @Input() route!: string;
   @Input() role!: string;

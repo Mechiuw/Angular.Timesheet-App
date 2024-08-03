@@ -10,11 +10,12 @@
     class="dialog-print"
     closable="false"
   >
+    <!-- Toast Notification -->
+    <p-toast />
+
     <!-- Modal Header -->
     <ng-template pTemplate="header">
-      <div
-        class="align-items-center justify-content-center flex-col gap-2"
-      >
+      <div class="align-items-center justify-content-center flex-col gap-2">
         <h3 class="text-md font-semibold text-foreground">Timesheet Trainer</h3>
         <span class="text-sm font-semibold text-muted-foreground"
           >Timesheet #{{ paramTimesheetId }} from route</span

@@ -33,6 +33,7 @@
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[5, 10, 100]"
+    [loading]="isLoading"
   >
     <!-- Search Input  -->
     <ng-template pTemplate="caption">
@@ -114,6 +115,15 @@
           Action
         </th>
       </tr>
+    </ng-template>
+
+    <!-- Table Loader -->
+    <ng-template pTemplate="loadingbody">
+        <tr>
+          <td colspan="12">
+            <p-skeleton width="100%" height="40vh"></p-skeleton>
+          </td>
+        </tr>
     </ng-template>
 
     <!-- Table Body -->
@@ -229,6 +239,13 @@
         </td>
       </tr>
     </ng-template>
+
+    <!-- Table Empty Message -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" colspan="7">No data found.</td>
+      </tr>
+    </ng-template>
   </p-table>
 
   <!-- Detail Item Modal -->
@@ -250,7 +267,7 @@
             Timesheet Details
           </h3>
           <span class="text-sm font-semibold text-muted-foreground"
-            >Timesheet #{{ paramTimesheetId }}</span
+            >Timesheet #{{ selectedTimesheet.id }}</span
           >
         </div>
       </ng-template>

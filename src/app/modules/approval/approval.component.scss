@@ -21,6 +21,10 @@
 ::ng-deep .p-datatable {
     @apply bg-background;
 
+    .p-datatable-loading-overlay {
+        display: none;
+    }
+
     .p-datatable-header {
         @apply bg-background;
         border: none;
