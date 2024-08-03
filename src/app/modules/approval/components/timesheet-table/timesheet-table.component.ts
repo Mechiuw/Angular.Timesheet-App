@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
@@ -9,9 +9,9 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 
+import { TimesheetEntry } from '../../model/timesheet';
 import { TimesheetDetailTableComponent } from './timesheet-detail-table/timesheet-detail-table.component';
-
-import { DetailTimesheetEntry, TimesheetEntry } from '../../model/timesheet';
+import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-modal-print.component';
 
 @Component({
   selector: 'app-timesheet-table',
@@ -25,13 +25,18 @@ import { DetailTimesheetEntry, TimesheetEntry } from '../../model/timesheet';
     TooltipModule,
     CommonModule,
     TimesheetDetailTableComponent,
+    TimesheetModalPrintComponent,
   ],
   templateUrl: './timesheet-table.component.html',
   styleUrls: ['./timesheet-table.component.scss'],
 })
-export class TimesheetTableComponent {
+export class TimesheetTableComponent implements OnInit {
   // Constructor
-  constructor(private router: Router) {}
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  // Data Url & Params
+  urlTimesheetId?: string | null;
+  paramTimesheetId?: string | null;
 
   // Data from Parent
   @Input() timesheets: TimesheetEntry[] = [];
@@ -39,15 +44,11 @@ export class TimesheetTableComponent {
   @Input() role!: string;
 
   // Data Selected Timesheet
-  selectedTimesheet: any;
+  selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
 
   // Data Modal
   visibleDetail: boolean = false;
-  visibleConfirm: boolean = false;
   visiblePrint: boolean = false;
-
-  // Data Timesheet Detail
-  timesheetDetails: DetailTimesheetEntry[] = [];
 
   // Function Modal
   showDialogDetail(timesheet: TimesheetEntry) {
@@ -55,23 +56,34 @@ export class TimesheetTableComponent {
     this.visibleDetail = true;
   }
 
-  showDialogConfirm(timesheet: TimesheetEntry) {
-    this.selectedTimesheet = timesheet;
-    this.visibleConfirm = true;
-  }
   showDialogPrint(timesheet: TimesheetEntry) {
     this.selectedTimesheet = timesheet;
-    this.visiblePrint = true;
 
     // Navigate to Url Print
-    this.router.navigate([`/approvals/history/${timesheet.id}`]);
+    const url = this.router.serializeUrl(
+      this.router.createUrlTree([`/approvals/history/print/${timesheet.id}`])
+    );
+
+    // Open the URL in a new tab
+    window.open(url, '_blank');
   }
 
-  onDialogPrintClose() {
-    this.selectedTimesheet = null;
-    this.visiblePrint = false;
+  ngOnInit(): void {
+    // Get Route from URL
+    const currentRoute = this.router.url.split('/');
+    this.urlTimesheetId = currentRoute[currentRoute.length - 2];
 
-    // Navigate to Back
-    this.router.navigate([`/approvals/history`]);
+    // Get param 'timesheetId' from URL
+    this.activatedRoute.firstChild?.paramMap.subscribe({
+      next: (paramMap) => {
+        // Set Data
+        this.paramTimesheetId = paramMap.get('timesheetId');
+
+        // conditional modal print
+        if (this.paramTimesheetId && this.urlTimesheetId == 'print') {
+          this.visiblePrint = true;
+        }
+      },
+    });
   }
 }

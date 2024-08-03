@@ -10,17 +10,16 @@ const routes: Routes = [
     component: ApprovalComponent,
     children: [
       { path: '', redirectTo: 'ApprovalComponent', pathMatch: 'full' },
-      { path: 'on-progress', component: OnProgressComponent },
+      {
+        path: 'on-progress',
+        component: OnProgressComponent,
+      },
       {
         path: 'history',
         component: HistoryComponent,
-        children: [
-          {
-            path: ':timesheetId',
-            component: HistoryComponent,
-          },
-        ],
+        children: [{ path: 'print/:timesheetId', component: HistoryComponent }],
       },
+      // { path: 'history/:timesheetId', component: HistoryComponent },
       { path: '**', redirectTo: 'errors/404' },
     ],
   },
