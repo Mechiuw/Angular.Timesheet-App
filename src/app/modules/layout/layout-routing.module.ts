@@ -1,35 +1,39 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './layout.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { LayoutComponent } from "./layout.component";
+import { ActivationComponent } from "../auth/pages/activation/activation.component";
+import { AuthService } from "../auth/services/auth.service";
 
 const routes: Routes = [
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () =>
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: 'users',
+    path: "users",
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () =>
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: 'works',
+    path: "works",
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () =>
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: 'timesheets',
+    path: "timesheets",
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () =>
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
     path: 'approvals',
     component: LayoutComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () => import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
-
-
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];
