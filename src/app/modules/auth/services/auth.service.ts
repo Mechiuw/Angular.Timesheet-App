@@ -1,22 +1,23 @@
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { SessionService } from "../../../core/services/session.service";
 import { BehaviorSubject, map, Observable, of, Subject } from "rxjs";
 import { LoginRequest, LoginResponse } from "../models/auth.model";
-import { SingleResponse } from "../../../shared/models/api.model";
+import { SingleResponse } from "../../../core/models/api.model";
 import { HttpClient } from "@angular/common/http";
 import { API_ENDPOINT } from "../../../core/constants/api-endpoint";
-import { UserInfo } from "../../../shared/models/user-info.model";
+import { UserInfo } from "../../../core/models/user-info.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
   private currentUser$: BehaviorSubject<UserInfo | null>;
+  public isActivated$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private readonly sessionService: SessionService,
-    private readonly http: HttpClient,
+    private readonly http: HttpClient
   ) {
     this.currentUser$ = new BehaviorSubject<UserInfo | null>(
       sessionService.getCurrentUser()
@@ -56,23 +57,5 @@ export class AuthService {
     this.sessionService.clearSession();
   }
 
-  activate(param: string): Observable<SingleResponse<LoginResponse>> {
-    let decodedParam;
-    try {
-      decodedParam = atob(param);
-    } catch (error: any) {
-      return of(error.message);
-    }
-    try {
-      return this.http
-        .post<SingleResponse<LoginResponse>>(`${API_ENDPOINT.AUTH.ACTIVATION}?${decodedParam}`, {})
-        .pipe(
-          map((response) => {
-            return response;
-          })
-        );
-    } catch (error: any) {
-      return error.message;
-    }
-  }
+  
 }

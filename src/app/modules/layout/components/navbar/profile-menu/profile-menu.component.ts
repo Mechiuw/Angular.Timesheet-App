@@ -7,7 +7,7 @@ import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { AuthService } from '../../../../auth/services/auth.service';
 import { Observable } from 'rxjs';
-import { UserInfo } from '../../../../../shared/models/user-info.model';
+import { UserInfo } from '../../../../../core/models/user-info.model';
 
 @Component({
   selector: 'app-profile-menu',
