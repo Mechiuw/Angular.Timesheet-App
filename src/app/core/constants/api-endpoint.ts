@@ -1,10 +1,11 @@
-export const API_BASE_URL = '/api/v1';
+export const API_BASE_URL = 'http://localhost:8080/api/v1';
 export const API_ENDPOINT = {
     AUTH: {
         LOGIN: `${API_BASE_URL}/login`,
         CHANGE_PASSWORD: `${API_BASE_URL}/accounts/change-password`,
         UPDATE_ACCOUNTS: `${API_BASE_URL}/accounts/update-account`,
         DETAIL_PROFILE: `${API_BASE_URL}/accounts/profile`,
+        ACTIVATION: `${API_BASE_URL}/accounts/activate`,
     },
     WORK :`${API_BASE_URL}/admin/works`,
 

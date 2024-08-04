@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { Injectable } from "@angular/core";
 import { SessionService } from "../../../core/services/session.service";
 import { BehaviorSubject, map, Observable, of, Subject } from "rxjs";
@@ -15,7 +16,7 @@ export class AuthService {
 
   constructor(
     private readonly sessionService: SessionService,
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
   ) {
     this.currentUser$ = new BehaviorSubject<UserInfo | null>(
       sessionService.getCurrentUser()
@@ -55,7 +56,23 @@ export class AuthService {
     this.sessionService.clearSession();
   }
 
-  activate(token: string): void{
-    
+  activate(param: string): Observable<SingleResponse<LoginResponse>> {
+    let decodedParam;
+    try {
+      decodedParam = atob(param);
+    } catch (error: any) {
+      return of(error.message);
+    }
+    try {
+      return this.http
+        .post<SingleResponse<LoginResponse>>(`${API_ENDPOINT.AUTH.ACTIVATION}?${decodedParam}`, {})
+        .pipe(
+          map((response) => {
+            return response;
+          })
+        );
+    } catch (error: any) {
+      return error.message;
+    }
   }
 }
