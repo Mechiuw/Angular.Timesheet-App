@@ -1,8 +1,9 @@
-import { Injectable, OnDestroy, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { MenuItem, SubMenuItem } from '../../../core/models/menu.model';
-import { Menu } from '../../../core/constants/menu';
+import {Injectable, OnDestroy, signal} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
+import {MenuItem, SubMenuItem} from '../../../core/models/menu.model';
+import {Menu} from '../../../core/constants/menu';
+import {AuthService} from '../../auth/services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,17 +13,15 @@ export class MenuService implements OnDestroy {
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
-  private role: string[] = ['Admin'];
-  private menu: MenuItem[] = Menu.pages;
 
-  // filteredMenus(role:string) {
-  //   this.menus.filter
-  // }
 
-  constructor(private router: Router) {
-    
+  constructor(private router: Router, private authService: AuthService) {
+
+    /** Get role from current user */
+    const role: string[] = [];
+    role.push(<string>authService.currentUser?.role)
     /** Set dynamic menu by role */
-    this._pagesMenu.set(this.filteredMenuByRole(Menu.pages, this.role));
+    this._pagesMenu.set(this.filteredMenuByRole(Menu.pages, role));
 
     let sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
