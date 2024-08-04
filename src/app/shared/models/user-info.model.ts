@@ -1,6 +1,6 @@
 export interface UserInfo{
     id: string;
     email: string;
-    name: string;
+    name?: string;
     role: string;
-}
+}   

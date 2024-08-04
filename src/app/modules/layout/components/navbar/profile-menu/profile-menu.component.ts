@@ -5,6 +5,9 @@ import { ClickOutsideDirective } from '../../../../../shared/directives/click-ou
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ThemeService } from '../../../../../core/services/theme.service';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { AuthService } from '../../../../auth/services/auth.service';
+import { Observable } from 'rxjs';
+import { UserInfo } from '../../../../../shared/models/user-info.model';
 
 @Component({
   selector: 'app-profile-menu',
@@ -51,7 +54,7 @@ export class ProfileMenuComponent implements OnInit {
     {
       title: 'Log out',
       icon: './assets/icons/heroicons/outline/logout.svg',
-      link: '/auth',
+      link: '/auth/logout',
     },
   ];
 
@@ -87,10 +90,16 @@ export class ProfileMenuComponent implements OnInit {
   ];
 
   public themeMode = ['light', 'dark'];
+  currentUser : UserInfo | null = null;
+  constructor(
+    public themeService: ThemeService,
+    private authService: AuthService
+  ) {
+  }
 
-  constructor(public themeService: ThemeService) {}
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentUser = this.authService.currentUser;
+  }
 
   public toggleMenu(): void {
     this.isOpen = !this.isOpen;
