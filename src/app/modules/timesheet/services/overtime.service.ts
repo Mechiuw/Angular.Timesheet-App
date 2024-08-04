@@ -18,6 +18,7 @@ export class OvertimeService implements IOvertimeService {
     return new Observable((observer) => {
       this.sortOvertimes();
       observer.next(this.works);
+      observer.complete();
     });
   }
 
@@ -49,6 +50,8 @@ export class OvertimeService implements IOvertimeService {
         this.calculateTotalPay();
         this.sortOvertimes();
         observer.next();
+        observer.complete();
+        console.log(this.works);
       } catch (error: any) {
         observer.error(`TodoService.Toggle.Erorr: ${error.message}`);
       }

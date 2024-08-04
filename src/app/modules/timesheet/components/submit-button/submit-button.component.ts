@@ -20,13 +20,20 @@ export class SubmitButtonComponent implements OnInit {
     private readonly overtimeService: OvertimeService,
     private readonly timesheetService: TimesheetService
   ) {}
+
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
     this.overtimeService.List().subscribe((data) => {
       this.timesheetDetails = data;
     });
   }
 
   onclick() {
+    this.ngOnInit();
+
     if (this.timesheetDetails.length === 0) {
       Swal.fire({
         icon: 'error',
@@ -53,10 +60,10 @@ export class SubmitButtonComponent implements OnInit {
           works: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          status: Status.Created,
+          // status: Status.Created,
         };
 
-        console.log('Timesheet detail: ', timesheet);
+        this.timesheetService.SaveTimesheet(timesheet);
         this.formSubmitted.emit();
         this.overtimeService.clearWorks();
 

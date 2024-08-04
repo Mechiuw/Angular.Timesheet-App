@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { Overtime, Status, Timesheet } from '../../model/timesheet';
 import Swal from 'sweetalert2';
+import { TimesheetService } from '../../services/timesheet.service';
 
 @Component({
   selector: 'app-update-button',
@@ -21,6 +22,7 @@ export class UpdateButtonComponent implements OnInit {
   private readonly update: OvertimeUpdateService = inject(
     OvertimeUpdateService
   );
+  private readonly timesheetService = inject(TimesheetService);
 
   timesheet: Timesheet = {} as Timesheet;
   timesheetDetails: Overtime[] = [];
@@ -45,17 +47,17 @@ export class UpdateButtonComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
-          userId: 1,
-          createdAt: new Date(Date.now()),
-          confirmedManagerBy: 'ManagerName',
-          confirmedBenefitBy: 'BenefitName',
+          // userId: 1,
+          // createdAt: new Date(Date.now()),
+          // confirmedManagerBy: 'ManagerName',
+          // confirmedBenefitBy: 'BenefitName',
           works: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          status: Status.Pending,
+          // status: Status.Pending,
         };
 
-        // console.log('Timesheet detail: ', timesheet);
+        this.timesheetService.UpdateTimesheet(timesheet);
         this.formSubmitted.emit();
         this.update.clearWorks();
         Swal.fire({

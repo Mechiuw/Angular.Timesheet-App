@@ -164,10 +164,18 @@ export class TimesheetService implements ITimesheetService {
   }
 
   SaveTimesheet(timesheet: Timesheet): Observable<void> {
-    throw new Error('Method not implemented.');
+    console.log('Save Timesheet: ' + JSON.stringify(timesheet));
+    return new Observable<void>((observer) => {
+      observer.next();
+      observer.complete();
+    });
   }
   UpdateTimesheet(timesheet: Timesheet): Observable<void> {
-    throw new Error('Method not implemented.');
+    console.log('Update Timesheet: ' + JSON.stringify(timesheet));
+    return new Observable<void>((observer) => {
+      observer.next();
+      observer.complete();
+    });
   }
   DeleteTimesheet(id: number): Observable<void> {
     throw new Error('Method not implemented.');
