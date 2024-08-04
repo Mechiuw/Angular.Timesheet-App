@@ -1,0 +1,22 @@
+// Style for Custom Dialog from Prime Ng (Dialog Print)
+::ng-deep .dialog-print {
+
+    .p-dialog {
+        max-height: 100vh;
+    }
+
+    // hide dialog header
+    .p-dialog-header {
+        // display: none;
+
+        // hide icon max
+        .p-dialog-header-maximize {
+            display: none;
+        }
+    }
+
+    // hide dialog content
+    .p-dialog-content {
+        padding: 2rem;
+    }
+}
