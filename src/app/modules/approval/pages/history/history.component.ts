@@ -1,7 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.component';
 import { TimesheetTableComponent } from '../../components/timesheet-table/timesheet-table.component';
 import { TimesheetEntry } from '../../model/timesheet';
+
+// import for service session
+import { SessionService } from '../../../../core/services/sesssion.service';
+import { UserInfo } from '../../../../core/models/user-info.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-history',
@@ -10,7 +15,17 @@ import { TimesheetEntry } from '../../model/timesheet';
   templateUrl: './history.component.html',
   styleUrl: './history.component.scss',
 })
-export class HistoryComponent {
+export class HistoryComponent implements OnInit {
+  // Data user from session
+  private currentUser$: BehaviorSubject<UserInfo | null>;
+
+  // Constructor for Current User
+  constructor(private readonly sessionService: SessionService) {
+    this.currentUser$ = new BehaviorSubject<UserInfo | null>(
+      sessionService.getCurrentUser()
+    );
+  }
+
   // Data Loading
   isLoading: boolean = true;
 
@@ -176,6 +191,12 @@ export class HistoryComponent {
   }
 
   ngOnInit() {
+    // Get Data Current User
+    this.currentUser$.subscribe((user) => {
+      console.log(user);
+      this.role = user?.role!;
+    });
+
     setTimeout(() => {
       this.isLoading = false;
       this.generateDummyData();

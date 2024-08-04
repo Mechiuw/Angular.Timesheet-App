@@ -93,7 +93,7 @@
         >
           Manager <p-sortIcon field="manager" />
         </th>
-        <!-- Column Benefit -> Authority Benefit Team and Route History -->
+        <!-- Column Benefit -> Authority Benefit in History -->
         <th
           *ngIf="route === 'history' && role === 'benefit'"
           pSortableColumn="benefit"
@@ -104,11 +104,13 @@
         <th class="text-center text-sm font-semibold text-muted-foreground">
           Detail
         </th>
-        <!-- Column Action -> Authority Benefit Team and Route History or Route On Progress -->
+        <!-- Column Action -> Authority : -->
         <th
           *ngIf="
-            route === 'on-progress' ||
-            (route === 'history' && role === 'benefit')
+            (route === 'on-progress' && role === 'manager') ||
+            (route === 'on-progress' && role === 'benefit') ||
+            (route === 'history' && role === 'benefit') ||
+            (route === 'history' && role === 'admin')
           "
           class="text-center text-sm font-semibold text-muted-foreground"
         >
@@ -119,11 +121,11 @@
 
     <!-- Table Loader -->
     <ng-template pTemplate="loadingbody">
-        <tr>
-          <td colspan="12">
-            <p-skeleton width="100%" height="40vh"></p-skeleton>
-          </td>
-        </tr>
+      <tr>
+        <td colspan="12">
+          <p-skeleton width="100%" height="40vh"></p-skeleton>
+        </td>
+      </tr>
     </ng-template>
 
     <!-- Table Body -->
@@ -187,8 +189,13 @@
             </button>
           </div>
         </td>
-        <!-- Column Action -> Authority Benefit Team and Route History -->
-        <td *ngIf="route === 'history' && role === 'benefit'">
+        <!-- Column Action -> Authority Benefit Team, Admin and Route History -->
+        <td
+          *ngIf="
+            (route === 'history' && role === 'benefit') ||
+            (route === 'history' && role === 'admin')
+          "
+        >
           <div class="flex justify-center">
             <button
               (click)="showDialogPrint(timesheet)"
@@ -219,7 +226,7 @@
               <i class="pi pi-times" style="font-size: 1rem"></i>
             </button>
           </div>
-          <!-- Button Action -> Settelement or Reject -> Manager -->
+          <!-- Button Action -> Settelement or Reject -->
           <div *ngIf="role === 'benefit'" class="flex flex-row justify-center">
             <button
               class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"

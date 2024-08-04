@@ -3,6 +3,11 @@ import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.c
 import { TimesheetTableComponent } from '../../components/timesheet-table/timesheet-table.component';
 import { TimesheetEntry } from '../../model/timesheet';
 
+// import for service session
+import { SessionService } from '../../../../core/services/sesssion.service';
+import { UserInfo } from '../../../../core/models/user-info.model';
+import { BehaviorSubject } from 'rxjs';
+
 // Example Timesheet Models
 
 @Component({
@@ -13,6 +18,16 @@ import { TimesheetEntry } from '../../model/timesheet';
   styleUrl: './on-progress.component.scss',
 })
 export class OnProgressComponent implements OnInit {
+  // Data user from session
+  private currentUser$: BehaviorSubject<UserInfo | null>;
+
+  // Constructor for Current User
+  constructor(private readonly sessionService: SessionService) {
+    this.currentUser$ = new BehaviorSubject<UserInfo | null>(
+      sessionService.getCurrentUser()
+    );
+  }
+
   // Data Loading
   isLoading: boolean = true;
 
@@ -26,9 +41,8 @@ export class OnProgressComponent implements OnInit {
   // Example Route
   route: string = 'on-progress';
 
-  // Example Role (comment out if you want to use it)
-  //role: string = 'manager';
-  role: string = 'benefit';
+  // Data Role
+  role: string = '';
 
   // Generate Data
   generateDummyData() {
@@ -178,6 +192,13 @@ export class OnProgressComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Get Data Current User
+    this.currentUser$.subscribe((user) => {
+      console.log(user);
+      this.role = user?.role!;
+    });
+
+    // Dummy Loading
     setTimeout(() => {
       this.isLoading = false;
       this.generateDummyData();
