@@ -1,13 +1,15 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './dashboard.component';
-import { NftComponent } from './pages/nft/nft.component';
-import { PodcastComponent } from './pages/podcast/podcast.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {DashboardComponent} from './dashboard.component';
+import {NftComponent} from './pages/nft/nft.component';
+import {PodcastComponent} from './pages/podcast/podcast.component';
+import {DashboardGuardService} from '../../core/guards/dashboard-guard.service';
 
 const routes: Routes = [
   {
     path: '',
     component: DashboardComponent,
+    canActivate: [DashboardGuardService],
     children: [
       { path: '', redirectTo: 'nfts', pathMatch: 'full' },
       { path: 'nfts', component: NftComponent },
