@@ -38,7 +38,7 @@ export class ApprovalComponent implements OnInit {
       // change token to check auth
     const token = tokenBenefit;
 
-    this.sessionService.set('token', token);
+    this.sessionService.set('token', tokenAdmin);
     this.currentUser$.next(this.sessionService.getCurrentUser());
     return of(token);
   }
