@@ -5,13 +5,17 @@ import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AuthService } from '../../services/auth.service';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss'],
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, ButtonComponent],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, ButtonComponent, ToastModule],
+  providers: [MessageService]
+
 })
 export class SignInComponent implements OnInit {
   form!: FormGroup;
@@ -21,12 +25,13 @@ export class SignInComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder, 
     private readonly router: Router,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly messageService: MessageService
   ) {}
 
-  onClick() {
-    console.log('Button clicked');
-  }
+  // onClick() {
+  //   alert('Button clicked');
+  // }
 
   ngOnInit(): void {
     this.form = this.formBuilder.group({
@@ -58,7 +63,12 @@ export class SignInComponent implements OnInit {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        console.log(err.error.responseMessage);
+        // console.log(err.error.responseMessage);
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warn',
+          detail: err.error.responseMessage,
+        })
       },
     });
 
