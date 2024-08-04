@@ -48,6 +48,6 @@ export class SessionService {
 
   public getCurrentUser(): UserInfo | null {
     const { id, email, name, role } = this.getJwtClaims(this.get('token')) || {}
-    return id && email && name && role ? { id, email, name, role } : null
+    return id && email && role ? { id, email, name, role } : null
   }
 }
