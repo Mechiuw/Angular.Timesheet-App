@@ -121,7 +121,7 @@ export class FormComponent implements OnInit {
 
     const diff = (endTime - startTime) / (1000 * 60 * 60);
 
-    if (diff <= 1) {
+    if (diff < 1) {
       return true;
     }
     return false;
