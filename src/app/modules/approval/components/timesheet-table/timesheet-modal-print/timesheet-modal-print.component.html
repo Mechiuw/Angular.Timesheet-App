@@ -23,9 +23,65 @@
       </div>
     </ng-template>
 
+    <!-- Loading Skeleton -->
+    <p-skeleton *ngIf="isLoading" width="100%" height="100vh"></p-skeleton>
+
     <!-- Detail Table (still dummy data entry1) -->
-    <app-timesheet-detail-table
-      [timesheetDetails]="selectedTimesheet.detail"
-    ></app-timesheet-detail-table>
+    <div *ngIf="!isLoading">
+      <app-timesheet-detail-table
+        [timesheetDetails]="selectedTimesheet.detail"
+      ></app-timesheet-detail-table>
+    </div>
+
+    <!-- Total Fee -->
+    <div class="my-4 flex justify-end gap-2 py-4">
+      <span class="text-md font-semibold text-foreground">Total Fee: </span>
+      <span class="text-md font-semibold text-foreground"
+        >${{ selectedTimesheet.totalFee }}</span
+      >
+    </div>
+
+    <!-- Date Now -->
+    <div class="justify-content-end flex gap-2">
+      <span class="text-md font-semibold text-foreground"
+        >Jakarta, {{ currentDate | date : "dd MMMM yyyy" }}</span
+      >
+    </div>
+
+    <!-- Footer TTD -->
+    <div class="mt-6 flex justify-between gap-2">
+      <!-- Trainer -->
+      <div class="flex flex-col">
+        <span class="text-md font-semibold text-foreground">Made By,</span>
+        <div class="flex align-middle" style="height: 6rem">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Tanda_tangan_Arsul_Sani.svg/1280px-Tanda_tangan_Arsul_Sani.svg.png"
+            alt="img-ttd-benefit"
+            class="my-4"
+            style="width: 8rem; max-height: 6rem"
+          />
+        </div>
+
+        <span class="text-md font-semibold text-foreground underline">{{
+          selectedTimesheet.user
+        }}</span>
+      </div>
+
+      <!-- Approver -->
+      <div class="flex flex-col">
+        <span class="text-md font-semibold text-foreground">Approve By,</span>
+        <div class="flex align-middle" style="height: 6rem">
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Tanda_Tangan_Mick_Schumacher.png"
+            alt="img-ttd-benefit"
+            class="my-4"
+            style="width: 8rem; max-height: 6rem"
+          />
+        </div>
+        <span class="text-md font-semibold text-foreground underline">{{
+          selectedTimesheet.benefit
+        }}</span>
+      </div>
+    </div>
   </p-dialog>
 </div>

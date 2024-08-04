@@ -1,7 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { DetailTimesheetEntry, TimesheetEntry } from '../../../model/timesheet';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
@@ -9,7 +11,13 @@ import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timeshe
 @Component({
   selector: 'app-timesheet-modal-print',
   standalone: true,
-  imports: [DialogModule, ToastModule, TimesheetDetailTableComponent],
+  imports: [
+    CommonModule,
+    DialogModule,
+    ToastModule,
+    SkeletonModule,
+    TimesheetDetailTableComponent,
+  ],
   templateUrl: './timesheet-modal-print.component.html',
   styleUrl: './timesheet-modal-print.component.scss',
   providers: [MessageService],
@@ -25,6 +33,12 @@ export class TimesheetModalPrintComponent implements OnInit {
   selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
   timesheetDetails: DetailTimesheetEntry[] = [];
 
+  // Data Loading
+  isLoading: boolean = true;
+
+  // Data Current Date
+  currentDate: Date = new Date();
+
   // Toast Notification Message
   showInfo() {
     this.messageService.add({
@@ -37,18 +51,18 @@ export class TimesheetModalPrintComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    // Generate Dummy Data
+  // Generate Data
+  generateDummyData() {
     this.selectedTimesheet = {
       id: 'entry1',
       user: 'user1',
-      status: 'pending',
+      status: 'pending', // Updated status
       totalFee: 3500,
       createdAt: new Date('2024-08-01T10:00:00Z'),
       updatedAt: new Date('2024-08-01T12:00:00Z'),
       deletedAt: undefined,
       manager: 'manager1',
-      benefit: 'Team Alpha',
+      benefit: 'Team Alpha', // Updated benefit field
       detail: [
         {
           workId: 'work101',
@@ -73,10 +87,16 @@ export class TimesheetModalPrintComponent implements OnInit {
         },
       ],
     };
-
+  }
+  ngOnInit(): void {
     // Show Toast Information after a slight delay to ensure rendering
     setTimeout(() => {
       this.showInfo();
     }, 0);
+
+    setTimeout(() => {
+      this.isLoading = false;
+      this.generateDummyData();
+    }, 500);
   }
 }
