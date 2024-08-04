@@ -46,17 +46,17 @@ export class SubmitButtonComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
-          userId: 1,
-          createdAt: new Date(Date.now()),
-          confirmedManagerBy: 'ManagerName',
-          confirmedBenefitBy: 'BenefitName',
+          // userId: 1,
+          // createdAt: new Date(Date.now()),
+          // confirmedManagerBy: 'ManagerName',
+          // confirmedBenefitBy: 'BenefitName',
           works: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          status: Status.Pending,
+          status: Status.Created,
         };
 
-        // console.log('Timesheet detail: ', timesheet);
+        console.log('Timesheet detail: ', timesheet);
         this.formSubmitted.emit();
         this.overtimeService.clearWorks();
 

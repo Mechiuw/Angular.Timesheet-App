@@ -1,10 +1,10 @@
 export interface Timesheet {
   id?: any;
-  userId: number;
+  userId?: number;
   createdAt?: Date;
   updateAt?: Date;
-  confirmedManagerBy: string;
-  confirmedBenefitBy: string;
+  confirmedManagerBy?: string;
+  confirmedBenefitBy?: string;
   works: Overtime[];
   status: Status;
 }
@@ -19,6 +19,7 @@ export interface Overtime {
 }
 
 export enum Status {
+  Created = 'Created',
   Pending = 'Pending',
   OnProgress = 'OnProgress',
   Approved = 'Approved',
