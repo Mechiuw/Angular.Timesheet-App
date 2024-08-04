@@ -9,7 +9,8 @@ export class Menu {
         {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Dashboard',
-          route: '/dashboard'
+          route: '/dashboard',
+          role: ['admin','user','manajer','benefit'],
         },
         // {
         //   icon: 'assets/icons/heroicons/outline/lock-closed.svg',
@@ -42,11 +43,13 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           route: '/users',
+          role: ['admin','user','manajer','benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
           label: 'Works',
           route: '/works',
+          role: ['admin','user','manajer','benefit'],
         },
       ]
     },
@@ -58,14 +61,16 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
+          role: ['admin','user','manajer','benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Approvals',
           route: '/approvals',
+          role: ['admin','user','manajer','benefit'],
           children: [
-            { label: 'On Progress', route: '/approvals/on-progress' },
-            { label: 'History', route: '/approvals/history' },
+            { label: 'On Progress', route: '/approvals/on-progress', role: ['admin','user','manajer','benefit'], },
+            { label: 'History', route: '/approvals/history', role: ['admin','user','manajer','benefit'], },
           ],
         }
       ]
