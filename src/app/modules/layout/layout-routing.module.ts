@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { LayoutComponent } from "./layout.component";
 import { ActivationComponent } from "../auth/pages/activation/activation.component";
 import { AuthService } from "../auth/services/auth.service";
+import { YourProfileComponent } from '../layout/components/navbar/profile-menu/your-profile/your-profile.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,13 @@ const routes: Routes = [
     component: LayoutComponent,
     loadChildren: () => import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
+  {
+    path: 'profile',
+    component: YourProfileComponent,
+    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+  },
+
+
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];
