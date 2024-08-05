@@ -43,13 +43,13 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           route: '/users',
-          role: ['admin','user','manajer','benefit'],
+          role: ['admin'],
         },
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
           label: 'Works',
           route: '/works',
-          role: ['admin','user','manajer','benefit'],
+          role: ['admin','manajer'],
         },
       ]
     },
@@ -61,7 +61,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
-          role: ['admin','user','manajer','benefit'],
+          role: ['user','manajer','benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
