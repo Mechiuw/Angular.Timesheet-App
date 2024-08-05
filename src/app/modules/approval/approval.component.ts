@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SessionService } from '../../core/services/sesssion.service';
+import { SessionService } from '../../core/services/session.service';
 import { UserInfo } from '../../core/models/user-info.model';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 
@@ -47,8 +47,8 @@ export class ApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     // Login Dummy (must be deleted when marge request)
-    this.loginDummy().subscribe((token) => {
-      console.log(token);
-    });
+    // this.loginDummy().subscribe((token) => {
+    //   console.log(token);
+    // });
   }
 }
