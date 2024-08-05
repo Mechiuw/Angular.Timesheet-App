@@ -2,11 +2,13 @@ import { Component, inject, Input } from '@angular/core';
 import { Timesheet } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TableModule, SkeletonModule],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
 })
@@ -25,5 +27,9 @@ export class TableComponent {
 
   viewTimesheet(id: number) {
     this.router.navigate(['/timesheets/view/' + id]);
+  }
+
+  submitTimesheet(id: number) {
+    alert('Submit Timesheet: ' + id);
   }
 }

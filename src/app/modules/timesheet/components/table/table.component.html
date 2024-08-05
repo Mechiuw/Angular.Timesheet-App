@@ -1,73 +1,76 @@
-<div class="min-w-96 px-4 pb-4">
-  <table class="w-full border-collapse">
-    <thead class="sticky top-10 bg-slate-100 dark:bg-[#0f172a] dark:text-white">
+<div class="card px-10 py-5">
+  <p-table
+    [value]="dataTable"
+    [paginator]="true"
+    [rows]="5"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [rowsPerPageOptions]="[5, 10, 20]"
+  >
+    <ng-template pTemplate="header">
       <tr>
-        <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> No. </span>
-        </th>
-        <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> Date Created </span>
-        </th>
-        <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> Status </span>
-        </th>
-        <th class="border-b-2 border-gray-300 py-3 ps-6 text-left">
-          <span class="border-b-4 border-primary pb-1"> Action </span>
-        </th>
-        <th class="border-b-2 border-gray-300 p-3 text-left">
-          <span class="border-b-4 border-primary pb-1"> Detail </span>
-        </th>
+        <th style="width: 5%">No.</th>
+        <th style="width: 25%">Date Created</th>
+        <th style="width: 25%">Status</th>
+        <th style="width: 15%" class="text-center">Action</th>
+        <th style="width: 15%" class="text-center">Detail</th>
+        <th style="width: 15%" class="text-center">Submit</th>
       </tr>
-    </thead>
+    </ng-template>
 
-    <tbody class="dark:text-white">
-      <tr *ngFor="let item of dataTable; let i = index">
-        <td class="border-b-2 border-gray-300 p-3">{{ i + 1 }}.</td>
-        <td class="border-b-2 border-gray-300 p-3">
-          {{ item.createdAt | date }}
+    <ng-template pTemplate="loadingbody">
+      <tr>
+        <td colspan="12">
+          <p-skeleton width="100%" height="40vh"></p-skeleton>
         </td>
+      </tr>
+    </ng-template>
 
-        @if (item.status === "Pending") {
-        <td class="border-b-2 border-gray-300 p-3">
+    <ng-template pTemplate="body" let-timesheet let-i="rowIndex">
+      <tr>
+        <td>{{ i + 1 }}</td>
+        <td>{{ timesheet.createdAt | date }}</td>
+        @if (timesheet.status === "Pending") {
+        <td class="">
           <span
             class="me-2 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
           >
-            {{ item.status }}
+            {{ timesheet.status }}
           </span>
         </td>
 
-        } @if (item.status === "OnProgress") {
-        <td class="border-b-2 border-gray-300 p-3 font-bold">
+        } @if (timesheet.status === "OnProgress") {
+        <td class="font-bold">
           <span
             class="me-2 rounded bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300"
           >
-            {{ item.status }}</span
+            {{ timesheet.status }}</span
           >
         </td>
 
-        } @if (item.status === "Approved") {
-        <td class="border-b-2 border-gray-300 p-3 font-bold">
+        } @if (timesheet.status === "Approved") {
+        <td class="font-bold">
           <span
             class="me-2 rounded bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300"
           >
-            {{ item.status }}</span
+            {{ timesheet.status }}</span
           >
         </td>
 
-        } @if (item.status === "Rejected") {
-        <td class="border-b-2 border-gray-300 p-3 font-bold">
+        } @if (timesheet.status === "Rejected") {
+        <td class="font-bold">
           <span
             class="me-2 rounded bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300"
           >
-            {{ item.status }}</span
+            {{ timesheet.status }}</span
           >
         </td>
         }
-        <td class="border-b-2 border-gray-300 p-3">
-          <div class="flex gap-2">
+
+        <td class="text-center">
+          <div class="flex items-center justify-center gap-2">
             <button
               class="rounded-md bg-green-600 px-2 py-1 text-white"
-              (click)="editTimesheet(item.id)"
+              (click)="editTimesheet(timesheet.id)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +89,7 @@
 
             <button
               class="rounded-md bg-rose-500 px-2 py-1 text-white"
-              (click)="deleteTimesheet(item.id)"
+              (click)="deleteTimesheet(timesheet.id)"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -103,30 +106,56 @@
             </button>
           </div>
         </td>
-
-        <td class="border-b-2 border-gray-300 p-3">
-          <button
-            class="flex gap-1 rounded-md bg-cyan-500 px-3 py-1 text-white"
-            (click)="viewTimesheet(item.id)"
-          >
-            <p class="">View</p>
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="size-6"
+        <td class="">
+          <div class="flex items-center justify-center">
+            <button
+              class="flex gap-1 rounded-md bg-yellow-500 px-3 py-1 text-white"
+              (click)="viewTimesheet(timesheet.id)"
             >
-              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
-              <path
-                fill-rule="evenodd"
-                d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
-                clip-rule="evenodd"
-              />
-            </svg>
-          </button>
+              <p class="">View</p>
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6"
+              >
+                <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 0 1 0-1.113ZM17.25 12a5.25 5.25 0 1 1-10.5 0 5.25 5.25 0 0 1 10.5 0Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+          </div>
+        </td>
+        <td class="">
+          <div class="flex items-center justify-center">
+            <button
+              class="gap-1 rounded-md bg-cyan-500 px-1 py-1 text-white"
+              (click)="submitTimesheet(timesheet.id)"
+            >
+              <!-- <p class="">Submit</p> -->
+
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M7.5 7.5h-.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25h-.75m0-3-3-3m0 0-3 3m3-3v11.25m6-2.25h.75a2.25 2.25 0 0 1 2.25 2.25v7.5a2.25 2.25 0 0 1-2.25 2.25h-7.5a2.25 2.25 0 0 1-2.25-2.25v-.75"
+                />
+              </svg>
+            </button>
+          </div>
         </td>
       </tr>
-    </tbody>
-  </table>
+    </ng-template>
+  </p-table>
 </div>
