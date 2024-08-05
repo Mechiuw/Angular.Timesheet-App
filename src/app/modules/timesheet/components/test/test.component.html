@@ -12,3 +12,15 @@
     </tr>
   </tbody>
 </table>
+
+<mat-form-field>
+  <mat-label>Description</mat-label>
+  <mat-select formControlName="workID">
+    <mat-option
+      *ngFor="let workOption of workOptions$ | async"
+      [value]="workOption.id"
+    >
+      {{ workOption.description }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
