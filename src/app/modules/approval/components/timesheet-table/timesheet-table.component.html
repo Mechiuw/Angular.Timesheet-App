@@ -83,19 +83,15 @@
         >
           Status <p-sortIcon field="status" />
         </th>
-        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
+        <!-- Column Manager -> Authority : -->
         <th
-          *ngIf="
-            role === 'benefit' || (route === 'history' && role === 'manager')
-          "
           pSortableColumn="manager"
           class="text-sm font-semibold text-muted-foreground"
         >
           Manager <p-sortIcon field="manager" />
         </th>
-        <!-- Column Benefit -> Authority Benefit in History -->
+        <!-- Column Benefit -> Authority : -->
         <th
-          *ngIf="route === 'history' && role === 'benefit'"
           pSortableColumn="benefit"
           class="text-sm font-semibold text-muted-foreground"
         >
@@ -161,18 +157,14 @@
             >{{ timesheet.status }}
           </span>
         </td>
-        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
-        <td
-          *ngIf="
-            role === 'benefit' || (route === 'history' && role === 'manager')
-          "
-        >
+        <!-- Column Manager -> Authority : -->
+        <td>
           <span class="text-sm font-semibold text-muted-foreground"
             >{{ timesheet.manager }}
           </span>
         </td>
-        <!-- Column Benefit -> Authority Benefit Team and Route History -->
-        <td *ngIf="route === 'history' && role === 'benefit'">
+        <!-- Column Benefit -> Authority : -->
+        <td>
           <span class="text-sm font-semibold text-muted-foreground"
             >{{ timesheet.benefit }}
           </span>
@@ -189,28 +181,18 @@
             </button>
           </div>
         </td>
-        <!-- Column Action -> Authority Benefit Team, Admin and Route History -->
+        <!-- Column Action Button -> Route On Progress -->
         <td
           *ngIf="
-            (route === 'history' && role === 'benefit') ||
-            (route === 'history' && role === 'admin')
+            route === 'on-progress' &&
+            (role === 'manager' || role === 'benefit')
           "
         >
-          <div class="flex justify-center">
-            <button
-              (click)="showDialogPrint(timesheet)"
-              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
-              pTooltip="Print Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-file-export" style="font-size: 1rem"></i>
-            </button>
-          </div>
-        </td>
-        <!-- Column Action -> Route On Progress -->
-        <td *ngIf="route === 'on-progress'">
-          <!-- Button Action -> Approve or Deny -> Manager -->
-          <div *ngIf="role === 'manager'" class="flex flex-row justify-center">
+          <!-- Button Action -> Approve or Reject -> Manager or Benefit -->
+          <div
+            *ngIf="role === 'manager' || role === 'benefit'"
+            class="flex flex-row justify-center"
+          >
             <button
               class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
               pTooltip="Approve Timesheet"
@@ -226,21 +208,22 @@
               <i class="pi pi-times" style="font-size: 1rem"></i>
             </button>
           </div>
-          <!-- Button Action -> Settelement or Reject -->
-          <div *ngIf="role === 'benefit'" class="flex flex-row justify-center">
+        </td>
+        <!-- Column Action Print -> Authority Benefit Team, Admin and Route History -->
+        <td
+          *ngIf="
+            (route === 'history' && role === 'benefit') ||
+            (route === 'history' && role === 'admin')
+          "
+        >
+          <div class="flex justify-center">
             <button
-              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Settel Timesheet"
+              (click)="showDialogPrint(timesheet)"
+              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              pTooltip="Print Timesheet"
               tooltipPosition="bottom"
             >
-              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
-            </button>
-            <button
-              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Reject Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-times" style="font-size: 1rem"></i>
+              <i class="pi pi-file-export" style="font-size: 1rem"></i>
             </button>
           </div>
         </td>

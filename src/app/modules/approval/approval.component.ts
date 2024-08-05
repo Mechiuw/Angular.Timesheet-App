@@ -28,17 +28,19 @@ export class ApprovalComponent implements OnInit {
   // Login Dummy (must be deleted when marge request)
   loginDummy(): Observable<string> {
     // list token to check auth
+    const tokenUser =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoidXNlciJ9.R9FjFLVIdDHkk3IhRlORB16SW7I2r1mhEzrk648ayn0';
     const tokenManager =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoibWFuYWdlciJ9.av882-W5pOPAWqPFiLLbboXhHvDyfhFKUsJ7GhkI-go';
     const tokenBenefit =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoiYmVuZWZpdCJ9.UJad7bfJCQLTVThqklG0Y_pxPvh8pa3yOcfVzjfjzsc';
     const tokenAdmin =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifQ.vGuaQ8GcwxIPh_MfvcR5e1kGce3sjQ7DUGVKIgIkwuA';
-    
-      // change token to check auth
-    const token = tokenBenefit;
 
-    this.sessionService.set('token', tokenAdmin);
+    // change token to check auth
+    const token = tokenUser;
+
+    this.sessionService.set('token', token);
     this.currentUser$.next(this.sessionService.getCurrentUser());
     return of(token);
   }
