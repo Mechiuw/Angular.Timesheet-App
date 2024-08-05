@@ -153,13 +153,20 @@ export class EditComponent implements OnInit {
   calculateTotal(): void {
     const startTime = this.overtimeForm.get('startTime')?.value;
     const endTime = this.overtimeForm.get('endTime')?.value;
-    const description = this.overtimeForm.get('workID')?.value;
+    const workID = this.overtimeForm.get('workID')?.value;
 
-    if (startTime && endTime && description) {
-      const fee =
-        this.descriptionOptions.find((option) => option.id === description)
-          ?.fee || 0;
+    if (startTime && endTime && workID) {
+      const description = this.descriptionOptions.find(
+        (option) => option.id === workID
+      );
 
+      if (!description) {
+        return this.overtimeForm
+          .get('total')
+          ?.setValue(0, { emitEvent: false });
+      }
+
+      const fee = description.fee;
       const start = new Date(`1970-01-01T${startTime}:00`);
       const end = new Date(`1970-01-01T${endTime}:00`);
 
@@ -173,7 +180,10 @@ export class EditComponent implements OnInit {
         (end.getTime() - start.getTime()) / (1000 * 60 * 60)
       );
 
-      if (overtimeHours >= 2 && description == 1) {
+      if (
+        overtimeHours >= 2 &&
+        description.desc.toLowerCase().startsWith('interview')
+      ) {
         const total = overtimeHours * 50000;
         return this.overtimeForm
           .get('total')
