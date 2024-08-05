@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import { Timesheet } from '../../model/timesheet';
+import { Timesheet, WorkOption } from '../../model/timesheet';
 import { ActivatedRoute } from '@angular/router';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,7 @@ export class DetailTimesheetComponent implements OnInit {
   private readonly update = inject(OvertimeUpdateService);
   private readonly route = inject(ActivatedRoute);
 
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
   detailTimesheet: Timesheet = {} as Timesheet;
   id: number = 0;
   isLoading: boolean = true;
@@ -60,7 +60,7 @@ export class DetailTimesheetComponent implements OnInit {
 
   getWorkDescription(id: number): string {
     const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.desc : 'Unknown';
+    return option ? option.desceription : 'Unknown';
   }
 
   print() {

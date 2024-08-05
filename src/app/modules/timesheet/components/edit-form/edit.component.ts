@@ -5,7 +5,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import { Overtime, Timesheet } from '../../model/timesheet';
+import { Overtime, Timesheet, WorkOption } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -61,7 +61,7 @@ export class EditComponent implements OnInit {
 
   minDate: Date | null = null;
   maxDate: Date | null = null;
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
   overtimeForm: FormGroup = new FormGroup(
     {
       id: new FormControl(0),
@@ -127,7 +127,7 @@ export class EditComponent implements OnInit {
 
     const diff = (endTime - startTime) / (1000 * 60 * 60);
 
-    if (diff <= 1) {
+    if (diff < 1) {
       return true;
     }
     return false;
@@ -156,17 +156,17 @@ export class EditComponent implements OnInit {
     const workID = this.overtimeForm.get('workID')?.value;
 
     if (startTime && endTime && workID) {
-      const description = this.descriptionOptions.find(
+      const work = this.descriptionOptions.find(
         (option) => option.id === workID
       );
 
-      if (!description) {
+      if (!work) {
         return this.overtimeForm
           .get('total')
           ?.setValue(0, { emitEvent: false });
       }
 
-      const fee = description.fee;
+      const fee = work.fee;
       const start = new Date(`1970-01-01T${startTime}:00`);
       const end = new Date(`1970-01-01T${endTime}:00`);
 
@@ -182,7 +182,7 @@ export class EditComponent implements OnInit {
 
       if (
         overtimeHours >= 2 &&
-        description.desc.toLowerCase().startsWith('interview')
+        work.desceription.toLowerCase().startsWith('interview')
       ) {
         const total = overtimeHours * 50000;
         return this.overtimeForm

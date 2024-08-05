@@ -1,12 +1,15 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ITimesheetService } from './itimesheet.service';
-import { Observable } from 'rxjs';
-import { Status, Timesheet } from '../model/timesheet';
+import { catchError, map, Observable, of } from 'rxjs';
+import { Status, Timesheet, WorkOption } from '../model/timesheet';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimesheetService implements ITimesheetService {
+  private readonly http = inject(HttpClient);
+
   private dummyData: Timesheet[] = [
     {
       id: 1,
@@ -125,17 +128,15 @@ export class TimesheetService implements ITimesheetService {
     },
   ];
 
-  private readonly descriptionOptions: {
-    id: number;
-    desc: string;
-    fee: number;
-  }[] = [
-    { id: 1, desc: 'Interview Kandidat Bootcamp', fee: 30000 },
-    { id: 2, desc: 'InstructorLed Basic', fee: 50000 },
-    { id: 3, desc: 'InstructorLed Intermediate', fee: 50000 },
-    { id: 4, desc: 'Overtime Kelas Karyawan', fee: 50000 },
-    { id: 5, desc: 'Other', fee: 50000 },
+  private readonly descriptionOptions: WorkOption[] = [
+    { id: 1, desceription: 'Interview Kandidat Bootcamp', fee: 30000 },
+    { id: 2, desceription: 'InstructorLed Basic', fee: 50000 },
+    { id: 3, desceription: 'InstructorLed Intermediate', fee: 50000 },
+    { id: 4, desceription: 'Overtime Kelas Karyawan', fee: 50000 },
+    { id: 5, desceription: 'Other', fee: 50000 },
   ];
+
+  private apiUrl = 'https://sure-pika-easy.ngrok-free.app';
 
   GetTimesheet(): Observable<Timesheet[]> {
     return new Observable<Timesheet[]>((observer) => {
@@ -181,7 +182,29 @@ export class TimesheetService implements ITimesheetService {
     throw new Error('Method not implemented.');
   }
 
-  GetWorkOptions(): { id: number; desc: string; fee: number }[] {
+  GetWorkOptions(): WorkOption[] {
     return this.descriptionOptions;
+  }
+
+  testFetch(): Observable<any> {
+    const token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU0NTUxODAsImlhdCI6MTcyMjg2MzE4MCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJlcGMiLCJlbWFpbCI6ImVwYzQxODA1QHpjY2NrLmNvbSIsInJvbGUiOiJ1c2VyIn0.LCuDVFKvKlkoT3npEHuxnt-05kc6FhI62X-l1S4zGNA';
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const reqUrl = `${this.apiUrl}/admin/work`;
+    console.log('Request URL:', reqUrl);
+
+    return this.http.get<any>(reqUrl, { headers }).pipe(
+      map((response) => {
+        console.log('Response:', response); // Log response for debugging
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Error fetching work options:', error);
+        return of(this.descriptionOptions); // Return dummy data in case of error
+      })
+    );
   }
 }

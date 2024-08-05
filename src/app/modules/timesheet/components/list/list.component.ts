@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { Overtime } from '../../model/timesheet';
+import { Overtime, WorkOption } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { TimesheetService } from '../../services/timesheet.service';
 import { TableModule } from 'primeng/table';
@@ -17,7 +17,7 @@ export class ListComponent implements OnInit {
 
   private readonly timesheetService = inject(TimesheetService);
 
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
 
   ngOnInit(): void {
     this.descriptionOptions = this.timesheetService.GetWorkOptions();
@@ -25,6 +25,6 @@ export class ListComponent implements OnInit {
 
   getWorkDescription(id: number): string {
     const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.desc : 'Unknown';
+    return option ? option.desceription : 'Unknown';
   }
 }

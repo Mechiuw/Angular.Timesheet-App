@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IOvertimeUpdateService } from './iovertinmeUpdate.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Overtime } from '../model/timesheet';
+import { Overtime, WorkOption } from '../model/timesheet';
 import { TimesheetService } from './timesheet.service';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
 
   today = new Date();
   works: Overtime[] = [];
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
   private totalPaySubject = new BehaviorSubject<number>(0);
   private sortedOvertime = new BehaviorSubject<Overtime[]>([]);
 

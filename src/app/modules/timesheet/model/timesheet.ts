@@ -18,6 +18,12 @@ export interface Overtime {
   total?: number;
 }
 
+export interface WorkOption {
+  id: number;
+  desceription: string;
+  fee: number;
+}
+
 export enum Status {
   Created = 'Created',
   Pending = 'Pending',

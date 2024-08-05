@@ -14,7 +14,7 @@ import {
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
-import { Overtime } from '../../model/timesheet';
+import { Overtime, WorkOption } from '../../model/timesheet';
 import { OvertimeService } from '../../services/overtime.service';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { TimesheetService } from '../../services/timesheet.service';
@@ -41,7 +41,7 @@ import Swal from 'sweetalert2';
 export class FormComponent implements OnInit {
   minDate: Date | null = null;
   maxDate: Date | null = null;
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
 
   overtimeForm: FormGroup = new FormGroup(
     {
@@ -60,6 +60,7 @@ export class FormComponent implements OnInit {
     private readonly timesheetService: TimesheetService
   ) {}
   ngOnInit(): void {
+    this.timesheetService.testFetch();
     this.minDate = this.OvertimeService.getMinDate();
     this.maxDate = this.OvertimeService.getMaxDate();
     this.descriptionOptions = this.timesheetService.GetWorkOptions();
@@ -150,17 +151,17 @@ export class FormComponent implements OnInit {
     const workID = this.overtimeForm.get('workID')?.value;
 
     if (startTime && endTime && workID) {
-      const description = this.descriptionOptions.find(
+      const work = this.descriptionOptions.find(
         (option) => option.id === workID
       );
 
-      if (!description) {
+      if (!work) {
         return this.overtimeForm
           .get('total')
           ?.setValue(0, { emitEvent: false });
       }
 
-      const fee = description.fee;
+      const fee = work.fee;
 
       const start = new Date(`1970-01-01T${startTime}:00`);
       const end = new Date(`1970-01-01T${endTime}:00`);
@@ -177,7 +178,7 @@ export class FormComponent implements OnInit {
 
       if (
         overtimeHours >= 2 &&
-        description.desc.toLowerCase().startsWith('interview')
+        work.desceription.toLowerCase().startsWith('interview')
       ) {
         const total = overtimeHours * 50000;
         return this.overtimeForm
