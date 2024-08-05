@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { LayoutComponent } from "./layout.component";
 import { ActivationComponent } from "../auth/pages/activation/activation.component";
 import { AuthService } from "../auth/services/auth.service";
+import { UserComponent } from "../user/user.component";
 
 const routes: Routes = [
   {
@@ -14,8 +15,12 @@ const routes: Routes = [
   {
     path: "users",
     component: LayoutComponent,
-    loadChildren: () =>
-      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
+    children: [
+      {
+        path: "",
+        component: UserComponent
+      },
+    ],
   },
   {
     path: "works",
@@ -30,14 +35,12 @@ const routes: Routes = [
       import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: "approvals",
+    path: 'approvals',
     component: LayoutComponent,
-    loadChildren: () =>
-      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
+    loadChildren: () => import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
-
-  { path: "", redirectTo: "dashboard", pathMatch: "full" },
-  { path: "**", redirectTo: "error/404" },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+  { path: '**', redirectTo: 'error/404' },
 ];
 
 @NgModule({
