@@ -20,7 +20,7 @@ export interface Overtime {
 
 export interface WorkOption {
   id: number;
-  desceription: string;
+  description: string;
   fee: number;
 }
 

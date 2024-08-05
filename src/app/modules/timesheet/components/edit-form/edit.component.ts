@@ -182,7 +182,7 @@ export class EditComponent implements OnInit {
 
       if (
         overtimeHours >= 2 &&
-        work.desceription.toLowerCase().startsWith('interview')
+        work.description.toLowerCase().startsWith('interview')
       ) {
         const total = overtimeHours * 50000;
         return this.overtimeForm

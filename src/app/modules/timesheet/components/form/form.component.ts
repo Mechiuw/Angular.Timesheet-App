@@ -60,7 +60,7 @@ export class FormComponent implements OnInit {
     private readonly timesheetService: TimesheetService
   ) {}
   ngOnInit(): void {
-    this.timesheetService.testFetch();
+    // this.timesheetService.testFetch();
     this.minDate = this.OvertimeService.getMinDate();
     this.maxDate = this.OvertimeService.getMaxDate();
     this.descriptionOptions = this.timesheetService.GetWorkOptions();
@@ -178,7 +178,7 @@ export class FormComponent implements OnInit {
 
       if (
         overtimeHours >= 2 &&
-        work.desceription.toLowerCase().startsWith('interview')
+        work.description.toLowerCase().startsWith('interview')
       ) {
         const total = overtimeHours * 50000;
         return this.overtimeForm

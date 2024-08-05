@@ -3,6 +3,7 @@ import { ITimesheetService } from './itimesheet.service';
 import { catchError, map, Observable, of } from 'rxjs';
 import { Status, Timesheet, WorkOption } from '../model/timesheet';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PagedResponse } from '../../../core/models/api.model';
 
 @Injectable({
   providedIn: 'root',
@@ -129,14 +130,17 @@ export class TimesheetService implements ITimesheetService {
   ];
 
   private readonly descriptionOptions: WorkOption[] = [
-    { id: 1, desceription: 'Interview Kandidat Bootcamp', fee: 30000 },
-    { id: 2, desceription: 'InstructorLed Basic', fee: 50000 },
-    { id: 3, desceription: 'InstructorLed Intermediate', fee: 50000 },
-    { id: 4, desceription: 'Overtime Kelas Karyawan', fee: 50000 },
-    { id: 5, desceription: 'Other', fee: 50000 },
+    { id: 1, description: 'Interview Kandidat Bootcamp', fee: 30000 },
+    { id: 2, description: 'InstructorLed Basic', fee: 50000 },
+    { id: 3, description: 'InstructorLed Intermediate', fee: 50000 },
+    { id: 4, description: 'Overtime Kelas Karyawan', fee: 50000 },
+    { id: 5, description: 'Other', fee: 50000 },
   ];
 
-  private apiUrl = 'https://sure-pika-easy.ngrok-free.app';
+  private testData: WorkOption[] = [];
+  private apiUrl = 'https://api.yusharwz.my.id';
+  private readonly token =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU0NzI1MDcsImlhdCI6MTcyMjg4MDUwNywiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYTM1NzU2MTYtNTg4Ni00YzRlLTkyYTgtNDJkMzQyN2QwZjZmIiwidXNlcm5hbWUiOiJBa3VuIEFkbWluIiwiZW1haWwiOiJhbHZpbmRvNTZAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIn0.rEeulS0-KoZOx9o-ASqLgNQ3cScEKrNEMMqkdiG_CFY';
 
   GetTimesheet(): Observable<Timesheet[]> {
     return new Observable<Timesheet[]>((observer) => {
@@ -186,24 +190,23 @@ export class TimesheetService implements ITimesheetService {
     return this.descriptionOptions;
   }
 
-  testFetch(): Observable<any> {
-    const token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU0NTUxODAsImlhdCI6MTcyMjg2MzE4MCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJlcGMiLCJlbWFpbCI6ImVwYzQxODA1QHpjY2NrLmNvbSIsInJvbGUiOiJ1c2VyIn0.LCuDVFKvKlkoT3npEHuxnt-05kc6FhI62X-l1S4zGNA';
+  test(): Observable<WorkOption[]> {
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${this.token}`,
     });
 
-    const reqUrl = `${this.apiUrl}/admin/work`;
+    const reqUrl = `${this.apiUrl}/api/v1/admin/works`;
     console.log('Request URL:', reqUrl);
 
-    return this.http.get<any>(reqUrl, { headers }).pipe(
+    return this.http.get<PagedResponse<WorkOption[]>>(reqUrl, { headers }).pipe(
       map((response) => {
-        console.log('Response:', response); // Log response for debugging
-        return response;
+        this.testData = response.data;
+        return this.testData;
       }),
       catchError((error) => {
         console.error('Error fetching work options:', error);
-        return of(this.descriptionOptions); // Return dummy data in case of error
+        this.testData = [];
+        return of(this.testData);
       })
     );
   }

@@ -60,7 +60,7 @@ export class DetailTimesheetComponent implements OnInit {
 
   getWorkDescription(id: number): string {
     const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.desceription : 'Unknown';
+    return option ? option.description : 'Unknown';
   }
 
   print() {
