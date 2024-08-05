@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { TimesheetEntry } from '../../model/timesheet';
+import { Timesheet } from '../../model/timesheet';
 import { TimesheetDetailTableComponent } from './timesheet-detail-table/timesheet-detail-table.component';
 import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-modal-print.component';
 
@@ -42,24 +42,24 @@ export class TimesheetTableComponent implements OnInit {
 
   // Data from Parent
   @Input() isLoading: boolean = true;
-  @Input() timesheets: TimesheetEntry[] = [];
+  @Input() timesheets: Timesheet[] = [];
   @Input() route!: string;
   @Input() role!: string;
 
   // Data Selected Timesheet
-  selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
+  selectedTimesheet: Timesheet = {} as Timesheet;
 
   // Data Modal
   visibleDetail: boolean = false;
   visiblePrint: boolean = false;
 
   // Function Modal
-  showDialogDetail(timesheet: TimesheetEntry) {
+  showDialogDetail(timesheet: Timesheet) {
     this.selectedTimesheet = timesheet;
     this.visibleDetail = true;
   }
 
-  showDialogPrint(timesheet: TimesheetEntry) {
+  showDialogPrint(timesheet: Timesheet) {
     this.selectedTimesheet = timesheet;
 
     // Navigate to Url Print

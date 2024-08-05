@@ -2,9 +2,8 @@
   <!-- Table Detail -->
   <p-table
     #dt
-    [value]="timesheetDetails"
-    [rows]="5"
-    [globalFilterFields]="['name']"
+    [value]="selectedTimesheet.timeSheetDetails"
+    [scrollable]="false"
     [rowHover]="true"
     dataKey="id"
   >
@@ -13,33 +12,39 @@
       <tr>
         <th
           pSortableColumn="no"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
         >
           No
         </th>
         <th
-          pSortableColumn="date"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          Start Time <p-sortIcon field="date" />
-        </th>
-        <th
-          pSortableColumn="date"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          End Time <p-sortIcon field="date" />
-        </th>
-        <th
           pSortableColumn="name"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
         >
           Name <p-sortIcon field="name" />
         </th>
         <th
-          pSortableColumn="fee"
-          class="text-sm font-semibold text-muted-foreground"
+          pSortableColumn="date"
+          class="text-xs font-semibold text-muted-foreground"
         >
-          Fee <p-sortIcon field="fee" />
+          Date <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="date"
+          class="text-xs font-semibold text-muted-foreground"
+        >
+          Time <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="jobDesc"
+          class="text-xs font-semibold text-muted-foreground"
+        >
+          Job Desc <p-sortIcon field="jobDesc" />
+        </th>
+        <th
+          pSortableColumn="total"
+          class="text-xs font-semibold text-muted-foreground"
+        >
+          Sub Total <p-sortIcon field="total" />
         </th>
       </tr>
     </ng-template>
@@ -53,28 +58,36 @@
           </span>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheetDetail.startTime | date : "HH:mm" }}
-          </span>
-        </td>
-        <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheetDetail.endTime | date : "HH:mm" }}
-          </span>
-        </td>
-        <td>
           <div class="flex flex-col justify-items-start">
             <span class="mb-1 text-sm font-semibold text-foreground">{{
-              timesheetDetail.workId
-            }}</span>
-            <span class="text-xs font-semibold text-muted-foreground/50">{{
-              timesheetDetail.workId
+              selectedTimesheet.user.name
             }}</span>
           </div>
         </td>
         <td>
           <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheetDetail.fee | currency : "USD" }}
+            >{{ timesheetDetail.startTime | date : "dd MMMM yyyy" }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheetDetail.startTime | date : "HH:mm" }} -
+            {{ timesheetDetail.endTime | date : "HH:mm" }}
+            <span>
+              {{ calculateTimeDifference(i) }}
+            </span>
+          </span>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <span class="text-sm font-semibold text-muted-foreground">{{
+              timesheetDetail.description
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground">
+            {{ timesheetDetail.subTotal | currency : "Rp." : "symbol" }}
           </span>
         </td>
       </tr>

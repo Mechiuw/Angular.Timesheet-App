@@ -55,50 +55,54 @@
       <tr>
         <th
           pSortableColumn="no"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
         >
           No
         </th>
         <th
           pSortableColumn="date"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
         >
           Date <p-sortIcon field="date" />
         </th>
         <th
           pSortableColumn="name"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
         >
           Name <p-sortIcon field="name" />
         </th>
         <th
-          pSortableColumn="fee"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          Fee <p-sortIcon field="fee" />
-        </th>
-        <th
-          pSortableColumn="status"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          Status <p-sortIcon field="status" />
-        </th>
-        <!-- Column Manager -> Authority : -->
-        <th
           pSortableColumn="manager"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
         >
           Manager <p-sortIcon field="manager" />
         </th>
-        <!-- Column Benefit -> Authority : -->
         <th
           pSortableColumn="benefit"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
         >
           Benefit <p-sortIcon field="benefit" />
         </th>
-        <th class="text-center text-sm font-semibold text-muted-foreground">
-          Detail
+        <th
+          pSortableColumn="total"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
+        >
+          Amount <p-sortIcon field="total" />
+        </th>
+        <th
+          pSortableColumn="status"
+          class="text-xs font-semibold text-muted-foreground"
+          style="min-width: 8rem;"
+        >
+          Status <p-sortIcon field="status" />
+        </th>
+        <th class="text-center text-xs font-semibold text-muted-foreground">
+          Details
         </th>
         <!-- Column Action -> Authority : -->
         <th
@@ -108,7 +112,7 @@
             (route === 'history' && role === 'benefit') ||
             (route === 'history' && role === 'admin')
           "
-          class="text-center text-sm font-semibold text-muted-foreground"
+          class="text-center text-xs font-semibold text-muted-foreground"
         >
           Action
         </th>
@@ -134,40 +138,67 @@
         </td>
         <td>
           <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.createdAt | date : "dd/MM/yyyy" }}
+            >{{ timesheet.createdAt | date : "dd/MMM/yyyy" }}
           </span>
         </td>
         <td>
           <div class="flex flex-col justify-items-start">
             <span class="mb-1 text-sm font-semibold text-foreground">{{
-              timesheet.user
+              timesheet.user.name
             }}</span>
             <span class="text-xs font-semibold text-muted-foreground/50">{{
-              timesheet.user
+              timesheet.user.email
             }}</span>
           </div>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.totalFee | currency : "USD" }}
+          <div *ngIf="timesheet.confirmedManagerBy.userId === ''">
+            <span class="text-xs font-semibold text-muted-foreground/50">
+              Waiting Approval by Manager IT
+            </span>
+          </div>
+          <div *ngIf="timesheet.confirmedManagerBy.userId !== ''">
+            <span class="texteground mb-1 text-sm font-semibold">{{
+              timesheet.confirmedManagerBy.name
+            }}</span>
+            <span class="text-xs font-semibold text-muted-foreground/50">{{
+              timesheet.confirmedManagerBy.email
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <div *ngIf="timesheet.confirmedManagerBy.userId === ''">
+              <span class="text-xs font-semibold text-muted-foreground/50">
+                Waiting Approval by Benefit Team
+              </span>
+            </div>
+            <div *ngIf="timesheet.confirmedManagerBy.userId !== ''">
+              <span class="mb-1 text-sm font-semibold text-foreground">{{
+                timesheet.confirmedBenefitBy.name
+              }}</span>
+              <span class="text-xs font-semibold text-muted-foreground/50">{{
+                timesheet.confirmedBenefitBy.email
+              }}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground">
+            {{ timesheet.total | currency : "Rp." : "symbol" }}
           </span>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.status }}
-          </span>
-        </td>
-        <!-- Column Manager -> Authority : -->
-        <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.manager }}
-          </span>
-        </td>
-        <!-- Column Benefit -> Authority : -->
-        <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.benefit }}
-          </span>
+          <div *ngIf="timesheet.confirmedBenefitBy.name === ''">
+            <span class="text-sm font-semibold text-muted-foreground">
+              {{ timesheet.statusByManager }}
+            </span>
+          </div>
+          <div *ngIf="timesheet.confirmedBenefitBy.name !== ''">
+            <span class="text-sm font-semibold text-muted-foreground">
+              {{ timesheet.statusByBenefit }}
+            </span>
+          </div>
         </td>
         <td>
           <div class="flex justify-center">
@@ -175,7 +206,7 @@
               (click)="showDialogDetail(timesheet)"
               class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
               pTooltip="Timesheet Detail"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-file" style="font-size: 1rem"></i>
             </button>
@@ -196,14 +227,14 @@
             <button
               class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
               pTooltip="Approve Timesheet"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
             </button>
             <button
               class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
               pTooltip="Reject Timesheet"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-times" style="font-size: 1rem"></i>
             </button>
@@ -221,7 +252,7 @@
               (click)="showDialogPrint(timesheet)"
               class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
               pTooltip="Print Timesheet"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-file-export" style="font-size: 1rem"></i>
             </button>
@@ -245,7 +276,7 @@
       [(visible)]="visibleDetail"
       [modal]="true"
       [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      [style]="{ width: '50vw' }"
+      [style]="{ width: '70vw', height: 'auto' }"
       [draggable]="false"
       [resizable]="false"
       [maximizable]="true"
@@ -264,7 +295,7 @@
 
       <!-- Detail Table -->
       <app-timesheet-detail-table
-        [timesheetDetails]="selectedTimesheet.detail || []"
+        [selectedTimesheet]="selectedTimesheet"
       ></app-timesheet-detail-table>
     </p-dialog>
   </div>

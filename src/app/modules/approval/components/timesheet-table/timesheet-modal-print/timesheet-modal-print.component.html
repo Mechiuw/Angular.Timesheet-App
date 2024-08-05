@@ -29,7 +29,7 @@
     <!-- Detail Table (still dummy data entry1) -->
     <div *ngIf="!isLoading">
       <app-timesheet-detail-table
-        [timesheetDetails]="selectedTimesheet.detail"
+        [selectedTimesheet]="selectedTimesheet"
       ></app-timesheet-detail-table>
     </div>
 
@@ -37,7 +37,7 @@
     <div class="my-4 flex justify-end gap-2 py-4">
       <span class="text-md font-semibold text-foreground">Total Fee: </span>
       <span class="text-md font-semibold text-foreground"
-        >${{ selectedTimesheet.totalFee }}</span
+        >${{ selectedTimesheet.total }}</span
       >
     </div>
 
@@ -63,7 +63,7 @@
         </div>
 
         <span class="text-md font-semibold text-foreground underline">{{
-          selectedTimesheet.user
+          selectedTimesheet.user.name
         }}</span>
       </div>
 
@@ -79,7 +79,7 @@
           />
         </div>
         <span class="text-md font-semibold text-foreground underline">{{
-          selectedTimesheet.benefit
+          selectedTimesheet.confirmedBenefitBy.name
         }}</span>
       </div>
     </div>

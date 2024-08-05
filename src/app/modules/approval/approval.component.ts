@@ -38,7 +38,7 @@ export class ApprovalComponent implements OnInit {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoiYWRtaW4ifQ.vGuaQ8GcwxIPh_MfvcR5e1kGce3sjQ7DUGVKIgIkwuA';
 
     // change token to check auth
-    const token = tokenUser;
+    const token = tokenAdmin;
 
     this.sessionService.set('token', token);
     this.currentUser$.next(this.sessionService.getCurrentUser());
@@ -47,8 +47,8 @@ export class ApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     // Login Dummy (must be deleted when marge request)
-    // this.loginDummy().subscribe((token) => {
-    //   console.log(token);
-    // });
+    this.loginDummy().subscribe((token) => {
+      console.log(token);
+    });
   }
 }

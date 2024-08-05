@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.component';
 import { TimesheetTableComponent } from '../../components/timesheet-table/timesheet-table.component';
-import { TimesheetEntry } from '../../model/timesheet';
+import { Timesheet } from '../../model/timesheet';
 
 // import for service session
 import { SessionService } from '../../../../core/services/session.service';
@@ -36,7 +36,7 @@ export class OnProgressComponent implements OnInit {
   subtitle: string = 'On Progress';
 
   // Example Timesheet
-  timesheets: TimesheetEntry[] = [];
+  timesheets: Timesheet[] = [];
 
   // Example Route
   route: string = 'on-progress';
@@ -48,145 +48,41 @@ export class OnProgressComponent implements OnInit {
   generateDummyData() {
     this.timesheets = [
       {
-        id: 'entry1',
-        user: 'user1',
-        status: 'pending', // Updated status
-        totalFee: 3500,
-        createdAt: new Date('2024-08-01T10:00:00Z'),
-        updatedAt: new Date('2024-08-01T12:00:00Z'),
-        deletedAt: undefined,
-        manager: 'manager1',
-        benefit: 'Team Alpha', // Updated benefit field
-        detail: [
+        id: 'h7i8j9k0-12a3-4567-b890-c1d2e3f4g567',
+        createdAt: '2024-06-01T07:00:00+07:00',
+        updatedAt: '2024-08-05T14:16:21.185459+07:00',
+        statusByManager: 'Pending',
+        statusByBenefit: 'Pending',
+        confirmedManagerBy: {
+          userId: '',
+          name: '',
+          email: '',
+          signatureUrl: '',
+        },
+        confirmedBenefitBy: {
+          userId: '',
+          name: '',
+          email: '',
+          signatureUrl: '',
+        },
+        user: {
+          id: 'h8i9j0k1-23a4-5678-b9cd-ef0123456789',
+          name: 'Ethan Turner',
+          email: 'ethan.turner@example.com',
+          signatureUrl: 'https://example.com/signature/ethan-turner',
+        },
+        timeSheetDetails: [
           {
-            workId: 'work101',
-            fee: 1500,
-            startTime: new Date('2024-08-01T10:00:00Z'),
-            endTime: new Date('2024-08-01T12:00:00Z'),
-            date: '2024-08-01',
-          },
-          {
-            workId: 'work102',
-            fee: 2000,
-            startTime: new Date('2024-08-01T13:00:00Z'),
-            endTime: new Date('2024-08-01T15:00:00Z'),
-            date: '2024-08-01',
-          },
-          {
-            workId: 'work103',
-            fee: 1500,
-            startTime: new Date('2024-08-01T16:00:00Z'),
-            endTime: new Date('2024-08-01T18:00:00Z'),
-            date: '2024-08-01',
-          },
-        ],
-      },
-      {
-        id: 'entry2',
-        user: 'user2',
-        status: 'approved', // Updated status
-        totalFee: 1700,
-        createdAt: new Date('2024-08-02T11:00:00Z'),
-        updatedAt: new Date('2024-08-02T13:00:00Z'),
-        deletedAt: new Date('2024-08-03T14:00:00Z'),
-        manager: 'manager2',
-        benefit: 'Team Beta', // Updated benefit field
-        detail: [
-          {
-            workId: 'work103',
-            fee: 1700,
-            startTime: new Date('2024-08-02T11:00:00Z'),
-            endTime: new Date('2024-08-02T14:00:00Z'),
-            date: '2024-08-02',
-          },
-          {
-            workId: 'work104',
-            fee: 2000,
-            startTime: new Date('2024-08-02T15:00:00Z'),
-            endTime: new Date('2024-08-02T17:00:00Z'),
-            date: '2024-08-02',
+            id: '88j9k0l1-23a4-5678-c9de-f0g1h2i3j456',
+            date: '2024-07-10T00:00:00+07:00',
+            startTime: '2024-07-10T09:00:00+07:00',
+            endTime: '2024-07-10T17:00:00+07:00',
+            workId: 'g7h8i9j0-1234-5678-90ab-cdef01234567',
+            description: 'Mengajar React Native',
+            subTotal: 180000,
           },
         ],
-      },
-      {
-        id: 'entry3',
-        user: 'user3',
-        status: 'settlement', // Updated status
-        totalFee: 1800,
-        createdAt: new Date('2024-08-03T09:00:00Z'),
-        updatedAt: new Date('2024-08-03T10:00:00Z'),
-        deletedAt: undefined,
-        manager: 'manager3',
-        benefit: 'Team Gamma', // Updated benefit field
-        detail: [
-          {
-            workId: 'work104',
-            fee: 1800,
-            startTime: new Date('2024-08-03T09:00:00Z'),
-            endTime: new Date('2024-08-03T12:00:00Z'),
-            date: '2024-08-03',
-          },
-        ],
-      },
-      {
-        id: 'entry4',
-        user: 'user4',
-        status: 'pending', // Updated status
-        totalFee: 1600,
-        createdAt: new Date('2024-08-04T08:00:00Z'),
-        updatedAt: new Date('2024-08-04T10:00:00Z'),
-        deletedAt: undefined,
-        manager: 'manager4',
-        benefit: 'Team Delta', // Updated benefit field
-        detail: [
-          {
-            workId: 'work105',
-            fee: 1600,
-            startTime: new Date('2024-08-04T08:00:00Z'),
-            endTime: new Date('2024-08-04T11:00:00Z'),
-            date: '2024-08-04',
-          },
-        ],
-      },
-      {
-        id: 'entry5',
-        user: 'user5',
-        status: 'approved', // Updated status
-        totalFee: 1900,
-        createdAt: new Date('2024-08-05T12:00:00Z'),
-        updatedAt: new Date('2024-08-05T14:00:00Z'),
-        deletedAt: new Date('2024-08-06T15:00:00Z'),
-        manager: 'manager5',
-        benefit: 'Team Epsilon', // Updated benefit field
-        detail: [
-          {
-            workId: 'work106',
-            fee: 1900,
-            startTime: new Date('2024-08-05T12:00:00Z'),
-            endTime: new Date('2024-08-05T15:00:00Z'),
-            date: '2024-08-05',
-          },
-        ],
-      },
-      {
-        id: 'entry6',
-        user: 'user6',
-        status: 'settlement', // Updated status
-        totalFee: 1750,
-        createdAt: new Date('2024-08-06T13:00:00Z'),
-        updatedAt: new Date('2024-08-06T16:00:00Z'),
-        deletedAt: undefined,
-        manager: 'manager6',
-        benefit: 'Team Zeta', // Updated benefit field
-        detail: [
-          {
-            workId: 'work107',
-            fee: 1750,
-            startTime: new Date('2024-08-06T13:00:00Z'),
-            endTime: new Date('2024-08-06T16:00:00Z'),
-            date: '2024-08-06',
-          },
-        ],
+        total: 180000,
       },
     ];
   }
@@ -202,6 +98,6 @@ export class OnProgressComponent implements OnInit {
     setTimeout(() => {
       this.isLoading = false;
       this.generateDummyData();
-    }, 3000);
+    }, 500);
   }
 }

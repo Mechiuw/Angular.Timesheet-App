@@ -5,7 +5,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { DetailTimesheetEntry, TimesheetEntry } from '../../../model/timesheet';
+import { TimeSheetDetail, Timesheet } from '../../../model/timesheet';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
 
 @Component({
@@ -30,8 +30,8 @@ export class TimesheetModalPrintComponent implements OnInit {
   @Input() paramTimesheetId: string | null = '';
 
   // Data Timesheet
-  selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
-  timesheetDetails: DetailTimesheetEntry[] = [];
+  selectedTimesheet: Timesheet = {} as Timesheet;
+  timesheetDetails: TimeSheetDetail[] = [];
 
   // Data Loading
   isLoading: boolean = true;
@@ -46,7 +46,7 @@ export class TimesheetModalPrintComponent implements OnInit {
       summary: 'Info',
       detail:
         'Ctrl + P to Print and Uncheked Header and Footer in Option Print',
-      life: 5000,
+      life: 3000,
       styleClass: 'text-sm',
     });
   }
@@ -54,40 +54,44 @@ export class TimesheetModalPrintComponent implements OnInit {
   // Generate Data
   generateDummyData() {
     this.selectedTimesheet = {
-      id: 'entry1',
-      user: 'user1',
-      status: 'pending', // Updated status
-      totalFee: 3500,
-      createdAt: new Date('2024-08-01T10:00:00Z'),
-      updatedAt: new Date('2024-08-01T12:00:00Z'),
-      deletedAt: undefined,
-      manager: 'manager1',
-      benefit: 'Team Alpha', // Updated benefit field
-      detail: [
+      id: 'h7i8j9k0-12a3-4567-b890-c1d2e3f4g567',
+      createdAt: '2024-06-01T07:00:00+07:00',
+      updatedAt: '2024-08-05T14:16:21.185459+07:00',
+      statusByManager: 'Pending',
+      statusByBenefit: 'Pending',
+      confirmedManagerBy: {
+        userId: '',
+        name: '',
+        email: '',
+        signatureUrl: '',
+      },
+      confirmedBenefitBy: {
+        userId: '',
+        name: '',
+        email: '',
+        signatureUrl: '',
+      },
+      user: {
+        id: 'h8i9j0k1-23a4-5678-b9cd-ef0123456789',
+        name: 'Ethan Turner',
+        email: 'ethan.turner@example.com',
+        signatureUrl: 'https://example.com/signature/ethan-turner',
+      },
+      timeSheetDetails: [
         {
-          workId: 'work101',
-          fee: 1500,
-          startTime: new Date('2024-08-01T10:00:00Z'),
-          endTime: new Date('2024-08-01T12:00:00Z'),
-          date: '2024-08-01',
-        },
-        {
-          workId: 'work102',
-          fee: 2000,
-          startTime: new Date('2024-08-01T13:00:00Z'),
-          endTime: new Date('2024-08-01T15:00:00Z'),
-          date: '2024-08-01',
-        },
-        {
-          workId: 'work103',
-          fee: 1500,
-          startTime: new Date('2024-08-01T16:00:00Z'),
-          endTime: new Date('2024-08-01T18:00:00Z'),
-          date: '2024-08-01',
+          id: '88j9k0l1-23a4-5678-c9de-f0g1h2i3j456',
+          date: '2024-07-10T00:00:00+07:00',
+          startTime: '2024-07-10T09:00:00+07:00',
+          endTime: '2024-07-10T17:00:00+07:00',
+          workId: 'g7h8i9j0-1234-5678-90ab-cdef01234567',
+          description: 'Mengajar React Native',
+          subTotal: 180000,
         },
       ],
+      total: 180000,
     };
   }
+  
   ngOnInit(): void {
     // Show Toast Information after a slight delay to ensure rendering
     setTimeout(() => {
