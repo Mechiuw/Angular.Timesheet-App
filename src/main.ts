@@ -6,6 +6,8 @@ import { AppComponent } from './app/app.component';
 import { AppRoutingModule } from './app/app-routing.module';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { requestInterceptor } from './app/core/interceptor/request.interceptor';
 
 if (environment.production) {
   enableProdMode();
@@ -16,7 +18,9 @@ if (environment.production) {
 }
 
 bootstrapApplication(AppComponent, {
-  providers: [importProvidersFrom(BrowserModule, AppRoutingModule), provideAnimations()],
+  providers: [importProvidersFrom(BrowserModule, AppRoutingModule), provideAnimations(),
+    provideHttpClient(withFetch(),withInterceptors([requestInterceptor])),
+  ],
 }).catch((err) => console.error(err));
 
 function selfXSSWarning() {
