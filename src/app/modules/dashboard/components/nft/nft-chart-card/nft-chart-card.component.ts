@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, effect } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ChartOptions } from '../../../../../shared/models/chart-options';
+import { ChartOptions } from '../../../../../core/models/chart-options';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import {ThemeService} from "../../../../../core/services/theme.service";

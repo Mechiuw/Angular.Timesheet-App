@@ -6,28 +6,30 @@ import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/up
 import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
 import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/detail-timesheet.component';
 import { TestComponent } from '../timesheet/components/test/test.component';
+import { ActivationComponent } from "../auth/pages/activation/activation.component";
+import { AuthService } from "../auth/services/auth.service";
 
 const routes: Routes = [
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: 'users',
+    path: "users",
     component: LayoutComponent,
     loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: 'works',
+    path: "works",
     component: LayoutComponent,
     loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+      import("../dashboard/dashboard.module").then((m) => m.DashboardModule),
   },
   {
-    path: 'timesheets',
+    path: "timesheets",
     component: LayoutComponent,
     children: [
       { path: 'create', component: TestComponent },
@@ -40,10 +42,8 @@ const routes: Routes = [
   {
     path: 'approvals',
     component: LayoutComponent,
-    loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () => import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
-
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];
