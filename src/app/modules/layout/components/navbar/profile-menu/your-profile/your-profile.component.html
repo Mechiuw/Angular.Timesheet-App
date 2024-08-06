@@ -20,14 +20,14 @@
       </div>
       <div *ngIf="!editMode && profile">
         <form action="" class="mb-1 font-bold text-foreground">Email</form>
-        <h3 class="mb-4 max-w-96 text-foreground">{{ profile.email }}</h3>
+        <h2 class="mb-4 max-w-96 text-foreground">{{ profile.email }}</h2>
         <form action="" class="mb-1 font-bold text-foreground">Name</form>
-        <h3 class="mb-4 max-w-96 text-foreground">{{ profile.name }}</h3>
+        <h2 class="mb-4 max-w-96 text-foreground">{{ profile.name }}</h2>
         <form action="" class="mb-1 font-bold text-foreground">Phone</form>
-        <h3 class="mb-4 max-w-96 text-foreground">
+        <h2 class="mb-4 max-w-96 text-foreground">
           {{ profile.phone || "No phone number" }}
-        </h3>
-        <h3 class="mb-1 font-bold text-foreground">Your Signature</h3>
+        </h2>
+        <h3 class="mb-1 font-bold text-foreground">Your Current Signature</h3>
         <img
           class="mb-10 h-20 w-52 rounded-xl"
           src="{{ profile.signatureUrl }}"
@@ -39,6 +39,7 @@
           (click)="toggleEditMode()"
         />
       </div>
+      <p-toast></p-toast>
       <div *ngIf="editMode && profile">
         <div class="flex flex-col">
           <label for="email" class="font-bold text-foreground">Email</label>
@@ -64,12 +65,11 @@
             class="mb-4 rounded-xl border-primary bg-background text-foreground ring-primary"
           />
         </div>
-        <h3 class="mb-1 font-bold text-foreground">Upload Signature</h3>
-        <p-toast></p-toast>
+        <h3 class="mb-1 font-bold text-foreground">Upload New Signature</h3>
         <div *ngIf="profile.signatureUrl">
           <img
             class="mb-4 h-20 w-52 rounded-xl"
-            src="{{ profile.signatureUrl }}"
+            [src]="profile.signatureUrl"
             alt="signature"
           />
         </div>
@@ -102,8 +102,7 @@
             class="rounded-xl text-foreground"
             [loading]="loading"
             severity="contrast"
-            (onClick)="load()"
-            (click)="load()"
+            (click)="saveProfile()"
           />
         </div>
       </div>

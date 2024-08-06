@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'https://api.yusharwz.my.id/api/v1/';
+export const API_BASE_URL = 'https://api.yusharwz.my.id/api/v1';
 export const API_ENDPOINT = {
     AUTH: {
         LOGIN: `${API_BASE_URL}/login`,

@@ -5,7 +5,10 @@ import { AngularSvgIconModule } from 'angular-svg-icon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ProfileService } from '../../../../services/profile.service';
-import { ProfileResponse } from '../../../../models/profile.model';
+import {
+  ProfileRequest,
+  ProfileResponse,
+} from '../../../../models/profile.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ToastModule } from 'primeng/toast';
@@ -22,11 +25,11 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     ProgressSpinnerModule,
     FileUploadModule,
-    ToastModule
+    ToastModule,
   ],
   templateUrl: './your-profile.component.html',
   styleUrl: './your-profile.component.scss',
-  providers: [MessageService]
+  providers: [MessageService],
 })
 export class YourProfileComponent implements OnInit {
   profile: ProfileResponse['data'] | null = null;
@@ -77,11 +80,19 @@ export class YourProfileComponent implements OnInit {
           this.loadingUpload = false;
           if (response.status.code === 200) {
             this.successMessage = 'File uploaded successfully';
-            this.messageService.add({severity:'success', summary:'Success', detail: this.successMessage});
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: this.successMessage,
+            });
             this.fetchProfile();
           } else {
             this.errorMessage = `Error: ${response.status.message}`;
-            this.messageService.add({severity:'error', summary:'Error', detail: this.errorMessage});
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: this.errorMessage,
+            });
           }
         },
         error: (error) => {
@@ -100,7 +111,49 @@ export class YourProfileComponent implements OnInit {
     const file: File = event.files[0];
     if (file) {
       this.selectedFile = file;
-      this.fetchUploadSignature()
+      this.fetchUploadSignature();
+    }
+  }
+
+  saveProfile(): void {
+    if (this.profile) {
+      const payload: ProfileRequest = {
+        email: this.profile.email,
+        name: this.profile.name,
+        phone: this.profile.phone,
+      };
+      console.log('Payload: ', payload);
+      this.loading = true;
+      this.profileService.updateProfile(payload).subscribe({
+        next: (response) => {
+          this.loading = false;
+          if (response.status.code === 200) {
+            this.successMessage = 'Profile updated successfully';
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: this.successMessage,
+            });
+            this.editMode = false;
+            this.fetchProfile();
+          } else {
+            this.errorMessage = `Error: ${response.status.message}`;
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: this.errorMessage,
+            });
+          }
+        },
+        error: (error) => {
+          this.loading = false;
+          this.errorMessage = `Error: ${
+            error.message || 'An unknown error occurred'
+          }`;
+        },
+      });
+    } else {
+      this.errorMessage = 'Profile data is not available';
     }
   }
 
@@ -119,12 +172,5 @@ export class YourProfileComponent implements OnInit {
 
   toggleEditMode(): void {
     this.editMode = !this.editMode;
-  }
-
-  saveName(newName: string, newUsername: string, newEmail: string): void {
-    // this.name = newName;
-    // this.username = newUsername;
-    // this.email = newEmail;
-    this.load();
   }
 }
