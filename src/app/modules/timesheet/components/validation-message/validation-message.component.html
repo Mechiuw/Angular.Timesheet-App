@@ -1,0 +1,9 @@
+@if ('control && control.errors && (control.dirty || control.touched)') {
+<ng-container>
+  @for (error of errorMessages; track $index) {
+  <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+    <li>{{ error }}</li>
+  </p>
+  }
+</ng-container>
+}
