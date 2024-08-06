@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
 import { OvertimeService } from '../../services/overtime.service';
 import { Overtime, Timesheet, Status } from '../../model/timesheet';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-submit-button',
@@ -20,6 +21,7 @@ export class SubmitButtonComponent implements OnInit {
     private readonly overtimeService: OvertimeService,
     private readonly timesheetService: TimesheetService
   ) {}
+  private router = inject(Router);
 
   ngOnInit(): void {
     this.loadData();
@@ -76,6 +78,7 @@ export class SubmitButtonComponent implements OnInit {
             });
           }
         );
+        this.router.navigate(['/timesheets/list']);
       }
     });
   }

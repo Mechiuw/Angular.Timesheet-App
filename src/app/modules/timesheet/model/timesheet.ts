@@ -6,7 +6,7 @@ export interface Timesheet {
   confirmedManagerBy?: string;
   confirmedBenefitBy?: string;
   timeSheetDetails: Overtime[];
-  status?: Status;
+  status?: string;
 }
 
 export interface Overtime {

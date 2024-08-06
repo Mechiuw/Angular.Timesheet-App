@@ -29,6 +29,7 @@ const routes: Routes = [
     path: 'timesheets',
     component: LayoutComponent,
     children: [
+      { path: '', redirectTo: 'create', pathMatch: 'full' },
       { path: 'create', component: CreateTimesheetComponent },
       { path: 'list', component: ListTimesheetComponent },
       { path: 'view/:id', component: DetailTimesheetComponent },

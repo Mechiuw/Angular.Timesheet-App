@@ -1,4 +1,11 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { Overtime, Status, Timesheet } from '../../model/timesheet';
 import Swal from 'sweetalert2';
@@ -13,6 +20,7 @@ import { Router } from '@angular/router';
   styleUrl: './update-button.component.scss',
 })
 export class UpdateButtonComponent implements OnInit {
+  @Input() timesheetId: string = '';
   @Output() formSubmitted = new EventEmitter<void>();
   ngOnInit(): void {
     this.update.List().subscribe((data) => {
@@ -54,7 +62,9 @@ export class UpdateButtonComponent implements OnInit {
           ),
         };
 
-        this.timesheetService.UpdateTimesheet(timesheet);
+        console.log({ timesheet });
+        console.log(this.timesheetId);
+        this.timesheetService.UpdateTimesheet(this.timesheetId, timesheet);
         this.formSubmitted.emit();
         this.update.clearWorks();
         Swal.fire({

@@ -86,19 +86,19 @@ export class TimesheetService {
     });
 
     const reqUrl = `${this.apiUrl}/api/v1/timesheets`;
-    // console.log('Request URL:', reqUrl);
 
     return this.http.get<{ data: Timesheet[] }>(reqUrl, { headers }).pipe(
       map((response) => {
-        // console.log('Fetch Work Data:', response.data);
-        this.fetchTimesheetData = response.data.map((timesheet) => ({
-          ...timesheet,
-          status: Status.Pending,
-        }));
+        // Filter only timesheets with status 'created'
+        this.fetchTimesheetData = response.data
+          .filter((timesheet) => timesheet.status === 'created')
+          .map((timesheet) => ({
+            ...timesheet,
+          }));
+
         return this.sortTimesheetsByDate(this.fetchTimesheetData);
       }),
       catchError((error) => {
-        // console.error('Error fetching work options:', error);
         this.fetchTimesheetData = [];
         return of(this.fetchTimesheetData);
       })
@@ -159,12 +159,26 @@ export class TimesheetService {
     );
   }
 
-  UpdateTimesheet(timesheet: Timesheet): Observable<void> {
-    console.log('Update Timesheet: ' + JSON.stringify(timesheet));
-    return new Observable<void>((observer) => {
-      observer.next();
-      observer.complete();
+  UpdateTimesheet(id: any, timesheet: Timesheet): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token}`,
+      'ngrok-skip-browser-warning': 'true',
     });
+
+    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}`;
+    console.log('Request URL:', reqUrl);
+    console.log('id:', id);
+    console.log('Edit Timesheet: ' + { timesheet });
+
+    return this.http.put(reqUrl, timesheet, { headers }).pipe(
+      tap((response) => {
+        console.log('Timesheet edited successfully:', response);
+      }),
+      catchError((error) => {
+        console.error('Error Edited timesheet:', error);
+        return throwError(error);
+      })
+    );
   }
 
   DeleteTimesheet(id: any): Observable<any> {
@@ -183,6 +197,27 @@ export class TimesheetService {
       }),
       catchError((error) => {
         console.error('Error deleting timesheet:', error);
+        return throwError(error);
+      })
+    );
+  }
+
+  SubmitTimesheet(id: any): Observable<any> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.token}`,
+      'ngrok-skip-browser-warning': 'true',
+    });
+
+    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}/submit`;
+    // console.log('Request URL:', reqUrl);
+    // console.log('submit Timesheet: ' + JSON.stringify(id));
+
+    return this.http.put(reqUrl, { headers }).pipe(
+      tap((response) => {
+        // console.log('Timesheet submited successfully:', response);
+      }),
+      catchError((error) => {
+        console.error('Error submiting timesheet:', error);
         return throwError(error);
       })
     );

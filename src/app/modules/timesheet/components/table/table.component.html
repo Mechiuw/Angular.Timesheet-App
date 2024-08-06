@@ -1,10 +1,9 @@
 <div class="card px-10 py-5">
   <p-table
     [value]="dataTable"
-    [paginator]="true"
-    [rows]="5"
+    [scrollable]="true"
+    scrollHeight="500px"
     [tableStyle]="{ 'min-width': '50rem' }"
-    [rowsPerPageOptions]="[5, 10, 20]"
   >
     <ng-template pTemplate="header">
       <tr>
@@ -29,7 +28,14 @@
       <tr>
         <td>{{ i + 1 }}</td>
         <td>{{ timesheet.createdAt | date }}</td>
-        @if (timesheet.status === "Pending") {
+        <td>
+          <span
+            class="me-2 rounded bg-green-200 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-yellow-300"
+          >
+            {{ timesheet.status }}
+          </span>
+        </td>
+        <!-- @if (timesheet.status === "Pending") {
         <td class="">
           <span
             class="me-2 rounded bg-yellow-200 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
@@ -64,7 +70,7 @@
             {{ timesheet.status }}</span
           >
         </td>
-        }
+        } -->
 
         <td class="text-center">
           <div class="flex items-center justify-center gap-2">
