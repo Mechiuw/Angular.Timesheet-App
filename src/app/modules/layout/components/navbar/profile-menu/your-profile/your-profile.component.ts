@@ -8,6 +8,8 @@ import { ProfileService } from '../../../../services/profile.service';
 import { ProfileResponse } from '../../../../models/profile.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { FileUploadModule } from 'primeng/fileupload';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-your-profile',
@@ -20,9 +22,11 @@ import { FileUploadModule } from 'primeng/fileupload';
     ButtonModule,
     ProgressSpinnerModule,
     FileUploadModule,
+    ToastModule
   ],
   templateUrl: './your-profile.component.html',
   styleUrl: './your-profile.component.scss',
+  providers: [MessageService]
 })
 export class YourProfileComponent implements OnInit {
   profile: ProfileResponse['data'] | null = null;
@@ -31,19 +35,21 @@ export class YourProfileComponent implements OnInit {
   selectedFile: File | null = null;
   editMode: boolean = false;
   loading: boolean = false;
+  loadingUpload: boolean = false;
   showForm: boolean = false;
   uploadedFiles: any;
 
   constructor(
     private location: Location,
-    private profileService: ProfileService
+    private profileService: ProfileService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
     setTimeout(() => {
       this.showForm = true;
       this.fetchProfile();
-    }, 1000);
+    }, 2000);
   }
 
   fetchProfile(): void {
@@ -63,19 +69,23 @@ export class YourProfileComponent implements OnInit {
     });
   }
 
-  fetchUploadSignature(event: any): void {
-    const file = event.files[0];
-    if (file) {
-      this.profileService.uploadSignature(file).subscribe({
+  fetchUploadSignature(): void {
+    if (this.selectedFile) {
+      this.loadingUpload = true;
+      this.profileService.uploadSignature(this.selectedFile).subscribe({
         next: (response) => {
+          this.loadingUpload = false;
           if (response.status.code === 200) {
             this.successMessage = 'File uploaded successfully';
+            this.messageService.add({severity:'success', summary:'Success', detail: this.successMessage});
             this.fetchProfile();
           } else {
             this.errorMessage = `Error: ${response.status.message}`;
+            this.messageService.add({severity:'error', summary:'Error', detail: this.errorMessage});
           }
         },
         error: (error) => {
+          this.loadingUpload = false;
           this.errorMessage = `Error: ${
             error.message || 'An unknown error occurred'
           }`;
@@ -86,12 +96,13 @@ export class YourProfileComponent implements OnInit {
     }
   }
 
-  // onFileSelected(event: any): void {
-  //   const file = event.target.files[0];
-  //   if (file) {
-  //     this.selectedFile = file;
-  //   }
-  // }
+  onFileSelected(event: any): void {
+    const file: File = event.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.fetchUploadSignature()
+    }
+  }
 
   goBack(): void {
     this.location.back();
