@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import {
   Overtime,
+  OvertimeResponse,
   Timesheet,
   TimesheetResponse,
   WorkOption,
@@ -16,6 +17,7 @@ import { ListComponent } from '../../components/list/list.component';
 import { LoadingComponent } from '../../components/loading/loading.component';
 import { CommonModule } from '@angular/common';
 import { map, Observable, of } from 'rxjs';
+import { EditListComponent } from '../../components/edit-list/edit-list.component';
 
 @Component({
   selector: 'app-update-timesheet',
@@ -28,12 +30,13 @@ import { map, Observable, of } from 'rxjs';
     ListComponent,
     LoadingComponent,
     CommonModule,
+    EditListComponent,
   ],
   templateUrl: './update-timesheet.component.html',
   styleUrls: ['./update-timesheet.component.scss'],
 })
 export class UpdateTimesheetComponent implements OnInit {
-  @ViewChild(FormComponent) formComponent!: FormComponent;
+  @ViewChild(EditComponent) formComponent!: EditComponent;
 
   private readonly updateService = inject(OvertimeUpdateService);
   private readonly timesheetService = inject(TimesheetService);
@@ -42,6 +45,7 @@ export class UpdateTimesheetComponent implements OnInit {
   date: Date = new Date();
   timesheetId: string = '';
   overtimeForm: Overtime[] = [];
+  overtimeRes: OvertimeResponse[] = [];
   totalPay: number = 0;
   isLoading: boolean = true;
   getData: boolean = false;
@@ -62,6 +66,7 @@ export class UpdateTimesheetComponent implements OnInit {
       next: (response: TimesheetResponse) => {
         if (response) {
           // console.log('fetch response', response);
+          this.overtimeForm = response.timeSheetDetails;
           this.updateService.GetWorks(response.timeSheetDetails).subscribe({
             next: () => {
               this.updateService.List().subscribe((works) => {
@@ -84,14 +89,36 @@ export class UpdateTimesheetComponent implements OnInit {
     });
   }
 
+  convertToOvertimeResponse(overtime: Overtime): OvertimeResponse {
+    const date = new Date(overtime.date);
+    const startTime = new Date(overtime.startTime);
+    const endTime = new Date(overtime.endTime);
+    return {
+      id: overtime.id,
+      date: date.toISOString(),
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      workId: overtime.workId,
+      total: overtime.total,
+      subTotal: overtime.subTotal!,
+    };
+  }
+
   getTotal(): void {
     this.updateService.getTotalPay().subscribe((total) => {
       this.totalPay = total;
     });
   }
 
-  remove(id: number): void {
-    this.updateService.Delete(id).subscribe(() => {});
+  edit(id: any): void {
+    const selectedOvertime = this.overtimeForm.find(
+      (overtime) => overtime.id === id
+    );
+    if (selectedOvertime && this.formComponent) {
+      console.log('selectedOvertime', selectedOvertime);
+      const overtimeResponse = this.convertToOvertimeResponse(selectedOvertime);
+      this.formComponent.setFormValues(overtimeResponse);
+    }
   }
 
   handleFormSubmitted() {

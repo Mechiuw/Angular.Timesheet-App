@@ -23,9 +23,9 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
 
   GetWorks(works: Overtime[]): Observable<void> {
     const workTotalObservables = works.map((work) => {
-      if (!work.id) {
-        work.id = this.generateId();
-      }
+      // if (!work.id) {
+      //   work.id = this.generateId();
+      // }
       return this.calculateWorkTotal(work).pipe(
         map((total) => {
           work.total = total;
@@ -50,12 +50,14 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       );
       if (existingIndex !== -1) {
         this.works[existingIndex] = overtime;
-      } else {
-        this.works.push(overtime);
         this.calculateTotalPay();
         this.sortOvertimes();
+        observer.next();
+      } else {
+        console.warn(
+          `Overtime with ID ${overtime.id} not found. Update ignored.`
+        );
       }
-      observer.next();
       observer.complete();
     });
   }

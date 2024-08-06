@@ -6,7 +6,12 @@ import {
   OnInit,
 } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import { Overtime, Timesheet, WorkOption } from '../../model/timesheet';
+import {
+  Overtime,
+  OvertimeResponse,
+  Timesheet,
+  WorkOption,
+} from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -65,9 +70,10 @@ export class EditComponent implements OnInit {
   maxDate: Date | null = null;
   descriptionOptions: WorkOption[] = [];
   @Input() workOptions$: Observable<WorkOption[]> = of([]);
+
   overtimeForm: FormGroup = new FormGroup(
     {
-      id: new FormControl(0),
+      id: new FormControl(''),
       selectedDate: new FormControl(null, [Validators.required]),
       startTime: new FormControl(null, [Validators.required]),
       endTime: new FormControl(null, [Validators.required]),
@@ -77,12 +83,28 @@ export class EditComponent implements OnInit {
     { validators: this.TimeValidatorForm() }
   );
 
+  setFormValues(overtime: OvertimeResponse) {
+    this.overtimeForm.patchValue({
+      id: overtime.id,
+      selectedDate: overtime.date,
+      startTime: this.getTimeFromISO(overtime.startTime),
+      endTime: this.getTimeFromISO(overtime.endTime),
+      workID: overtime.workId,
+      total: overtime.total,
+    });
+  }
+
   saveOvertime() {
+    console.log('save', this.overtimeForm.value);
     if (this.hasEmptyField())
       return this.errorAlert('All form fields must be filled out');
 
     if (this.overtimeForm.invalid)
       return this.errorAlert(' End time cannot be earlier than start time');
+
+    if (!this.overtimeForm.value.id) {
+      return this.errorAlert('Cannot add new overtime');
+    }
 
     if (this.timeValidated())
       return this.errorAlert('Minimum overtime of 1 hour');
@@ -96,7 +118,7 @@ export class EditComponent implements OnInit {
     const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
 
     const overtime: Overtime = {
-      id: new Date().getTime(),
+      id: formValue.id,
       date: formValue.selectedDate,
       startTime: startTimeISO,
       endTime: endTimeISO,
@@ -225,5 +247,12 @@ export class EditComponent implements OnInit {
       icon: 'error',
       text: message,
     });
+  }
+
+  getTimeFromISO(dateTime: string): string {
+    const date = new Date(dateTime);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
   }
 }

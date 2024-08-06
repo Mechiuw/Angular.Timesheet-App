@@ -72,7 +72,7 @@ export class UpdateButtonComponent implements OnInit {
           text: 'Your form has been submitted.',
           icon: 'success',
         });
-        this.router.navigate(['/timesheets/create']);
+        this.router.navigate(['/timesheets/list']);
       }
     });
   }

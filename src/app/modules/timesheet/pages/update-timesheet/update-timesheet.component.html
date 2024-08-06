@@ -23,14 +23,14 @@
   </div>
 
   <div class="px-5 py-3">
-    <app-edit #formComponent [workOptions$]="workOptions$" />
+    <app-edit #editformComponent [workOptions$]="workOptions$" />
   </div>
 </div>
 
 <div class="px-5">
-  <app-list
+  <app-edit-list
     [overtimeForm]="overtimeForm"
-    [delete]="remove.bind(this)"
+    [edit]="edit.bind(this)"
     [workOptions$]="workOptions$"
   />
 </div>

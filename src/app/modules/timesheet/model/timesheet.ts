@@ -35,7 +35,8 @@ export interface OvertimeResponse {
   date: string;
   startTime: string;
   endTime: string;
-  workID: string;
+  workId: string;
+  total?: number;
   subTotal: number;
 }
 
