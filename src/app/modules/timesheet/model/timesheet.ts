@@ -16,6 +16,7 @@ export interface Overtime {
   endTime: Date;
   workID: string;
   total?: number;
+  description?: string;
   subTotal?: number;
 }
 export interface TimesheetResponse {

@@ -46,7 +46,12 @@
                   {{ form.startTime | date : "HH:mm" }}
                 </td>
                 <td class="text-center">{{ form.endTime | date : "HH:mm" }}</td>
-                <td>{{ getWorkDescription(form.workID) }}</td>
+                <td>
+                  {{
+                    getWorkDescription(form.workID) ||
+                      getWorkDescription(form.workId)
+                  }}
+                </td>
                 <td>{{ form.total | currency : "IDR" }}</td>
                 <td>
                   <button (click)="delete(form.id)">

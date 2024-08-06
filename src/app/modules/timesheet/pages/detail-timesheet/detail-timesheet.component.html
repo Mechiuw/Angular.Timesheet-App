@@ -67,7 +67,7 @@
             </p>
           </td>
           <td class="border border-gray-300 px-3 py-1">
-            {{ getWorkDescription(item.workID) }}
+            {{ item.description || "Unknown" }}
           </td>
           <td class="border border-gray-300 px-3 py-1">
             {{ item.subTotal | currency : "IDR" }}

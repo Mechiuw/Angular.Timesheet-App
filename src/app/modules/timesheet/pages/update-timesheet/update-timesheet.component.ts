@@ -48,11 +48,11 @@ export class UpdateTimesheetComponent implements OnInit {
   workOptions$: Observable<WorkOption[]> = of([]);
 
   ngOnInit(): void {
+    this.fetchWorkOptions();
     this.route.params.subscribe({
       next: (params) => {
         this.timesheetId = params['id'];
         this.fetchDataId();
-        this.fetchWorkOptions();
       },
     });
   }

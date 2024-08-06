@@ -26,6 +26,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       this.works.splice(0, this.works.length);
       works.forEach((work) => {
         work.id = this.generateId();
+        console.log('thiswork:', work);
         // work.total = this.calculateWorkTotal(work);
         this.works.push(work);
       });

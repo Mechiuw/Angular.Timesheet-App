@@ -63,7 +63,7 @@ export class CreateTimesheetComponent implements OnInit {
   }
 
   fetchWorkOptions(): void {
-    console.log('fetch work options', this.workOptions$);
+    // console.log('fetch work options', this.workOptions$);
     this.workOptions$ = this.timesheetService
       .fethcWorkOptions()
       .pipe(map((data) => data ?? []));

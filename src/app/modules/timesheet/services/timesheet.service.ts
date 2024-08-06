@@ -206,11 +206,11 @@ export class TimesheetService {
     return this.http.get<PagedResponse<WorkOption[]>>(reqUrl, { headers }).pipe(
       map((response) => {
         this.fetchWorkData = response.data;
-        console.log('Fetch Work Data:', this.fetchWorkData);
+        // console.log('Fetch Work Data:', this.fetchWorkData);
         return this.fetchWorkData;
       }),
       catchError((error) => {
-        console.error('Error fetching work options:', error);
+        // console.error('Error fetching work options:', error);
         this.fetchWorkData = [];
         return of(this.fetchWorkData);
       })
