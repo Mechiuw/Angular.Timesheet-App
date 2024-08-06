@@ -1,13 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RoleService } from '../service/role.service';
 import { Role } from '../models/role.model';
-import { error, log } from 'console';
 
-interface SelectItem {
-  value: string;
-  label: string;
-}
 
 @Component({
   selector: 'app-select-dropdown',
@@ -15,6 +9,9 @@ interface SelectItem {
   styleUrls: ['./role.list.component.scss']
 })
 export class SelectDropdownComponent implements OnInit {
+    @Input() placeholder:string  = 'choose the role';
+    @Output() selectionChange = new EventEmitter<string>(); 
+
   roles : Role[] = [];
   loading: boolean = false;
 
@@ -38,5 +35,10 @@ export class SelectDropdownComponent implements OnInit {
             this.loading = false;
         }
     })
+  }
+
+  onSelectionChange(event: Event) :void{
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectionChange.emit(selectElement.value);
   }
 }

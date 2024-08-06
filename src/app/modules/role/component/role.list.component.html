@@ -1,8 +1,7 @@
 <div class="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-    <label for="roleSelect" class="mb-2 text-xl font-semibold">Choose a role:</label>
-    <select id="roleSelect" class="px-4 py-2 bg-black text-white border border-red-700 rounded">
-      <option *ngFor="let role of roles" [value]="role.id" class="bg-black text-white">{{ role.name }}</option>
-    </select>
-    <p *ngIf="loading" class="mt-4 text-red-500">Loading data, please wait...</p>
-  </div>
-  
+  <label for="selectDropdown" class="mb-2 text-xl font-semibold">{{ placeholder }}</label>
+  <select id="selectDropdown" (change)="onSelectionChange($event)" class="px-4 py-2 bg-black text-white border border-red-700 rounded">
+    <option *ngFor="let role of roles" [value]="role.id" class="bg-black text-white">{{ role.name }}</option>
+  </select>
+  <p *ngIf="loading" class="mt-4 text-red-500">Loading data . . .</p>
+</div>
