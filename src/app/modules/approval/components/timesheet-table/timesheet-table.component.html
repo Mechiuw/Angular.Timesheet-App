@@ -27,7 +27,17 @@
     [value]="timesheets"
     [rows]="5"
     [paginator]="true"
-    [globalFilterFields]="['name']"
+    [globalFilterFields]="[
+      'user.name',
+      'user.email',
+      'createdAt',
+      'status',
+      'confirmedManagerBy.name',
+      'confirmedManagerBy.email',
+      'confirmedBenefitBy.name',
+      'confirmedBenefitBy.email',
+      'total'
+    ]"
     [rowHover]="true"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -45,6 +55,8 @@
             type="text"
             placeholder="Search by User"
             style="height: 2.5rem; width: 15rem"
+            [(ngModel)]="searchValue"
+            (input)="applyFilterGlobal($event, 'contains')"
           />
         </span>
       </div>
@@ -60,44 +72,44 @@
           No
         </th>
         <th
-          pSortableColumn="date"
+          pSortableColumn="createdAt"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
-          Date <p-sortIcon field="date" />
+          Date <p-sortIcon field="createdAt" />
         </th>
         <th
-          pSortableColumn="name"
+          pSortableColumn="user.name"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
-          Name <p-sortIcon field="name" />
+          Name <p-sortIcon field="user.name" />
         </th>
         <th
-          pSortableColumn="manager"
+          pSortableColumn="confirmedManagerBy.name"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
-          Manager <p-sortIcon field="manager" />
+          Manager <p-sortIcon field="confirmedManagerBy.name" />
         </th>
         <th
-          pSortableColumn="benefit"
+          pSortableColumn="confirmedBenefitBy.name"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
-          Benefit <p-sortIcon field="benefit" />
+          Benefit <p-sortIcon field="confirmedBenefitBy.name" />
         </th>
         <th
           pSortableColumn="total"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
           Amount <p-sortIcon field="total" />
         </th>
         <th
           pSortableColumn="status"
           class="text-xs font-semibold text-muted-foreground"
-          style="min-width: 8rem;"
+          style="min-width: 8rem"
         >
           Status <p-sortIcon field="status" />
         </th>
@@ -189,14 +201,9 @@
           </span>
         </td>
         <td>
-          <div *ngIf="timesheet.confirmedBenefitBy.name === ''">
+          <div>
             <span class="text-sm font-semibold text-muted-foreground">
-              {{ timesheet.statusByManager }}
-            </span>
-          </div>
-          <div *ngIf="timesheet.confirmedBenefitBy.name !== ''">
-            <span class="text-sm font-semibold text-muted-foreground">
-              {{ timesheet.statusByBenefit }}
+              {{ timesheet.status }}
             </span>
           </div>
         </td>

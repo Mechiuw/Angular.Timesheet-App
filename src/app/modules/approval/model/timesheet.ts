@@ -30,10 +30,7 @@ export interface Timesheet {
   id: string;
   createdAt: string; // ISO 8601 date-time string
   updatedAt: string; // ISO 8601 date-time string
-  statusByManager: string;
-  statusByBenefit: string;
-  confirmedManagerBy: ConfirmedBy;
-  confirmedBenefitBy: ConfirmedBy;
+  status : string;
   user: User;
   timeSheetDetails: TimeSheetDetail[];
   total: number;

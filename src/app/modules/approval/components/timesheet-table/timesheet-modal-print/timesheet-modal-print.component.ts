@@ -8,6 +8,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { TimeSheetDetail, Timesheet } from '../../../model/timesheet';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
 
+import { TimesheetService } from '../../../services/timesheet.service';
+
 @Component({
   selector: 'app-timesheet-modal-print',
   standalone: true,
@@ -23,7 +25,10 @@ import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timeshe
   providers: [MessageService],
 })
 export class TimesheetModalPrintComponent implements OnInit {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private readonly timesheetService: TimesheetService
+  ) {}
 
   // Data from Parent
   @Input() visiblePrint: boolean = false;
@@ -51,56 +56,25 @@ export class TimesheetModalPrintComponent implements OnInit {
     });
   }
 
-  // Generate Data
-  generateDummyData() {
-    this.selectedTimesheet = {
-      id: 'h7i8j9k0-12a3-4567-b890-c1d2e3f4g567',
-      createdAt: '2024-06-01T07:00:00+07:00',
-      updatedAt: '2024-08-05T14:16:21.185459+07:00',
-      statusByManager: 'Pending',
-      statusByBenefit: 'Pending',
-      confirmedManagerBy: {
-        userId: '',
-        name: '',
-        email: '',
-        signatureUrl: '',
-      },
-      confirmedBenefitBy: {
-        userId: '',
-        name: '',
-        email: '',
-        signatureUrl: '',
-      },
-      user: {
-        id: 'h8i9j0k1-23a4-5678-b9cd-ef0123456789',
-        name: 'Ethan Turner',
-        email: 'ethan.turner@example.com',
-        signatureUrl: 'https://example.com/signature/ethan-turner',
-      },
-      timeSheetDetails: [
-        {
-          id: '88j9k0l1-23a4-5678-c9de-f0g1h2i3j456',
-          date: '2024-07-10T00:00:00+07:00',
-          startTime: '2024-07-10T09:00:00+07:00',
-          endTime: '2024-07-10T17:00:00+07:00',
-          workId: 'g7h8i9j0-1234-5678-90ab-cdef01234567',
-          description: 'Mengajar React Native',
-          subTotal: 180000,
-        },
-      ],
-      total: 180000,
-    };
+  // Get Timesheet By Id from Service
+  getTimesheetById() {
+    if (this.paramTimesheetId) {
+      this.timesheetService
+        .getTimesheetById(this.paramTimesheetId)
+        .subscribe((timesheet) => {
+          this.isLoading = false;
+          this.selectedTimesheet = timesheet.data;
+        });
+    }
   }
-  
+
   ngOnInit(): void {
     // Show Toast Information after a slight delay to ensure rendering
     setTimeout(() => {
       this.showInfo();
     }, 0);
 
-    setTimeout(() => {
-      this.isLoading = false;
-      this.generateDummyData();
-    }, 500);
+    // Get Timesheet By Id
+    this.getTimesheetById();
   }
 }

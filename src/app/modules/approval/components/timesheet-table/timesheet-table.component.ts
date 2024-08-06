@@ -1,8 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { TableModule } from 'primeng/table';
+import { Table, TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -26,6 +27,7 @@ import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-
     TooltipModule,
     SkeletonModule,
     CommonModule,
+    FormsModule,
     TimesheetDetailTableComponent,
     TimesheetModalPrintComponent,
   ],
@@ -35,6 +37,19 @@ import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-
 export class TimesheetTableComponent implements OnInit {
   // Constructor
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  @ViewChild('dt') dt: Table | undefined;
+
+  searchValue: string | undefined;
+
+  clear(table: Table) {
+    table.clear();
+    this.searchValue = '';
+  }
+
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
 
   // Data Url & Params
   urlTimesheetId?: string | null;

@@ -31,10 +31,7 @@ export class TimesheetDetailTableComponent {
     const hours = Math.floor(difference / (1000 * 60 * 60));
     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
 
-    this.timeDifference = ` (${hours} hours)`;
-
-    console.log(this.selectedTimesheet);
-    
+    this.timeDifference = ` (${hours} hours)`;    
 
    return this.timeDifference;
   }
