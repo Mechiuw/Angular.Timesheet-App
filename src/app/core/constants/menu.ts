@@ -37,7 +37,7 @@ export class Menu {
       ],
     },
     {
-      group: 'Master',
+      group: "Master",
       separator: true,
       items: [
         {
@@ -52,17 +52,21 @@ export class Menu {
           route: '/works',
           role: [Roles.Admin, Roles.Manager],
         },
-      ],
+      ]
     },
     {
-      group: 'Timesheet',
+      group: "Timesheet",
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
-          role: [Roles.User, Roles.Manager, Roles.Benefit],
+          children: [
+            { label: 'New Form', route: '/timesheets/create', role: ['admin','user','manajer','benefit'], },
+            { label: 'List', route: '/timesheets/list', role: ['admin','user','manajer','benefit'], },
+          ],
+          role: ['admin','user','manajer','benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
