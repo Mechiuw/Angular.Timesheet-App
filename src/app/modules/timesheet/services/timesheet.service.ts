@@ -76,7 +76,7 @@ export class TimesheetService implements ITimesheetService {
   // ];
 
   private fetchWorkData: WorkOption[] = [];
-  private apiUrl = 'https://api.yusharwz.my.id';
+  private apiUrl = 'sure-pika-easy.ngrok-free.app';
   private readonly token =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU0NzI1MDcsImlhdCI6MTcyMjg4MDUwNywiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYTM1NzU2MTYtNTg4Ni00YzRlLTkyYTgtNDJkMzQyN2QwZjZmIiwidXNlcm5hbWUiOiJBa3VuIEFkbWluIiwiZW1haWwiOiJhbHZpbmRvNTZAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIn0.rEeulS0-KoZOx9o-ASqLgNQ3cScEKrNEMMqkdiG_CFY';
 
@@ -131,6 +131,7 @@ export class TimesheetService implements ITimesheetService {
   fethcWorkOptions(): Observable<WorkOption[]> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${this.token}`,
+      'ngrok-skip-browser-warning': 'true',
     });
 
     const reqUrl = `${this.apiUrl}/api/v1/admin/works`;
