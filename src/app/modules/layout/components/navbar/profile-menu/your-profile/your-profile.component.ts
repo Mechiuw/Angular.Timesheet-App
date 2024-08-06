@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { ProfileService } from '../../../../services/profile.service';
 import { ProfileResponse } from '../../../../models/profile.model';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @Component({
   selector: 'app-your-profile',
@@ -18,6 +19,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     InputTextModule,
     ButtonModule,
     ProgressSpinnerModule,
+    FileUploadModule,
   ],
   templateUrl: './your-profile.component.html',
   styleUrl: './your-profile.component.scss',
@@ -30,6 +32,7 @@ export class YourProfileComponent implements OnInit {
   editMode: boolean = false;
   loading: boolean = false;
   showForm: boolean = false;
+  uploadedFiles: any;
 
   constructor(
     private location: Location,
@@ -60,15 +63,16 @@ export class YourProfileComponent implements OnInit {
     });
   }
 
-  fetchUploadSignature(): void {
-    if (this.selectedFile) {
-      this.profileService.uploadSignature(this.selectedFile).subscribe({
+  fetchUploadSignature(event: any): void {
+    const file = event.files[0];
+    if (file) {
+      this.profileService.uploadSignature(file).subscribe({
         next: (response) => {
           if (response.status.code === 200) {
             this.successMessage = 'File uploaded successfully';
             this.fetchProfile();
           } else {
-            this.errorMessage = `Error: ${response.data}`;
+            this.errorMessage = `Error: ${response.status.message}`;
           }
         },
         error: (error) => {
@@ -82,12 +86,12 @@ export class YourProfileComponent implements OnInit {
     }
   }
 
-  onFileSelected(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-    }
-  }
+  // onFileSelected(event: any): void {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     this.selectedFile = file;
+  //   }
+  // }
 
   goBack(): void {
     this.location.back();

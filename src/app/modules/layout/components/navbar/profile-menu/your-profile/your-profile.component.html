@@ -70,6 +70,7 @@
           <img
             class="mb-4 h-20 w-52 rounded-xl"
             src="{{ profile.signatureUrl }}"
+            alt="signature"
           />
         </div>
         <div *ngIf="!profile.signatureUrl">
@@ -77,14 +78,33 @@
             No signature, please upload
           </h3>
         </div>
-        <input
+        <!-- <input
           type="file"
           class="mb-4 border-primary bg-background text-foreground ring-primary"
           (change)="onFileSelected($event)"
         />
-        <button (click)="fetchUploadSignature()" class="text-foreground bg-primary h-11 w-40 rounded-xl">Upload Signature</button>
-        <div *ngIf="errorMessage" class="text-foreground">{{ errorMessage }}</div>
-        <div *ngIf="successMessage" class="text-foreground">{{ successMessage }}</div>
+        <p-button
+          label="Upload Signature"
+          class="rounded-xl text-foreground"
+          severity="contrast"
+          (click)="fetchUploadSignature()"
+        /> -->
+        <p-fileUpload
+          mode="basic"
+          name="signature"
+          chooseIcon="pi pi-upload"
+          accept="image/*"
+          maxFileSize="1000000"
+          (onUpload)="fetchUploadSignature($event)"
+          chooseLabel="Browse"
+          class="mb-4 border-primary bg-background text-foreground ring-primary"
+        ></p-fileUpload>
+        <div *ngIf="errorMessage" class="text-foreground">
+          {{ errorMessage }}
+        </div>
+        <div *ngIf="successMessage" class="text-foreground">
+          {{ successMessage }}
+        </div>
         <div class="mt-2 flex">
           <p-button
             label="Save"
