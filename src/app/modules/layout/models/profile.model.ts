@@ -13,3 +13,9 @@ export interface ProfileResponse {
     signatureUrl: string;
   };
 }
+
+export interface ProfileRequest {
+  email: string,
+  name: string,
+  phone: string
+}
