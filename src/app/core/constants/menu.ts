@@ -36,7 +36,7 @@ export class Menu {
       ],
     },
     {
-      group: "Master",
+      group: 'Master',
       separator: true,
       items: [
         {
@@ -51,16 +51,20 @@ export class Menu {
           route: '/works',
           role: ['admin','user','manajer','benefit'],
         },
-      ]
+      ],
     },
     {
-      group: "Timesheet",
+      group: 'Timesheet',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
+          children: [
+            { label: 'New Form', route: '/timesheets/create', role: ['admin','user','manajer','benefit'], },
+            { label: 'List', route: '/timesheets/list', role: ['admin','user','manajer','benefit'], },
+          ],
           role: ['admin','user','manajer','benefit'],
         },
         {
@@ -72,10 +76,9 @@ export class Menu {
             { label: 'On Progress', route: '/approvals/on-progress', role: ['admin','user','manajer','benefit'], },
             { label: 'History', route: '/approvals/history', role: ['admin','user','manajer','benefit'], },
           ],
-        }
-      ]
-    }
-
+        },
+      ],
+    },
 
     // {
     //   group: 'Collaboration',
