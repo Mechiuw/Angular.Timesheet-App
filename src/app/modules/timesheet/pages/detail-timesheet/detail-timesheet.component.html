@@ -54,7 +54,7 @@
         <td class="border border-gray-300 p-3">Fee</td>
       </tr>
       <tbody>
-        @for (item of detailTimesheet.works; track $index) {
+        @for (item of detailTimesheet.timeSheetDetails; track $index) {
         <tr>
           <td class="border border-gray-300 px-3 py-1">User</td>
           <td class="border border-gray-300 px-3 py-1">
@@ -70,7 +70,7 @@
             {{ getWorkDescription(item.workID) }}
           </td>
           <td class="border border-gray-300 px-3 py-1">
-            {{ item.total | currency : "IDR" }}
+            {{ item.subTotal | currency : "IDR" }}
           </td>
         </tr>
         }

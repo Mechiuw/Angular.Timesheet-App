@@ -51,7 +51,7 @@ export class UpdateButtonComponent implements OnInit {
           // createdAt: new Date(Date.now()),
           // confirmedManagerBy: 'ManagerName',
           // confirmedBenefitBy: 'BenefitName',
-          works: this.timesheetDetails.map(
+          timeSheetDetails: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
           // status: Status.Pending,

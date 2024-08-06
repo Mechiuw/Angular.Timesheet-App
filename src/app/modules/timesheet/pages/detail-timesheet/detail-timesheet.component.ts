@@ -1,6 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import { Timesheet, WorkOption } from '../../model/timesheet';
+import {
+  Timesheet,
+  TimesheetResponse,
+  WorkOption,
+} from '../../model/timesheet';
 import { ActivatedRoute } from '@angular/router';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { CommonModule } from '@angular/common';
@@ -19,11 +23,10 @@ export class DetailTimesheetComponent implements OnInit {
   private readonly update = inject(OvertimeUpdateService);
   private readonly route = inject(ActivatedRoute);
 
-  // descriptionOptions: WorkOption[] = [];
   private workDescriptions: { [id: string]: string } = {};
   workOptions$: Observable<WorkOption[]> = of([]);
-  detailTimesheet: Timesheet = {} as Timesheet;
-  id: number = 0;
+  detailTimesheet: TimesheetResponse = {} as TimesheetResponse;
+  id: string = '';
   isLoading: boolean = true;
   getData: boolean = false;
   total: number = 0;
@@ -32,34 +35,35 @@ export class DetailTimesheetComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe({
       next: (params) => {
-        this.id = +params['id'];
+        this.id = params['id'];
         this.getDetail(this.id);
         this.fetchWorkOptions();
       },
     });
   }
 
-  getDetail(id: number): void {
-    this.timesheetService.GetTimsheetById(id).subscribe({
-      next: (response: Timesheet) => {
+  getDetail(id: any): void {
+    this.timesheetService.GetTimesheetById(id).subscribe({
+      next: (response: TimesheetResponse) => {
         if (!response) {
           this.isLoading = false;
         }
+        console.log('fetch response', response);
         this.detailTimesheet = response;
-        this.update.getDetail(this.detailTimesheet.works);
-        this.total = this.totalFee();
+        // this.update.getDetail(this.detailTimesheet.timeSheetDetails);
+        this.total = response.total || 0;
         this.isLoading = false;
         this.getData = true;
       },
     });
   }
 
-  totalFee(): number {
-    return this.detailTimesheet.works.reduce(
-      (sum, curr) => sum + (curr.total || 0),
-      0
-    );
-  }
+  // totalFee(): number {
+  //   return this.detailTimesheet.timeSheetDetails.reduce(
+  //     (sum, curr) => sum + (curr.total || 0),
+  //     0
+  //   );
+  // }
 
   fetchWorkOptions(): void {
     this.workOptions$ = this.timesheetService

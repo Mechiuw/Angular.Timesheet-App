@@ -53,25 +53,29 @@ export class SubmitButtonComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
-          // userId: 1,
-          // createdAt: new Date(Date.now()),
-          // confirmedManagerBy: 'ManagerName',
-          // confirmedBenefitBy: 'BenefitName',
-          works: this.timesheetDetails.map(
+          timeSheetDetails: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          // status: Status.Created,
         };
 
-        this.timesheetService.SaveTimesheet(timesheet);
-        this.formSubmitted.emit();
-        this.overtimeService.clearWorks();
-
-        Swal.fire({
-          title: 'Success!',
-          text: 'Your form has been submitted.',
-          icon: 'success',
-        });
+        this.timesheetService.SaveTimesheet(timesheet).subscribe(
+          (response) => {
+            this.formSubmitted.emit();
+            this.overtimeService.clearWorks();
+            Swal.fire({
+              title: 'Success!',
+              text: 'Your form has been submitted.',
+              icon: 'success',
+            });
+          },
+          (error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'There was a problem submitting your form. Please try again later.',
+            });
+          }
+        );
       }
     });
   }

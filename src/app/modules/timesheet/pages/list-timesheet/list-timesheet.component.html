@@ -1,4 +1,7 @@
 <div class="">
   <h1 class="ps-10 pt-4 font-bold text-primary">Timesheet List</h1>
-  <app-table [dataTable]="timesheets" />
+  <app-table
+    [dataTable]="timesheets"
+    (timesheetDeleted)="onTimesheetDeleted()"
+  ></app-table>
 </div>
