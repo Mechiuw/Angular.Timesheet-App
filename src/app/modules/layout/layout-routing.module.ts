@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './layout.component';
+import { NgModule } from "@angular/core";
+import { RouterModule, Routes } from "@angular/router";
+import { LayoutComponent } from "./layout.component";
+import { ActivationComponent } from "../auth/pages/activation/activation.component";
+import { AuthService } from "../auth/services/auth.service";
 import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/create-timesheet.component';
 import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
@@ -8,25 +10,25 @@ import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/de
 
 const routes: Routes = [
   {
-    path: 'dashboard',
+    path: "dashboard",
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: 'users',
+    path: "users",
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: 'works',
+    path: "works",
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: 'timesheets',
+    path: "timesheets",
     component: LayoutComponent,
     children: [
       { path: 'create', component: CreateTimesheetComponent },
@@ -39,9 +41,8 @@ const routes: Routes = [
     path: 'approvals',
     component: LayoutComponent,
     loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+      import('../approval/approval.module').then((m) => m.ApprovalModule),
   },
-
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },
 ];
