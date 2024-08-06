@@ -8,6 +8,7 @@ import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/cr
 import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
 import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/detail-timesheet.component';
+import { DashboardGuardService } from "../../core/guards/dashboard-guard.service";
 
 const routes: Routes = [
   {
@@ -30,6 +31,7 @@ const routes: Routes = [
   },
   {
     path: "timesheets",
+    canActivate: [DashboardGuardService],
     component: LayoutComponent,
     children: [
       { path: 'create', component: CreateTimesheetComponent },
@@ -40,6 +42,7 @@ const routes: Routes = [
   },
   {
     path: 'approvals',
+    canActivate: [DashboardGuardService],
     component: LayoutComponent,
     loadChildren: () =>
       import('../approval/approval.module').then((m) => m.ApprovalModule),
