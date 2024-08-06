@@ -14,7 +14,7 @@ export interface Overtime {
   date: Date;
   startTime: Date;
   endTime: Date;
-  workID: string;
+  workId: string;
   total?: number;
   description?: string;
   subTotal?: number;

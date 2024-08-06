@@ -100,7 +100,7 @@ export class EditComponent implements OnInit {
       date: formValue.selectedDate,
       startTime: startTimeISO,
       endTime: endTimeISO,
-      workID: formValue.workID,
+      workId: formValue.workID,
       total: formValue.total,
     };
     this.updateService.Update(overtime).subscribe(() => {

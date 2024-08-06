@@ -3,6 +3,7 @@ import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { Overtime, Status, Timesheet } from '../../model/timesheet';
 import Swal from 'sweetalert2';
 import { TimesheetService } from '../../services/timesheet.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-button',
@@ -23,6 +24,7 @@ export class UpdateButtonComponent implements OnInit {
     OvertimeUpdateService
   );
   private readonly timesheetService = inject(TimesheetService);
+  private router = inject(Router);
 
   timesheet: Timesheet = {} as Timesheet;
   timesheetDetails: Overtime[] = [];
@@ -47,14 +49,9 @@ export class UpdateButtonComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
-          // userId: 1,
-          // createdAt: new Date(Date.now()),
-          // confirmedManagerBy: 'ManagerName',
-          // confirmedBenefitBy: 'BenefitName',
           timeSheetDetails: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          // status: Status.Pending,
         };
 
         this.timesheetService.UpdateTimesheet(timesheet);
@@ -65,6 +62,7 @@ export class UpdateButtonComponent implements OnInit {
           text: 'Your form has been submitted.',
           icon: 'success',
         });
+        this.router.navigate(['/timesheets/create']);
       }
     });
   }

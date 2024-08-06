@@ -48,7 +48,7 @@ export class DetailTimesheetComponent implements OnInit {
         if (!response) {
           this.isLoading = false;
         }
-        console.log('fetch response', response);
+        // console.log('fetch response', response);
         this.detailTimesheet = response;
         // this.update.getDetail(this.detailTimesheet.timeSheetDetails);
         this.total = response.total || 0;

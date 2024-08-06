@@ -98,11 +98,11 @@ export class FormComponent implements OnInit {
       date: formValue.selectedDate,
       startTime: startTimeISO,
       endTime: endTimeISO,
-      workID: formValue.workID,
+      workId: formValue.workID,
       total: formValue.total,
     };
     this.OvertimeService.Save(overtime).subscribe(() => {
-      console.log({ overtime });
+      // console.log({ overtime });
       Swal.fire({
         icon: 'success',
         text: 'Overtime saved successfully',

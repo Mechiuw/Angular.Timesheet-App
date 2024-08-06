@@ -61,12 +61,12 @@ export class UpdateTimesheetComponent implements OnInit {
     this.timesheetService.GetTimesheetById(this.timesheetId).subscribe({
       next: (response: TimesheetResponse) => {
         if (response) {
-          console.log('fetch response', response);
+          // console.log('fetch response', response);
           this.updateService.GetWorks(response.timeSheetDetails).subscribe({
             next: () => {
               this.updateService.List().subscribe((works) => {
                 this.overtimeForm = works;
-                console.log('fetch', this.overtimeForm);
+                // console.log('fetch', this.overtimeForm);
                 this.getTotal();
               });
               this.isLoading = false;

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IOvertimeUpdateService } from './iovertinmeUpdate.service';
-import { BehaviorSubject, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, map, Observable, of } from 'rxjs';
 import { Overtime, WorkOption } from '../model/timesheet';
 import { TimesheetService } from './timesheet.service';
 
@@ -22,20 +22,25 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
   }
 
   GetWorks(works: Overtime[]): Observable<void> {
-    return new Observable((observer) => {
-      this.works.splice(0, this.works.length);
-      works.forEach((work) => {
+    const workTotalObservables = works.map((work) => {
+      if (!work.id) {
         work.id = this.generateId();
-        console.log('thiswork:', work);
-        // work.total = this.calculateWorkTotal(work);
-        this.works.push(work);
-      });
-
-      this.calculateTotalPay();
-      this.sortOvertimes();
-      observer.next();
-      observer.complete();
+      }
+      return this.calculateWorkTotal(work).pipe(
+        map((total) => {
+          work.total = total;
+          return work;
+        })
+      );
     });
+
+    return forkJoin(workTotalObservables).pipe(
+      map((updatedWorks) => {
+        this.works = updatedWorks;
+        this.calculateTotalPay();
+        this.sortOvertimes();
+      })
+    );
   }
 
   Update(overtime: Overtime): Observable<void> {
@@ -122,7 +127,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
     return this.timesheetService.fethcWorkOptions().pipe(
       map((workOptions) => {
         const description = workOptions.find(
-          (option) => option.id === work.workID
+          (option) => option.id === work.workId
         );
 
         if (!description) return 0;
@@ -144,17 +149,25 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
     );
   }
 
-  getDetail(works: Overtime[]): Overtime[] {
-    const data: Overtime[] = [];
-    works.forEach((work) => {
+  getDetail(works: Overtime[]): Observable<Overtime[]> {
+    const workTotalObservables = works.map((work) => {
       work.id = this.generateId();
-      // work.total = this.calculateWorkTotal(work);
-      data.push(work);
+      return this.calculateWorkTotal(work).pipe(
+        map((total) => {
+          work.total = total;
+          return work;
+        })
+      );
     });
 
-    this.calculateTotalPay();
-    this.sortOvertimes();
-    return data;
+    return forkJoin(workTotalObservables).pipe(
+      map((updatedWorks) => {
+        this.works = updatedWorks;
+        this.calculateTotalPay();
+        this.sortOvertimes();
+        return updatedWorks;
+      })
+    );
   }
 
   clearWorks(): void {

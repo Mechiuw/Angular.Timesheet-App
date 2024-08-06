@@ -147,12 +147,10 @@ export class TimesheetService {
     });
 
     const reqUrl = `${this.apiUrl}/api/v1/timesheets/`;
-    console.log('Request URL:', reqUrl);
-    console.log('Save Timesheet: ' + JSON.stringify(timesheet));
 
     return this.http.post(reqUrl, timesheet, { headers }).pipe(
       tap((response) => {
-        console.log('Timesheet saved successfully:', response);
+        // console.log('Timesheet saved successfully:', response);
       }),
       catchError((error) => {
         console.error('Error saving timesheet:', error);
@@ -176,12 +174,12 @@ export class TimesheetService {
     });
 
     const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}`;
-    console.log('Request URL:', reqUrl);
+    // console.log('Request URL:', reqUrl);
     console.log('Delete Timesheet: ' + JSON.stringify(id));
 
     return this.http.delete(reqUrl, { headers }).pipe(
       tap((response) => {
-        console.log('Timesheet deleted successfully:', response);
+        // console.log('Timesheet deleted successfully:', response);
       }),
       catchError((error) => {
         console.error('Error deleting timesheet:', error);
@@ -201,7 +199,7 @@ export class TimesheetService {
     });
 
     const reqUrl = `${this.apiUrl}/api/v1/admin/works`;
-    console.log('Request URL:', reqUrl);
+    // console.log('Request URL:', reqUrl);
 
     return this.http.get<PagedResponse<WorkOption[]>>(reqUrl, { headers }).pipe(
       map((response) => {
