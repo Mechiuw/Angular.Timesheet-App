@@ -62,11 +62,11 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
+          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
           children: [
-            { label: 'New Form', route: '/timesheets/create', role: ['admin','user','manajer','benefit'], },
-            { label: 'List', route: '/timesheets/list', role: ['admin','user','manajer','benefit'], },
+            { label: 'New Form', route: '/timesheets/create', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
+            { label: 'List', route: '/timesheets/list', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
           ],
-          role: ['admin','user','manajer','benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
