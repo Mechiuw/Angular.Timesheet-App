@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { RoleService } from '../service/role.service';
-import { Role } from '../models/role.model';
+import { RoleService } from '../../service/role.service';
+import { Role } from '../../models/role.model';
 
 
 @Component({
