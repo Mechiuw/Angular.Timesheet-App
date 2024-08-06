@@ -13,6 +13,7 @@ export const API_ENDPOINT = {
     WORK :`${API_BASE_URL}/admin/works`,
 
     USERS: `${API_BASE_URL}/admin/accounts?paging=1&rowsPerPage=1000`,
+    ROLES: `${API_BASE_URL}/admin/roles`,
 
     TIMESHEET: `${API_BASE_URL}/timesheets`,
 

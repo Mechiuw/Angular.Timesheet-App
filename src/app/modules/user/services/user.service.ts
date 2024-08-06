@@ -22,4 +22,13 @@ export class UserService {
       return error.message;
     }
   }
+
+  getRoles(): Observable<PagedResponse<Role[]>> {
+    try {
+      return this.http.get<PagedResponse<Role[]>>(API_ENDPOINT.ROLES)
+    } catch (error : any){
+      return error.message;
+    }
+  }
+  
 }
