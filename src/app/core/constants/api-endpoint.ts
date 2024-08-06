@@ -1,7 +1,4 @@
-// export const API_BASE_URL = 'http://10.10.102.46:8080/api/v1';
-// export const API_BASE_URL = 'https://api.yusharwz.my.id/api/v1';
-// export const API_BASE_URL = 'http://192.168.1.22:8080/api/v1';
-export const API_BASE_URL = 'https://sure-pika-easy.ngrok-free.app/api/v1';
+export const API_BASE_URL = 'https://api.yusharwz.my.id/api/v1';
 export const API_ENDPOINT = {
     AUTH: {
         LOGIN: `${API_BASE_URL}/login`,
