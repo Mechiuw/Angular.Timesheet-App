@@ -45,8 +45,8 @@ export class ApprovalComponent implements OnInit {
 
   ngOnInit(): void {
     // Login Dummy (must be deleted when marge request)
-    this.loginDummy().subscribe((token) => {
-      console.log(token);
-    });
+    // this.loginDummy().subscribe((token) => {
+    //   console.log(token);
+    // });
   }
 }
