@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
-import { Overtime, Timesheet } from '../../model/timesheet';
+import { Overtime, Timesheet, WorkOption } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { EditComponent } from '../../components/edit-form/edit.component';
 import { UpdateButtonComponent } from '../../components/update-button/update-button.component';
@@ -10,6 +10,7 @@ import { FormComponent } from '../../components/form/form.component';
 import { ListComponent } from '../../components/list/list.component';
 import { LoadingComponent } from '../../components/loading/loading.component';
 import { CommonModule } from '@angular/common';
+import { map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-update-timesheet',
@@ -40,12 +41,14 @@ export class UpdateTimesheetComponent implements OnInit {
   totalPay: number = 0;
   isLoading: boolean = true;
   getData: boolean = false;
+  workOptions$: Observable<WorkOption[]> = of([]);
 
   ngOnInit(): void {
     this.route.params.subscribe({
       next: (params) => {
         this.timesheetId = +params['id'];
         this.fetchData();
+        this.fetchWorkOptions();
       },
     });
   }
@@ -89,5 +92,11 @@ export class UpdateTimesheetComponent implements OnInit {
     if (this.formComponent) {
       this.formComponent.resetForm();
     }
+  }
+
+  fetchWorkOptions(): void {
+    this.workOptions$ = this.timesheetService
+      .fethcWorkOptions()
+      .pipe(map((data) => data ?? []));
   }
 }

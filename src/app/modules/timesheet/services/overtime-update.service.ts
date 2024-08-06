@@ -25,7 +25,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       this.works.splice(0, this.works.length);
       works.forEach((work) => {
         work.id = this.generateId();
-        work.total = this.calculateWorkTotal(work);
+        // work.total = this.calculateWorkTotal(work);
         this.works.push(work);
       });
 
@@ -114,30 +114,30 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       : 1;
   }
 
-  private calculateWorkTotal(work: Overtime): number {
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
-    const description = this.descriptionOptions.find(
-      (option) => option.id === work.workID
-    );
-    if (!description) return 0;
+  // private calculateWorkTotal(work: Overtime): number {
+  //   this.descriptionOptions = this.timesheetService.GetWorkOptions();
+  //   const description = this.descriptionOptions.find(
+  //     (option) => option.id === work.workID
+  //   );
+  //   if (!description) return 0;
 
-    const start = work.startTime.getTime();
-    const end = work.endTime.getTime();
-    const hours = Math.floor((end - start) / (1000 * 60 * 60));
-    let total = hours * description.fee;
+  //   const start = work.startTime.getTime();
+  //   const end = work.endTime.getTime();
+  //   const hours = Math.floor((end - start) / (1000 * 60 * 60));
+  //   let total = hours * description.fee;
 
-    if (description.id === 1 && hours >= 2) {
-      total = hours * 50000;
-    }
+  //   if (description.id === 1 && hours >= 2) {
+  //     total = hours * 50000;
+  //   }
 
-    return total;
-  }
+  //   return total;
+  // }
 
   getDetail(works: Overtime[]): Overtime[] {
     const data: Overtime[] = [];
     works.forEach((work) => {
       work.id = this.generateId();
-      work.total = this.calculateWorkTotal(work);
+      // work.total = this.calculateWorkTotal(work);
       data.push(work);
     });
 

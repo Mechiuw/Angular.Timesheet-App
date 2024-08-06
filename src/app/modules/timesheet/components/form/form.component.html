@@ -56,10 +56,10 @@
       <mat-label>Description</mat-label>
       <mat-select formControlName="workID">
         <mat-option
-          *ngFor="let option of descriptionOptions"
-          [value]="option.id"
+          *ngFor="let workOption of workOptions$ | async"
+          [value]="workOption.id"
         >
-          {{ option.description }}
+          {{ workOption.description }}
         </mat-option>
       </mat-select>
     </mat-form-field>

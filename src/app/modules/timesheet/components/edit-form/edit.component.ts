@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
+  Input,
   OnInit,
 } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
@@ -24,6 +25,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import Swal from 'sweetalert2';
+import { map, Observable, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-edit',
@@ -47,7 +49,7 @@ export class EditComponent implements OnInit {
   ngOnInit(): void {
     this.minDate = this.updateService.getMinDate();
     this.maxDate = this.updateService.getMaxDate();
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+
     this.overtimeForm.valueChanges.subscribe(() => {
       this.calculateTotal();
     });
@@ -62,6 +64,7 @@ export class EditComponent implements OnInit {
   minDate: Date | null = null;
   maxDate: Date | null = null;
   descriptionOptions: WorkOption[] = [];
+  @Input() workOptions$: Observable<WorkOption[]> = of([]);
   overtimeForm: FormGroup = new FormGroup(
     {
       id: new FormControl(0),
@@ -156,41 +159,42 @@ export class EditComponent implements OnInit {
     const workID = this.overtimeForm.get('workID')?.value;
 
     if (startTime && endTime && workID) {
-      const work = this.descriptionOptions.find(
-        (option) => option.id === workID
-      );
+      this.workOptions$
+        .pipe(
+          map((options: WorkOption[]) =>
+            options.find((option) => option.id === workID)
+          ),
+          switchMap((work) => {
+            if (!work) {
+              return of(0);
+            }
 
-      if (!work) {
-        return this.overtimeForm
-          .get('total')
-          ?.setValue(0, { emitEvent: false });
-      }
+            const fee = work.fee;
 
-      const fee = work.fee;
-      const start = new Date(`1970-01-01T${startTime}:00`);
-      const end = new Date(`1970-01-01T${endTime}:00`);
+            const start = new Date(`1970-01-01T${startTime}:00`);
+            const end = new Date(`1970-01-01T${endTime}:00`);
 
-      if (start > end) {
-        return this.overtimeForm
-          .get('total')
-          ?.setValue(0, { emitEvent: false });
-      }
+            if (start > end) {
+              return of(0);
+            }
 
-      const overtimeHours = Math.floor(
-        (end.getTime() - start.getTime()) / (1000 * 60 * 60)
-      );
+            const overtimeHours = Math.floor(
+              (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+            );
 
-      if (
-        overtimeHours >= 2 &&
-        work.description.toLowerCase().startsWith('interview')
-      ) {
-        const total = overtimeHours * 50000;
-        return this.overtimeForm
-          .get('total')
-          ?.setValue(total, { emitEvent: false });
-      }
-      const total = overtimeHours * fee;
-      this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
+            if (
+              overtimeHours >= 2 &&
+              work.description.toLowerCase().startsWith('interview')
+            ) {
+              return of(overtimeHours * 50000);
+            }
+
+            return of(overtimeHours * fee);
+          })
+        )
+        .subscribe((total) => {
+          this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
+        });
     }
   }
 

@@ -14,12 +14,12 @@ export interface Overtime {
   date: Date;
   startTime: Date;
   endTime: Date;
-  workID: number;
+  workID: string;
   total?: number;
 }
 
 export interface WorkOption {
-  id: number;
+  id: string;
   description: string;
   fee: number;
 }

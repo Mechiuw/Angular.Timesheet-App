@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../../components/loading/loading.component';
+import { map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-detail-timesheet',
@@ -18,7 +19,9 @@ export class DetailTimesheetComponent implements OnInit {
   private readonly update = inject(OvertimeUpdateService);
   private readonly route = inject(ActivatedRoute);
 
-  descriptionOptions: WorkOption[] = [];
+  // descriptionOptions: WorkOption[] = [];
+  private workDescriptions: { [id: string]: string } = {};
+  workOptions$: Observable<WorkOption[]> = of([]);
   detailTimesheet: Timesheet = {} as Timesheet;
   id: number = 0;
   isLoading: boolean = true;
@@ -31,7 +34,7 @@ export class DetailTimesheetComponent implements OnInit {
       next: (params) => {
         this.id = +params['id'];
         this.getDetail(this.id);
-        this.descriptionOptions = this.timesheetService.GetWorkOptions();
+        this.fetchWorkOptions();
       },
     });
   }
@@ -58,9 +61,23 @@ export class DetailTimesheetComponent implements OnInit {
     );
   }
 
-  getWorkDescription(id: number): string {
-    const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.description : 'Unknown';
+  fetchWorkOptions(): void {
+    this.workOptions$ = this.timesheetService
+      .fethcWorkOptions()
+      .pipe(map((data) => data ?? []));
+
+    this.workOptions$.subscribe((options) => {
+      // console.log('Options:', options);
+      options.forEach((option) => {
+        // console.log('Option ID:', option.id);
+        this.workDescriptions[option.id] = option.description;
+      });
+      // console.log('Work Descriptions:', this.workDescriptions);
+    });
+  }
+
+  getWorkDescription(id: string): string {
+    return this.workDescriptions[id] || 'Unknown';
   }
 
   print() {

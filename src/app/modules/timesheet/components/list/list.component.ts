@@ -3,6 +3,7 @@ import { Overtime, WorkOption } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { TimesheetService } from '../../services/timesheet.service';
 import { TableModule } from 'primeng/table';
+import { map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-list',
@@ -15,16 +16,21 @@ export class ListComponent implements OnInit {
   @Input() overtimeForm: Overtime[] = [];
   @Input() delete!: (id: any) => void;
 
-  private readonly timesheetService = inject(TimesheetService);
-
-  descriptionOptions: WorkOption[] = [];
+  private workDescriptions: { [id: string]: string } = {};
+  @Input() workOptions$: Observable<WorkOption[]> = of([]);
 
   ngOnInit(): void {
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+    this.workOptions$.subscribe((options) => {
+      // console.log('Options:', options);
+      options.forEach((option) => {
+        // console.log('Option ID:', option.id);
+        this.workDescriptions[option.id] = option.description;
+      });
+      // console.log('Work Descriptions:', this.workDescriptions);
+    });
   }
 
-  getWorkDescription(id: number): string {
-    const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.description : 'Unknown';
+  getWorkDescription(id: string): string {
+    return this.workDescriptions[id] || 'Unknown';
   }
 }

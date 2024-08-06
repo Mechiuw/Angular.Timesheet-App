@@ -14,10 +14,14 @@
   </div>
 
   <div class="px-5 py-3">
-    <app-form #formComponent />
+    <app-form #formComponent [workOptions$]="workOptions$" />
   </div>
 </div>
 
 <div class="px-5">
-  <app-list [overtimeForm]="overtimeForm" [delete]="remove.bind(this)" />
+  <app-list
+    [overtimeForm]="overtimeForm"
+    [delete]="remove.bind(this)"
+    [workOptions$]="workOptions$"
+  />
 </div>
