@@ -59,7 +59,7 @@ export class SignInComponent implements OnInit {
 
     this.authService.login({ email, password }).subscribe({
       next: () => {
-        // console.log(this.authService.currentUser);
+        console.log(this.authService.currentUser);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
@@ -67,7 +67,7 @@ export class SignInComponent implements OnInit {
         this.messageService.add({
           severity: 'warn',
           summary: 'Warn',
-          detail: err.error.responseMessage,
+          detail: err.error.data,
         })
       },
     });

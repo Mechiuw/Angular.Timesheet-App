@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { SessionService } from '../../core/services/sesssion.service';
 import { UserInfo } from '../../core/models/user-info.model';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { SessionService } from '../../core/services/session.service';
 
 @Component({
   selector: 'app-approval',
