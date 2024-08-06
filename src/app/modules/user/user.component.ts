@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserFormComponent } from "./components/user-form/user-form.component";
 import { UserListComponent } from "./components/user-list/user-list.component";
 import { UserService } from './services/user.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-user',

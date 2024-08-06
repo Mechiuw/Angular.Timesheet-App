@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { API_ENDPOINT } from "../../../core/constants/api-endpoint";
-import { PagedResponse } from "../../../core/models/api.model";
+import { PagedResponse, SingleResponse } from "../../../core/models/api.model";
 import { User } from "../models/user.model";
 import { map, Observable } from "rxjs";
 import { SessionService } from "../../../core/services/session.service";
@@ -22,13 +22,4 @@ export class UserService {
       return error.message;
     }
   }
-
-  getRoles(): Observable<PagedResponse<Role[]>> {
-    try {
-      return this.http.get<PagedResponse<Role[]>>(API_ENDPOINT.ROLES)
-    } catch (error : any){
-      return error.message;
-    }
-  }
-  
 }

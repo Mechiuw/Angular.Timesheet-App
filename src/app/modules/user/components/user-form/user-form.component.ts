@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { AuthService } from '../../../auth/services/auth.service';
 
 
 @Component({
@@ -25,33 +26,20 @@ export class UserFormComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
-  cities: { name: string, code: string }[] | undefined;
 
   constructor(
     private readonly formBuilder: FormBuilder, 
     private readonly router: Router,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly authService : AuthService
   ) {}
 
-  // onClick() {
-  //   alert('Button clicked');
-  // }
-
   ngOnInit(): void {
-    this.cities = [
-      { name: 'New York', code: 'NY' },
-      { name: 'Rome', code: 'RM' },
-      { name: 'London', code: 'LDN' },
-      { name: 'Istanbul', code: 'IST' },
-      { name: 'Paris', code: 'PRS' }
-  ];
-
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
-      // role: ['', Validators.required],
-      role: new FormControl<{ name: string, code: string } | null>(null)
-
+      password : ['',Validators.required],
+      role: new FormControl<{ name: string, code: string } | null>(null),
     });
   }
 
@@ -67,6 +55,24 @@ export class UserFormComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+    
+    this.authService.login({ email, password}).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Form submitted successfully.'
+        });
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err:any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error.responseMessage || 'An error occurred.'
+        });
+      }
+    });
 
     // this.authService.login({ email, password }).subscribe({
     //   next: () => {
