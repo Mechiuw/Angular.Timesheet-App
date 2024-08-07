@@ -12,6 +12,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RoleService } from '../../../role/service/role.service';
 import { Role } from '../../../role/models/role.model';
+import { UserService } from '../../services/user.service';
+import { User } from '../../models/user.model';
 
 
 @Component({
@@ -35,7 +37,8 @@ export class UserFormComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: MessageService,
     private readonly authService : AuthService,
-    private readonly roleService : RoleService
+    private readonly roleService : RoleService,
+    private readonly userService : UserService,
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +75,17 @@ export class UserFormComponent implements OnInit {
     }
     
     const { email, password } = this.form.value;
+
+    const user: User = {
+      email : this.form.value.email,
+      name : this.form.value.name,
+      role : this.form.value.role,
+      status : this.form.value.status
+    } 
+
+    this.userService.registerUser(user)
+
+
     this.authService.login({ email, password}).subscribe({
       next: () => {
         this.messageService.add({
