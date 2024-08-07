@@ -1,20 +1,19 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { Overtime, WorkOption } from '../../model/timesheet';
-import { CommonModule } from '@angular/common';
-import { TimesheetService } from '../../services/timesheet.service';
 import { TableModule } from 'primeng/table';
-import { map, Observable, of } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-list',
+  selector: 'app-edit-list',
   standalone: true,
   imports: [CommonModule, TableModule],
-  templateUrl: './list.component.html',
-  styleUrl: './list.component.scss',
+  templateUrl: './edit-list.component.html',
+  styleUrl: './edit-list.component.scss',
 })
-export class ListComponent implements OnInit {
+export class EditListComponent implements OnInit {
   @Input() overtimeForm: Overtime[] = [];
-  @Input() delete!: (id: any) => void;
+  @Input() edit!: (id: any) => void;
 
   private workDescriptions: { [id: string]: string } = {};
   @Input() workOptions$: Observable<WorkOption[]> = of([]);

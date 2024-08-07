@@ -18,16 +18,20 @@
 
     <div class="flex justify-between">
       <app-total-pay [totalPay]="totalPay"></app-total-pay>
-      <app-update-button />
+      <app-update-button [timesheetId]="timesheetId" />
     </div>
   </div>
 
   <div class="px-5 py-3">
-    <app-edit />
+    <app-edit #editformComponent [workOptions$]="workOptions$" />
   </div>
 </div>
 
 <div class="px-5">
-  <app-list [overtimeForm]="overtimeForm" [delete]="remove.bind(this)" />
+  <app-edit-list
+    [overtimeForm]="overtimeForm"
+    [edit]="edit.bind(this)"
+    [workOptions$]="workOptions$"
+  />
 </div>
 }
