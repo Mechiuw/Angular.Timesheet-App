@@ -9,6 +9,7 @@ import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/up
 import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
 import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/detail-timesheet.component';
 import { DashboardGuardService } from "../../core/guards/dashboard-guard.service";
+import { UserComponent } from "../user/user.component";
 
 const routes: Routes = [
   {
