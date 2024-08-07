@@ -78,8 +78,8 @@ export class SubmitButtonComponent implements OnInit {
             });
           }
         );
-        this.router.navigate(['/timesheets/list']);
       }
     });
+    this.router.navigate(['/timesheets/list']);
   }
 }
