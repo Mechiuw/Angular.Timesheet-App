@@ -30,4 +30,8 @@ export class UserService {
       return error.message;
     }
   }
+
+  registerUser(user:User): Observable<User> {
+    return this.http.post<User>(`${API_BASE_URL}/admin/register`,user);
+  }
 }
