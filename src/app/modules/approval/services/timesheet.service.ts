@@ -32,24 +32,29 @@ export class TimesheetService implements ITimesheetService {
   getAllTimesheet(params: string): Observable<PagedResponse<Timesheet[]>> {
     try {
       return this.http.get<PagedResponse<Timesheet[]>>(
-        API_ENDPOINT.TIMESHEET + '?rowsPerPage=1000' + params
+        API_ENDPOINT.TIMESHEET + params
       );
     } catch (error: any) {
       return error.message;
     }
   }
 
+  // TODO : IMPLEMENTASI SERVER SIDE PAGINATION
+  // currently using client side pagination
+  // currently using filter by FE
   getAllTimesheetByAuth(
     role: string,
     route: string
   ): Observable<PagedResponse<Timesheet[]>> {
+    const baseUrl = API_ENDPOINT.TIMESHEET + '?rowsPerPage=1000&';
+
     switch (role) {
       // Role User
       case Roles.USER: {
         try {
           return this.http
             .get<PagedResponse<Timesheet[]>>(
-              API_ENDPOINT.TIMESHEET + '?userId=' + this.currentUser$.value?.id
+              baseUrl + 'userId=' + this.currentUser$.value?.id
             )
             .pipe(
               map((response) => {
@@ -81,7 +86,7 @@ export class TimesheetService implements ITimesheetService {
       case Roles.ADMIN: {
         try {
           return this.http
-            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .get<PagedResponse<Timesheet[]>>(baseUrl)
             .pipe(
               map((response) => {
                 const filteredData = response.data.filter((timesheet) => {
@@ -112,7 +117,7 @@ export class TimesheetService implements ITimesheetService {
       case Roles.MANAGER: {
         try {
           return this.http
-            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .get<PagedResponse<Timesheet[]>>(baseUrl)
             .pipe(
               map((response) => {
                 const filteredData = response.data.filter((timesheet) => {
@@ -124,7 +129,7 @@ export class TimesheetService implements ITimesheetService {
                       timesheet.status === StatusTimesheets.DENIED
                     );
                   } else {
-                    return timesheet;
+                    return false;
                   }
                 });
 
@@ -139,7 +144,7 @@ export class TimesheetService implements ITimesheetService {
       case Roles.BENEFIT: {
         try {
           return this.http
-            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .get<PagedResponse<Timesheet[]>>(baseUrl)
             .pipe(
               map((response) => {
                 const filteredData = response.data.filter((timesheet) => {
