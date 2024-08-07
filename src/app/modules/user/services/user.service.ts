@@ -22,4 +22,12 @@ export class UserService {
       return error.message;
     }
   }
+
+  filterUsersByName(name: string){
+    try {
+      return this.http.get<PagedResponse<User[]>>(`${API_BASE_URL}/admin/accounts?name=${name}`)
+    } catch (error: any) {
+      return error.message;
+    }
+  }
 }

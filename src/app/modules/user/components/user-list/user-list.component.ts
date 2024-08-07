@@ -38,7 +38,6 @@ import { LazyLoadEvent } from 'primeng/api';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent implements OnInit {
-
   constructor(private userService: UserService) {}
 
   @ViewChild('dt1') dt: Table | undefined;
@@ -50,38 +49,52 @@ export class UserListComponent implements OnInit {
   totalRecords: number = 0;
   page: number = 1;
   loading: boolean = false;
-  rowsOption: number[] = [1,2,5]
+  rowsOption: number[] = [5, 10, 50];
 
   clear(table: Table) {
-    table.clear();
     this.searchValue = '';
+    table.clear();
   }
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-
   loadUsers($event: LazyLoadEvent) {
-    let rows = $event.rows
-    this.loading = true; 
-    this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1
+    let rows = $event.rows;
+    this.loading = true;
+    this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
 
-    this.userService.getUsers(rows ?? 1, this.page).subscribe({
-      next: (response: PagedResponse<User[]>) => {
-        this.totalRecords = response.paging.totalRows
-        rows = response.paging.rowsPerPage
-        this.users = response.data
-        this.loading = false
-        console.log(response);
-      },
-      error: (error: any) => {
-        console.error('Error fetching users:', error);
-      }
-    });
+    if (this.searchValue != '') {
+      this.userService.filterUsersByName(this.searchValue || '').subscribe({
+        next: (response: PagedResponse<User[]>) => {
+          this.totalRecords = response.paging.totalRows;
+          rows = response.paging.rowsPerPage;
+          this.users = response.data;
+          this.loading = false;
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error('Error fetching users:', error);
+        },
+      });
+    } else {
+      console.log(this.searchValue);
+      
+      this.userService.getUsers(rows ?? 1, this.page).subscribe({
+        next: (response: PagedResponse<User[]>) => {
+          this.totalRecords = response.paging.totalRows;
+          rows = response.paging.rowsPerPage;
+          this.users = response.data;
+          this.loading = false;
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error('Error fetching users:', error);
+        },
+      });
+    }
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 }
