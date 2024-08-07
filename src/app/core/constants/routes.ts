@@ -1,4 +1,4 @@
 export enum Routes {
-  OnProgress = 'on-progress',
-  History = 'history',
+  ONPROGRESS = 'on-progress',
+  HISTORY = 'history',
 }

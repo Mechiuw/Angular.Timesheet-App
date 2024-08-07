@@ -45,7 +45,7 @@ export class HistoryComponent implements OnInit {
   timesheets: Timesheet[] = [];
 
   // Example Route
-  route: string = Routes.History;
+  route: string = Routes.HISTORY;
 
   // Data Role
   role: string = '';
@@ -54,102 +54,21 @@ export class HistoryComponent implements OnInit {
   queryParam: string = '';
 
   // Get Timesheet By Auth
-  getAllTimesheetByAuth() {
-    switch (this.role) {
-      // Role User
-      case Roles.User: {
-        // Set Query Param
-        this.queryParam = '&userId=' + this.currentUser$.value?.id;
+  getTimesheetsFromService() {
+    // Enable Loading
+    this.isLoading = true;
 
-        // Get Timesheet Data
-        this.timesheetService
-          .getAllTimesheet(this.queryParam)
-          .subscribe((timesheet) => {
-            // Filter Timesheet
-            const timesheetsHistoryUserRole = timesheet.data.filter(
-              (timesheet) =>
-                timesheet.status === StatusTimesheets.Denied ||
-                timesheet.status === StatusTimesheets.Approved ||
-                timesheet.status === StatusTimesheets.Rejected
-            );
+    // Get Timesheet Data
+    this.timesheetService
+      .getAllTimesheetByAuth(this.role, this.route)
+      .subscribe((timesheet) => {
+        // Set Data
+        this.timesheets = timesheet.data;
 
-            // Set Data
-            this.timesheets = timesheetsHistoryUserRole;
-
-            // Disable Loading
-            this.isLoading = false;
-          });
-
-        break;
-      }
-      // Role Admin
-      case Roles.Admin: {
-        // Get Timesheet Data
-        this.timesheetService
-          .getAllTimesheet(this.queryParam)
-          .subscribe((timesheet) => {
-            // Filter Timesheet
-            const timesheetsHistoryAdminRole = timesheet.data.filter(
-              (timesheet) =>
-                timesheet.status === StatusTimesheets.Denied ||
-                timesheet.status === StatusTimesheets.Approved ||
-                timesheet.status === StatusTimesheets.Rejected
-            );
-
-            // Set Data
-            this.timesheets = timesheetsHistoryAdminRole;
-
-            // Disable Loading
-            this.isLoading = false;
-          });
-
-        break;
-      }
-      case Roles.Manager: {
-        // Get Timesheet Data
-        this.timesheetService
-          .getAllTimesheet(this.queryParam)
-          .subscribe((timesheet) => {
-            // Filter Timesheet
-            const timesheetsHistoryManagerRole = timesheet.data.filter(
-              (timesheet) =>
-                timesheet.status === StatusTimesheets.Accepted ||
-                timesheet.status === StatusTimesheets.Denied
-            );
-
-            // Set Data
-            this.timesheets = timesheetsHistoryManagerRole;
-
-            // Disable Loading
-            this.isLoading = false;
-          });
-
-        break;
-      }
-      case Roles.Benefit: {
-        // Get Timesheet Data
-        this.timesheetService
-          .getAllTimesheet(this.queryParam)
-          .subscribe((timesheet) => {
-            // Filter Timesheet
-            const timesheetsHistoryBenefitRole = timesheet.data.filter(
-              (timesheet) =>
-                timesheet.status === StatusTimesheets.Approved ||
-                timesheet.status === StatusTimesheets.Rejected
-            );
-
-            // Set Data
-            this.timesheets = timesheetsHistoryBenefitRole;
-
-            // Disable Loading
-            this.isLoading = false;
-          });
-
-        break;
-      }
-    }
+        // Disable Loading
+        this.isLoading = false;
+      });
   }
-
   ngOnInit() {
     // Get Data Current User
     this.currentUser$.subscribe((user) => {
@@ -157,6 +76,6 @@ export class HistoryComponent implements OnInit {
     });
 
     // Get Timesheet
-    this.getAllTimesheetByAuth();
+    this.getTimesheetsFromService();
   }
 }

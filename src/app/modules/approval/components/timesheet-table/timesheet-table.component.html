@@ -117,10 +117,10 @@
         <!-- Column Action -> Authority : -->
         <th
           *ngIf="
-            (route === RoutesEnum.OnProgress && role === RolesEnum.Manager) ||
-            (route === RoutesEnum.OnProgress && role === RolesEnum.Benefit) ||
-            (route === RoutesEnum.History && role === RolesEnum.Benefit) ||
-            (route === RoutesEnum.History && role === RolesEnum.Admin)
+            (route === RoutesEnum.ONPROGRESS && role === RolesEnum.MANAGER) ||
+            (route === RoutesEnum.ONPROGRESS && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.ADMIN)
           "
           class="text-center text-xs font-semibold text-foreground"
         >
@@ -163,8 +163,17 @@
         </td>
         <td>
           <div *ngIf="timesheet.confirmedManagerBy.userId === ''">
-            <span class="text-xs font-semibold text-foreground/50">
-              Waiting Approval by Manager IT
+            <span
+              *ngIf="route === RoutesEnum.ONPROGRESS"
+              class="text-xs font-semibold text-foreground/50"
+            >
+              Waiting Accepted by Manager IT
+            </span>
+            <span
+              *ngIf="route === RoutesEnum.HISTORY"
+              class="text-xs font-semibold text-foreground/50"
+            >
+              -
             </span>
           </div>
           <div *ngIf="timesheet.confirmedManagerBy.userId !== ''">
@@ -180,12 +189,26 @@
         </td>
         <td>
           <div class="flex flex-col justify-items-start">
-            <div *ngIf="timesheet.confirmedManagerBy.userId === ''">
-              <span class="text-xs font-semibold text-foreground/50">
-                Waiting Approval by Benefit Team
+            <div *ngIf="timesheet.confirmedBenefitBy.userId === ''">
+              <span
+                *ngIf="
+                  route === RoutesEnum.ONPROGRESS ||
+                  (route === RoutesEnum.HISTORY &&
+                    role === RolesEnum.MANAGER &&
+                    timesheet.status === StatusTimesheetsEnum.ACCEPTED)
+                "
+                class="text-xs font-semibold text-foreground/50"
+              >
+                Waiting Approved by Benefit Team
+              </span>
+              <span
+                *ngIf="route === RoutesEnum.HISTORY"
+                class="text-xs font-semibold text-foreground/50"
+              >
+                -
               </span>
             </div>
-            <div *ngIf="timesheet.confirmedManagerBy.userId !== ''">
+            <div *ngIf="timesheet.confirmedBenefitBy.userId !== ''">
               <div class="flex flex-col justify-items-start">
                 <span class="mb-1 text-sm font-semibold text-foreground">{{
                   timesheet.confirmedBenefitBy.name
@@ -206,23 +229,23 @@
           <div>
             <span class="text-sm font-semibold text-foreground">
               <span
-                *ngIf="timesheet.status === StatusTimesheetsEnum.Pending"
+                *ngIf="timesheet.status === StatusTimesheetsEnum.PENDING"
                 class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
               >
                 {{ timesheet.status }}
               </span>
               <span
                 *ngIf="
-                  timesheet.status === StatusTimesheetsEnum.Accepted ||
-                  timesheet.status === StatusTimesheetsEnum.Approved
+                  timesheet.status === StatusTimesheetsEnum.ACCEPTED ||
+                  timesheet.status === StatusTimesheetsEnum.APPROVED
                 "
                 class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
                 >{{ timesheet.status }}
               </span>
               <span
                 *ngIf="
-                  timesheet.status === StatusTimesheetsEnum.Denied ||
-                  timesheet.status === StatusTimesheetsEnum.Rejected
+                  timesheet.status === StatusTimesheetsEnum.DENIED ||
+                  timesheet.status === StatusTimesheetsEnum.REJECTED
                 "
                 class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10"
               >
@@ -246,13 +269,13 @@
         <!-- Column Action Button -> Route On Progress -->
         <td
           *ngIf="
-            route === RoutesEnum.OnProgress &&
-            (role === RolesEnum.Manager || role === RolesEnum.Benefit)
+            route === RoutesEnum.ONPROGRESS &&
+            (role === RolesEnum.MANAGER || role === RolesEnum.BENEFIT)
           "
         >
           <!-- Button Action -> Manager or Benefit -->
           <div
-            *ngIf="role === RolesEnum.Manager || role === RolesEnum.Benefit"
+            *ngIf="role === RolesEnum.MANAGER || role === RolesEnum.BENEFIT"
             class="flex flex-row justify-center"
           >
             <button
@@ -262,7 +285,7 @@
               "
               class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-foreground text-white hover:bg-muted hover:text-foreground"
               pTooltip="{{
-                timesheet.status === StatusTimesheetsEnum.Accepted
+                timesheet.status === StatusTimesheetsEnum.ACCEPTED
                   ? 'Approve'
                   : 'Accept'
               }} Timesheet"
@@ -277,7 +300,7 @@
               "
               class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-foreground text-white hover:bg-muted hover:text-foreground"
               pTooltip="{{
-                timesheet.status === StatusTimesheetsEnum.Accepted
+                timesheet.status === StatusTimesheetsEnum.ACCEPTED
                   ? 'Rejected'
                   : 'Deny'
               }} Timesheet"
@@ -290,13 +313,13 @@
         <!-- Column Action Print -> Authority Benefit Team, Admin and Route History -->
         <td
           *ngIf="
-            (route === RoutesEnum.History && role === RolesEnum.Benefit) ||
-            (route === RoutesEnum.History && role === RolesEnum.Admin)
+            (route === RoutesEnum.HISTORY && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.ADMIN)
           "
         >
           <div class="flex justify-center">
             <button
-              *ngIf="timesheet.status === StatusTimesheetsEnum.Approved"
+              *ngIf="timesheet.status === StatusTimesheetsEnum.APPROVED"
               (click)="showDialogPrint(timesheet)"
               class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-foreground hover:bg-muted hover:text-foreground"
               pTooltip="Print Timesheet"

@@ -1,20 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
-import { SessionService } from '../../../core/services/session.service';
 import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
 import { Timesheet } from '../model/timesheet';
 import { ITimesheetService } from './itimesheet.service';
+import { Roles } from '../../../core/constants/roles';
+import { StatusTimesheets } from '../../../core/constants/status-timesheets';
+
+// import for service session
+import { SessionService } from '../../../core/services/session.service';
+import { UserInfo } from '../../../core/models/user-info.model';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimesheetService implements ITimesheetService {
+  // Data user from session
+  private currentUser$: BehaviorSubject<UserInfo | null>;
+
   constructor(
     private readonly http: HttpClient,
     private readonly sessionService: SessionService
-  ) {}
+  ) {
+    this.currentUser$ = new BehaviorSubject<UserInfo | null>(
+      sessionService.getCurrentUser()
+    );
+  }
+
   getAllTimesheet(params: string): Observable<PagedResponse<Timesheet[]>> {
     try {
       return this.http.get<PagedResponse<Timesheet[]>>(
@@ -24,6 +38,136 @@ export class TimesheetService implements ITimesheetService {
       return error.message;
     }
   }
+
+  getAllTimesheetByAuth(
+    role: string,
+    route: string
+  ): Observable<PagedResponse<Timesheet[]>> {
+    switch (role) {
+      // Role User
+      case Roles.USER: {
+        try {
+          return this.http
+            .get<PagedResponse<Timesheet[]>>(
+              API_ENDPOINT.TIMESHEET + '?userId=' + this.currentUser$.value?.id
+            )
+            .pipe(
+              map((response) => {
+                const filteredData = response.data.filter((timesheet) => {
+                  if (route === 'on-progress') {
+                    return (
+                      timesheet.status === StatusTimesheets.PENDING ||
+                      timesheet.status === StatusTimesheets.ACCEPTED
+                    );
+                  } else if (route === 'history') {
+                    return (
+                      timesheet.status === StatusTimesheets.DENIED ||
+                      timesheet.status === StatusTimesheets.APPROVED ||
+                      timesheet.status === StatusTimesheets.REJECTED
+                    );
+                  } else {
+                    return timesheet;
+                  }
+                });
+
+                return { ...response, data: filteredData };
+              })
+            );
+        } catch (error: any) {
+          return error.message;
+        }
+      }
+      // Role Admin
+      case Roles.ADMIN: {
+        try {
+          return this.http
+            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .pipe(
+              map((response) => {
+                const filteredData = response.data.filter((timesheet) => {
+                  if (route === 'on-progress') {
+                    return (
+                      timesheet.status === StatusTimesheets.PENDING ||
+                      timesheet.status === StatusTimesheets.ACCEPTED
+                    );
+                  } else if (route === 'history') {
+                    return (
+                      timesheet.status === StatusTimesheets.DENIED ||
+                      timesheet.status === StatusTimesheets.APPROVED ||
+                      timesheet.status === StatusTimesheets.REJECTED
+                    );
+                  } else {
+                    return timesheet;
+                  }
+                });
+
+                return { ...response, data: filteredData };
+              })
+            );
+        } catch (error: any) {
+          return error.message;
+        }
+      }
+      // Role Manager
+      case Roles.MANAGER: {
+        try {
+          return this.http
+            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .pipe(
+              map((response) => {
+                const filteredData = response.data.filter((timesheet) => {
+                  if (route === 'on-progress') {
+                    return timesheet.status === StatusTimesheets.PENDING;
+                  } else if (route === 'history') {
+                    return (
+                      timesheet.status === StatusTimesheets.ACCEPTED ||
+                      timesheet.status === StatusTimesheets.DENIED
+                    );
+                  } else {
+                    return timesheet;
+                  }
+                });
+
+                return { ...response, data: filteredData };
+              })
+            );
+        } catch (error: any) {
+          return error.message;
+        }
+      }
+      // Role Benefit
+      case Roles.BENEFIT: {
+        try {
+          return this.http
+            .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET)
+            .pipe(
+              map((response) => {
+                const filteredData = response.data.filter((timesheet) => {
+                  if (route === 'on-progress') {
+                    return timesheet.status === StatusTimesheets.ACCEPTED;
+                  } else if (route === 'history') {
+                    return (
+                      timesheet.status === StatusTimesheets.APPROVED ||
+                      timesheet.status === StatusTimesheets.REJECTED
+                    );
+                  } else {
+                    return timesheet;
+                  }
+                });
+
+                return { ...response, data: filteredData };
+              })
+            );
+        } catch (error: any) {
+          return error.message;
+        }
+      }
+      default: {
+        return of({} as PagedResponse<Timesheet[]>);
+      }
+    }
+  }
+
   getTimesheetById(id: string): Observable<SingleResponse<Timesheet>> {
     try {
       return this.http.get<SingleResponse<Timesheet>>(

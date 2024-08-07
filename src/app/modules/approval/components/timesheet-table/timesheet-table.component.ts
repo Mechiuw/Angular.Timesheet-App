@@ -78,25 +78,25 @@ export class TimesheetTableComponent implements OnInit {
 
   // Data Enum Roles
   RolesEnum = {
-    User: Roles.User,
-    Admin: Roles.Admin,
-    Manager: Roles.Manager,
-    Benefit: Roles.Benefit,
+    USER: Roles.USER,
+    ADMIN: Roles.ADMIN,
+    MANAGER: Roles.MANAGER,
+    BENEFIT: Roles.BENEFIT,
   };
 
   // Data Enum Route
   RoutesEnum = {
-    OnProgress: Routes.OnProgress,
-    History: Routes.History,
+    ONPROGRESS: Routes.ONPROGRESS,
+    HISTORY: Routes.HISTORY,
   };
 
   // Data Enum Status Timesheet
   StatusTimesheetsEnum = {
-    Pending: StatusTimesheets.Pending,
-    Accepted: StatusTimesheets.Accepted,
-    Denied: StatusTimesheets.Denied,
-    Approved: StatusTimesheets.Approved,
-    Rejected: StatusTimesheets.Rejected,
+    PENDING: StatusTimesheets.PENDING,
+    ACCEPTED: StatusTimesheets.ACCEPTED,
+    DENIED: StatusTimesheets.DENIED,
+    APPROVED: StatusTimesheets.APPROVED,
+    REJECTED: StatusTimesheets.REJECTED,
   };
 
   // Data and Function from Parent
@@ -104,7 +104,7 @@ export class TimesheetTableComponent implements OnInit {
   @Input() timesheets: Timesheet[] = [];
   @Input() route!: string;
   @Input() role!: string;
-  @Output() getAllTimesheetByAuth = new EventEmitter<void>();
+  @Output() getTimesheetsFromService = new EventEmitter<void>();
   @Output() checkDeleteAllData = new EventEmitter<void>();
 
   // Data Selected Timesheet
@@ -139,14 +139,14 @@ export class TimesheetTableComponent implements OnInit {
       severity: 'success',
       summary: 'Updated',
       detail:
-        status === StatusTimesheets.Accepted
+        status === StatusTimesheets.ACCEPTED
           ? 'Timesheet approved'
           : 'Timesheet accepted',
       life: 3000,
     });
 
     // Call Service Funtion from Parent to Update Data
-    this.getAllTimesheetByAuth.emit();
+    this.getTimesheetsFromService.emit();
   }
 
   reloadSuccessX() {
@@ -155,14 +155,14 @@ export class TimesheetTableComponent implements OnInit {
       severity: 'success',
       summary: 'Updated',
       detail:
-        status === StatusTimesheets.Accepted
+        status === StatusTimesheets.ACCEPTED
           ? 'Timesheet rejected'
           : 'Timesheet denied',
       life: 3000,
     });
 
     // Call Service Funtion from Service
-    this.getAllTimesheetByAuth.emit();
+    this.getTimesheetsFromService.emit();
   }
 
   // Function Confirmation Button
@@ -171,14 +171,14 @@ export class TimesheetTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message:
-        status === StatusTimesheets.Accepted
+        status === StatusTimesheets.ACCEPTED
           ? 'Are you sure to approve'
           : 'Are you sure to accept' + ' timesheet ?',
       icon: 'pi pi-exclamation-triangle',
 
       accept: () => {
         // Process Data
-        if (status === StatusTimesheets.Pending) {
+        if (status === StatusTimesheets.PENDING) {
           // Update Status to 'accepted' (call service)
           this.timesheetService
             .acceptTimesheetByManager(this.selectedTimesheet.id)
@@ -186,7 +186,7 @@ export class TimesheetTableComponent implements OnInit {
               // Reload Data
               this.reloadSuccessY();
             });
-        } else if (status === StatusTimesheets.Accepted) {
+        } else if (status === StatusTimesheets.ACCEPTED) {
           // Update Status to 'approved' (call service)
           this.timesheetService
             .approveTimesheetByBenefit(this.selectedTimesheet.id)
@@ -213,14 +213,14 @@ export class TimesheetTableComponent implements OnInit {
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message:
-        status === StatusTimesheets.Accepted
+        status === StatusTimesheets.ACCEPTED
           ? 'Are you sure to reject'
           : 'Are you sure to deny' + ' timesheet ?',
       icon: 'pi pi-exclamation-triangle',
 
       accept: () => {
         // Process Data
-        if (status === StatusTimesheets.Pending) {
+        if (status === StatusTimesheets.PENDING) {
           // Update Status to 'denied'
           this.timesheetService
             .denyTimesheetByManager(this.selectedTimesheet.id)
@@ -228,7 +228,7 @@ export class TimesheetTableComponent implements OnInit {
               // Reload Data
               this.reloadSuccessX();
             });
-        } else if (status === StatusTimesheets.Accepted) {
+        } else if (status === StatusTimesheets.ACCEPTED) {
           // Update Status to 'rejected'
           this.timesheetService
             .rejectTimesheetByBenefit(this.selectedTimesheet.id)
