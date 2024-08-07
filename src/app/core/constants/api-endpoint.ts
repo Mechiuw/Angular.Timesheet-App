@@ -6,9 +6,10 @@ export const API_ENDPOINT = {
     AUTH: {
         LOGIN: `${API_BASE_URL}/login`,
         CHANGE_PASSWORD: `${API_BASE_URL}/accounts/change-password`,
-        UPDATE_ACCOUNTS: `${API_BASE_URL}/accounts/update-account`,
+        UPDATE_ACCOUNTS: `${API_BASE_URL}/accounts/`,
         DETAIL_PROFILE: `${API_BASE_URL}/accounts/profile`,
         ACTIVATION: `${API_BASE_URL}/accounts/activate`,
+        UPLOAD_SIGNATURE: `${API_BASE_URL}/accounts/profile/upload-signature`
     },
     WORK :`${API_BASE_URL}/admin/works`,
 

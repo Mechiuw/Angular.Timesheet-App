@@ -4,9 +4,9 @@ import { TimesheetTableComponent } from '../../components/timesheet-table/timesh
 import { TimesheetEntry } from '../../model/timesheet';
 
 // import for service session
-import { SessionService } from '../../../../core/services/sesssion.service';
 import { UserInfo } from '../../../../core/models/user-info.model';
 import { BehaviorSubject } from 'rxjs';
+import { SessionService } from '../../../../core/services/session.service';
 
 // Example Timesheet Models
 

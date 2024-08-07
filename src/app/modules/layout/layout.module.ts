@@ -9,10 +9,10 @@ import { AngularSvgIconModule } from "angular-svg-icon";
 
 import { LayoutRoutingModule } from "./layout-routing.module";
 import { AuthService } from "../auth/services/auth.service";
-import { requestInterceptor } from "../../core/interceptor/request.interceptor";
+import { DashboardGuardService } from "../../core/guards/dashboard-guard.service";
 @NgModule({
   imports: [LayoutRoutingModule, AngularSvgIconModule.forRoot()],
-  providers: [provideHttpClient(withFetch(),withInterceptors([requestInterceptor])), AuthService],
+  providers: [provideHttpClient(withFetch(), withInterceptorsFromDi()), AuthService, DashboardGuardService],
 
 })
 export class LayoutModule {}
