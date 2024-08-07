@@ -1,9 +1,10 @@
-import {Injectable, OnDestroy, signal} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
-import {MenuItem, SubMenuItem} from '../../../core/models/menu.model';
-import {Menu} from '../../../core/constants/menu';
-import {AuthService} from '../../auth/services/auth.service';
+import { Injectable, OnDestroy, signal } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { MenuItem, SubMenuItem } from '../../../core/models/menu.model';
+import { Menu } from '../../../core/constants/menu';
+import { AuthService } from '../../auth/services/auth.service';
+import { SessionService } from '../../../core/services/session.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,15 +14,20 @@ export class MenuService implements OnDestroy {
   private _showMobileMenu = signal(false);
   private _pagesMenu = signal<MenuItem[]>([]);
   private _subscription = new Subscription();
+  private _role: string[] = [];
+  private currentUser: any;
 
-
-  constructor(private router: Router, private authService: AuthService) {
+  constructor(private router: Router, private sessionService: SessionService) {
 
     /** Get role from current user */
-    const role: string[] = [];
-    role.push(<string>authService.currentUser?.role)
+    this.sessionService.token$.subscribe(() => {
+      this.currentUser = this.sessionService.getCurrentUser();
+      this._role[0] = <string>this.currentUser?.role;
+      this._pagesMenu.set(this.filteredMenuByRole(Menu.pages, this._role));
+      console.log(this._role);
+    });
+
     /** Set dynamic menu by role */
-    this._pagesMenu.set(this.filteredMenuByRole(Menu.pages, role));
 
     let sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -92,18 +98,20 @@ export class MenuService implements OnDestroy {
 
   // Function to check if any role in the array is included in the required roles
   hasRole(roles: string[], requiredRoles: string[]): boolean {
-  return roles.some(role => requiredRoles.includes(role));
+    return roles.some((role) => requiredRoles.includes(role));
   }
 
   // Function to filter menu items based on user roles
   filteredMenuByRole(menu: MenuItem[], roles: string[]): MenuItem[] {
-  return menu
-    .map(menuItem => ({
-      ...menuItem,
-      active: menuItem.active ?? false, // Default to false if undefined
-      items: menuItem.items.filter(subMenuItem => this.hasRole(roles, subMenuItem.role))
-    }))
-    .filter(menuItem => menuItem.items.length > 0);
+    return menu
+      .map((menuItem) => ({
+        ...menuItem,
+        active: menuItem.active ?? false, // Default to false if undefined
+        items: menuItem.items.filter((subMenuItem) =>
+          this.hasRole(roles, subMenuItem.role)
+        ),
+      }))
+      .filter((menuItem) => menuItem.items.length > 0);
   }
 
   ngOnDestroy(): void {
