@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { map, Observable } from "rxjs";
 import { SingleResponse } from "../../../core/models/api.model";
 import { Role } from "../models/role.model";
 import { API_ENDPOINT } from "../../../core/constants/api-endpoint";
@@ -14,11 +14,9 @@ export class RoleService {
         private readonly http: HttpClient,
     ) {}
 
-    getAllRoles(): Observable<SingleResponse<Role[]>> {
-        try {
-          return this.http.get<SingleResponse<Role[]>>(API_ENDPOINT.ROLES)
-        } catch (error : any){
-          return error.message;
-        }
+    getAllRoles(): Observable<Role[]> {
+      return this.http.get<{ status: { code: number; message: string }; data: Role[] }>(API_ENDPOINT.ROLES).pipe(
+        map(response => response.data)
+      );
     }
 }
