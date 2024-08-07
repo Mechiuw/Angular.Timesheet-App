@@ -10,76 +10,23 @@ import {
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
+import { SessionService } from '../../../core/services/session.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimesheetService {
   private readonly http = inject(HttpClient);
-
-  // private dummyData: Timesheet[] = [
-  //   {
-  //     id: 1,
-  //     userId: 1,
-  //     createdAt: new Date('2024-07-03T17:00:00.000Z'),
-  //     confirmedManagerBy: 'ManagerName',
-  //     confirmedBenefitBy: 'BenefitName',
-  //     timeSheetDetails: [
-  //       {
-  //         date: new Date('2024-07-03T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-04T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-04T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         date: new Date('2024-07-05T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-06T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-06T03:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //     ],
-  //     status: Status.Pending,
-  //   },
-  //   {
-  //     id: 2,
-  //     userId: 2,
-  //     createdAt: new Date('2024-08-02T08:06:19.799Z'),
-  //     confirmedManagerBy: 'ManagerName',
-  //     confirmedBenefitBy: 'BenefitName',
-  //     timeSheetDetails: [
-  //       {
-  //         id: 1722585911431,
-  //         date: new Date('2024-07-08T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-09T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-09T03:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         id: 1722585968767,
-  //         date: new Date('2024-07-09T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-10T03:00:00.000Z'),
-  //         endTime: new Date('2024-07-10T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         id: 1722585934135,
-  //         date: new Date('2024-07-10T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-11T03:00:00.000Z'),
-  //         endTime: new Date('2024-07-11T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //     ],
-  //     status: Status.OnProgress,
-  //   },
-  // ];
+  private session = inject(SessionService);
 
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
-  private apiUrl = API_ENDPOINT.TIMESHEET;
   // private apiUrl = 'https://api.yusharwz.my.id/api/v1';
-  private readonly token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTUwMTgsImlhdCI6MTcyMzAwMzAxOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJBa3UgVXNlciIsImVtYWlsIjoiZXBjNDE4MDVAemNjY2suY29tIiwicm9sZSI6InVzZXIifQ.s19zyTJ7_QJCvNHoDkSCJBRETjyxcbAb_SwgwKZLfuc';
+  private apiUrl = API_ENDPOINT.TIMESHEET;
+  private readonly token = this.session.get('token');
+  // private readonly token =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTUwMTgsImlhdCI6MTcyMzAwMzAxOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJBa3UgVXNlciIsImVtYWlsIjoiZXBjNDE4MDVAemNjY2suY29tIiwicm9sZSI6InVzZXIifQ.s19zyTJ7_QJCvNHoDkSCJBRETjyxcbAb_SwgwKZLfuc';
 
   GetTimesheet(): Observable<Timesheet[]> {
     const headers = new HttpHeaders({
