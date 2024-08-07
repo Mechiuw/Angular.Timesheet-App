@@ -11,6 +11,9 @@ import { NftHeaderComponent } from '../../../dashboard/components/nft/nft-header
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user.service';
+import { PagedResponse } from '../../../../core/models/api.model';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-user-list',
@@ -36,9 +39,18 @@ import { CommonModule } from '@angular/common';
 })
 export class UserListComponent implements OnInit {
 
+  constructor(private userService: UserService) {}
+
   @ViewChild('dt1') dt: Table | undefined;
 
   searchValue: string | undefined;
+
+  users: User[] = [];
+  first: number | undefined = 0;
+  totalRecords: number = 0;
+  page: number = 1;
+  loading: boolean = false;
+  rowsOption: number[] = [1,2,5]
 
   clear(table: Table) {
     table.clear();
@@ -49,27 +61,27 @@ export class UserListComponent implements OnInit {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  users: User[] = [];
-  ngOnInit(): void {
-    this.users = [
-      {
-        email: 'ranchodas@gmail.com',
-        name: 'rancho',
-        role: 'manager',
-        status: 'active',
+
+  loadUsers($event: LazyLoadEvent) {
+    let rows = $event.rows
+    this.loading = true; 
+    this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1
+
+    this.userService.getUsers(rows ?? 1, this.page).subscribe({
+      next: (response: PagedResponse<User[]>) => {
+        this.totalRecords = response.paging.totalRows
+        rows = response.paging.rowsPerPage
+        this.users = response.data
+        this.loading = false
+        console.log(response);
       },
-      {
-        email: 'jarjit@gmail.com',
-        name: 'Jarjit',
-        role: 'benefit',
-        status: 'active',
-      },
-      {
-        email: 'mael@gmail.com',
-        name: 'mael',
-        role: 'trainer',
-        status: 'active',
-      },
-    ];
+      error: (error: any) => {
+        console.error('Error fetching users:', error);
+      }
+    });
+  }
+
+  ngOnInit() {
+
   }
 }

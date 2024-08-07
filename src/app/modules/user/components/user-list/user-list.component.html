@@ -1,16 +1,22 @@
 <div class="card">
     <p-table
     #dt1
+    [first]="first"
     [value]="users"
+    [paginator]="true"
+    [loading]="loading"
+    [lazy]="true"
+    (onLazyLoad)="loadUsers($any($event))"
+    [totalRecords]="totalRecords"
     dataKey="id"
     [tableStyle]="{ 'min-width': '50rem' }"
-    [rows]="5"
+    [rows]="rowsOption[0]"
     [paginator]="true"
     [rowHover]="true"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
-    [rowsPerPageOptions]="[5, 10, 100]"
+    [rowsPerPageOptions]="rowsOption"
     [globalFilterFields]="['name', 'email','role']"
     >
     <ng-template pTemplate="caption">
