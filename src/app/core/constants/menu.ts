@@ -37,7 +37,7 @@ export class Menu {
       ],
     },
     {
-      group: "Master",
+      group: 'Master',
       separator: true,
       items: [
         {
@@ -52,10 +52,10 @@ export class Menu {
           route: '/works',
           role: [Roles.Admin, Roles.Manager],
         },
-      ]
+      ],
     },
     {
-      group: "Timesheet",
+      group: 'Timesheet',
       separator: true,
       items: [
         {
@@ -64,8 +64,16 @@ export class Menu {
           route: '/timesheets',
           role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
           children: [
-            { label: 'New Form', route: '/timesheets/create', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
-            { label: 'List', route: '/timesheets/list', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
+            {
+              label: 'New Form',
+              route: '/timesheets/create',
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+            },
+            {
+              label: 'List',
+              route: '/timesheets/list',
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+            },
           ],
         },
         {
