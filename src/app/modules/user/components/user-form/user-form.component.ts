@@ -10,6 +10,8 @@ import { ButtonComponent } from "../../../../shared/components/button/button.com
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { AuthService } from '../../../auth/services/auth.service';
+import { RoleService } from '../../../role/service/role.service';
+import { Role } from '../../../role/models/role.model';
 
 
 @Component({
@@ -26,12 +28,14 @@ export class UserFormComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
+  roles : Role[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder, 
     private readonly router: Router,
     private readonly messageService: MessageService,
-    private readonly authService : AuthService
+    private readonly authService : AuthService,
+    private readonly roleService : RoleService
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +43,20 @@ export class UserFormComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
       password : ['',Validators.required],
-      role: new FormControl<{ name: string, code: string } | null>(null),
+      role: new FormControl<Role | null>(null, Validators.required),
+    });
+
+    this.roleService.getAllRoles().subscribe({
+      next:(roles) => {
+        this.roles = roles;
+      },
+      error:(error) => {
+        this.messageService.add({
+          severity:'error',
+          summary:'Error',
+          detail:'Failed to load roles'
+        });
+      }
     });
   }
 
@@ -49,13 +66,12 @@ export class UserFormComponent implements OnInit {
 
   onSubmit() {
     this.submitted = true;
-    const { email, password } = this.form.value;
-
-    // stop here if form is invalid
+    
     if (this.form.invalid) {
       return;
     }
     
+    const { email, password } = this.form.value;
     this.authService.login({ email, password}).subscribe({
       next: () => {
         this.messageService.add({
@@ -74,25 +90,5 @@ export class UserFormComponent implements OnInit {
       }
     });
 
-    // this.authService.login({ email, password }).subscribe({
-    //   next: () => {
-    //     // console.log(this.authService.currentUser);
-    //     this.router.navigate(['/dashboard']);
-    //   },
-    //   error: (err) => {
-    //     // console.log(err.error.responseMessage);
-    //     this.messageService.add({
-    //       severity: 'warn',
-    //       summary: 'Warn',
-    //       detail: err.error.responseMessage,
-    //     })
-    //   },
-    // });
-
-    // this.authService.loginDummy().subscribe((token) => {
-    //   console.log("SignIn.loginDummy : "+token);
-    //   console.log("SignIn.currentUser : "+ this.authService.currentUser?.email);
-    //   // this.router.navigate(['/dashboard']);
-    // });
   }
 }
