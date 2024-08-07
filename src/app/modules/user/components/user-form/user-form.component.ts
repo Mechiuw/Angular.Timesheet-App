@@ -79,11 +79,25 @@ export class UserFormComponent implements OnInit {
     const user: User = {
       email : this.form.value.email,
       name : this.form.value.name,
-      role : this.form.value.role,
-      status : this.form.value.status
+      role : this.form.value.role
     } 
 
-    this.userService.registerUser(user)
+    this.userService.registerUser(user).subscribe({
+      next:() => {
+        this.messageService.add({
+          severity: 'success',
+          summary : 'Success',
+          detail: 'User saved Successfully'
+        });
+      },
+      error: (err:any)=>{
+        this.messageService.add({
+          severity : 'error',
+          summary : 'Error',
+          detail : err.error.responseMessage || 'An error occured'
+        })
+      }
+    })
 
 
     this.authService.login({ email, password}).subscribe({
