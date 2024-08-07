@@ -47,13 +47,13 @@ export class UpdateButtonComponent implements OnInit {
     }
 
     Swal.fire({
-      title: 'Submit?',
+      title: 'Update?',
       icon: 'question',
-      text: 'Are you sure you want to submit?',
+      text: 'Are you sure you want to update form?',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, submit!',
+      confirmButtonText: 'Yes, update!',
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
@@ -62,14 +62,14 @@ export class UpdateButtonComponent implements OnInit {
           ),
         };
 
-        console.log({ timesheet });
+        console.log(timesheet);
         console.log(this.timesheetId);
         this.timesheetService.UpdateTimesheet(this.timesheetId, timesheet);
         this.formSubmitted.emit();
         this.update.clearWorks();
         Swal.fire({
           title: 'Success!',
-          text: 'Your form has been submitted.',
+          text: 'Your form has been updated.',
           icon: 'success',
         });
         this.router.navigate(['/timesheets/list']);

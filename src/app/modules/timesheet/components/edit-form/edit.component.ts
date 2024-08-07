@@ -129,7 +129,7 @@ export class EditComponent implements OnInit {
       // console.log({ overtime });
       Swal.fire({
         icon: 'success',
-        text: 'Overtime saved successfully',
+        text: 'Overtime edited successfully',
         timer: 1000,
       });
       this.overtimeForm.reset();

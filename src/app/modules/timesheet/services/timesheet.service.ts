@@ -9,6 +9,7 @@ import {
 } from '../model/timesheet';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
+import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 
 @Injectable({
   providedIn: 'root',
@@ -75,10 +76,10 @@ export class TimesheetService {
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
-  // private apiUrl = 'https://sure-pika-easy.ngrok-free.app';
-  private apiUrl = 'https://api.yusharwz.my.id';
+  private apiUrl = API_ENDPOINT.TIMESHEET;
+  // private apiUrl = 'https://api.yusharwz.my.id/api/v1';
   private readonly token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1NTQ1ODksImlhdCI6MTcyMjk2MjU4OSwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiY2NmYzAyYjktZDA3MS00MmZmLWIwMTgtN2JiMWZmZjQ3Mjg3IiwidXNlcm5hbWUiOiJBa3VuIFVzZXIgNDUiLCJlbWFpbCI6ImVwYzQxODA1QHpjY2NrLmNvbSIsInJvbGUiOiJ1c2VyIn0.0k5wZXi_j7rvf3lANoYmvRj5gBD9cbQuSxep9jb4uVE';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTUwMTgsImlhdCI6MTcyMzAwMzAxOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJBa3UgVXNlciIsImVtYWlsIjoiZXBjNDE4MDVAemNjY2suY29tIiwicm9sZSI6InVzZXIifQ.s19zyTJ7_QJCvNHoDkSCJBRETjyxcbAb_SwgwKZLfuc';
 
   GetTimesheet(): Observable<Timesheet[]> {
     const headers = new HttpHeaders({
@@ -86,24 +87,24 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets`;
+    return this.http
+      .get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET, { headers })
+      .pipe(
+        map((response) => {
+          // Filter only timesheets with status 'created'
+          this.fetchTimesheetData = response.data
+            .filter((timesheet) => timesheet.status === 'created')
+            .map((timesheet) => ({
+              ...timesheet,
+            }));
 
-    return this.http.get<{ data: Timesheet[] }>(reqUrl, { headers }).pipe(
-      map((response) => {
-        // Filter only timesheets with status 'created'
-        this.fetchTimesheetData = response.data
-          .filter((timesheet) => timesheet.status === 'created')
-          .map((timesheet) => ({
-            ...timesheet,
-          }));
-
-        return this.sortTimesheetsByDate(this.fetchTimesheetData);
-      }),
-      catchError((error) => {
-        this.fetchTimesheetData = [];
-        return of(this.fetchTimesheetData);
-      })
-    );
+          return this.sortTimesheetsByDate(this.fetchTimesheetData);
+        }),
+        catchError((error) => {
+          this.fetchTimesheetData = [];
+          return of(this.fetchTimesheetData);
+        })
+      );
   }
 
   private sortTimesheetsByDate(timesheets: Timesheet[]): Timesheet[] {
@@ -120,7 +121,7 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}`;
+    const reqUrl = `${this.apiUrl}/${id}`;
     // console.log('Request URL:', reqUrl);
 
     return this.http.get<{ data: TimesheetResponse }>(reqUrl, { headers }).pipe(
@@ -147,9 +148,7 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets/`;
-
-    return this.http.post(reqUrl, timesheet, { headers }).pipe(
+    return this.http.post(API_ENDPOINT.TIMESHEET, timesheet, { headers }).pipe(
       tap((response) => {
         // console.log('Timesheet saved successfully:', response);
       }),
@@ -166,14 +165,14 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}`;
-    console.log('Request URL:', reqUrl);
-    console.log('id:', id);
-    console.log('Edit Timesheet: ' + { timesheet });
+    const reqUrl = `${this.apiUrl}/${id}`;
+    // console.log('Request URL:', reqUrl);
+    // console.log('id:', id);
+    // console.log('Edit Timesheet: ' + timesheet);
 
     return this.http.put(reqUrl, timesheet, { headers }).pipe(
       tap((response) => {
-        console.log('Timesheet edited successfully:', response);
+        // console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
         console.error('Error Edited timesheet:', error);
@@ -188,9 +187,9 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}`;
+    const reqUrl = `${this.apiUrl}/${id}`;
     // console.log('Request URL:', reqUrl);
-    console.log('Delete Timesheet: ' + JSON.stringify(id));
+    // console.log('Delete Timesheet: ' + JSON.stringify(id));
 
     return this.http.delete(reqUrl, { headers }).pipe(
       tap((response) => {
@@ -209,7 +208,7 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/timesheets/${id}/submit`;
+    const reqUrl = `${this.apiUrl}/${id}/submit`;
     // console.log('Request URL:', reqUrl);
     // console.log('submit Timesheet: ' + JSON.stringify(id));
 
@@ -234,20 +233,19 @@ export class TimesheetService {
       'ngrok-skip-browser-warning': 'true',
     });
 
-    const reqUrl = `${this.apiUrl}/api/v1/admin/works`;
-    // console.log('Request URL:', reqUrl);
-
-    return this.http.get<PagedResponse<WorkOption[]>>(reqUrl, { headers }).pipe(
-      map((response) => {
-        this.fetchWorkData = response.data;
-        // console.log('Fetch Work Data:', this.fetchWorkData);
-        return this.fetchWorkData;
-      }),
-      catchError((error) => {
-        // console.error('Error fetching work options:', error);
-        this.fetchWorkData = [];
-        return of(this.fetchWorkData);
-      })
-    );
+    return this.http
+      .get<PagedResponse<WorkOption[]>>(API_ENDPOINT.WORK, { headers })
+      .pipe(
+        map((response) => {
+          this.fetchWorkData = response.data;
+          // console.log('Fetch Work Data:', this.fetchWorkData);
+          return this.fetchWorkData;
+        }),
+        catchError((error) => {
+          // console.error('Error fetching work options:', error);
+          this.fetchWorkData = [];
+          return of(this.fetchWorkData);
+        })
+      );
   }
 }

@@ -45,13 +45,13 @@ export class SubmitButtonComponent implements OnInit {
     }
 
     Swal.fire({
-      title: 'Submit?',
+      title: 'Save?',
       icon: 'question',
-      text: 'Are you sure you want to submit?',
+      text: 'Are you sure you want to save?',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, submit!',
+      confirmButtonText: 'Yes, save!',
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
@@ -66,7 +66,7 @@ export class SubmitButtonComponent implements OnInit {
             this.overtimeService.clearWorks();
             Swal.fire({
               title: 'Success!',
-              text: 'Your form has been submitted.',
+              text: 'Your form has been saved.',
               icon: 'success',
             });
           },
