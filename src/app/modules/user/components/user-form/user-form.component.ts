@@ -9,11 +9,9 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
-import { AuthService } from '../../../auth/services/auth.service';
 import { RoleService } from '../../../role/service/role.service';
 import { Role } from '../../../role/models/role.model';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
 
 
 @Component({
@@ -44,7 +42,6 @@ export class UserFormComponent implements OnInit {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
-      password : ['',Validators.required],
       role: new FormControl<Role | null>(null, Validators.required),
     });
 
@@ -71,10 +68,15 @@ export class UserFormComponent implements OnInit {
     this.submitted = true;
     
     if (this.form.invalid) {
+      console.log('Form is invalid');
       return;
     }
     
     const { email, name, role } = this.form.value;
+    console.log(email);
+    console.log(name);
+    console.log(role);
+    
 
     const user = {
       email : email,
@@ -92,6 +94,7 @@ export class UserFormComponent implements OnInit {
         });
       },
       error: (err:any)=>{
+        console.log('user failed register');
         this.messageService.add({
           severity : 'error',
           summary : 'Error',
@@ -99,25 +102,6 @@ export class UserFormComponent implements OnInit {
         })
       }
     })
-
-
-    // this.authService.login({ email, password}).subscribe({
-    //   next: () => {
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Success',
-    //       detail: 'Form submitted successfully.'
-    //     });
-    //     this.router.navigate(['/dashboard']);
-    //   },
-    //   error: (err:any) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Error',
-    //       detail: err.error.responseMessage || 'An error occurred.'
-    //     });
-    //   }
-    // });
 
   }
 }
