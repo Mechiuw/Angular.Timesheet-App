@@ -1,6 +1,7 @@
 import {
     provideHttpClient,
     withFetch,
+    withInterceptors,
     withInterceptorsFromDi,
 } from "@angular/common/http";
 import { NgModule } from "@angular/core";
