@@ -114,6 +114,13 @@ export class TimesheetTableComponent implements OnInit {
   visibleDetail: boolean = false;
   visiblePrint: boolean = false;
 
+  // Data Pagination
+  first: number | undefined = 0;
+  totalRecords: number = 0;
+  page: number = 1;
+  rowsOption: number[] = [1,2,5]
+
+
   // Function Modal
   showDialogDetail(timesheet: Timesheet) {
     this.selectedTimesheet = timesheet;

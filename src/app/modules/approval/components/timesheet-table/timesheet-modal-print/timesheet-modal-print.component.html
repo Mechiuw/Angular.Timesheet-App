@@ -55,7 +55,7 @@
         <span class="text-md text-center font-semibold text-foreground"
           >Made By,</span
         >
-        <div class="flex align-middle" style="height: 6rem">
+        <div class="flex align-middle justify-center" style="height: 6rem">
           <img
             [src]="selectedTimesheetUser.signatureUrl"
             alt="img-ttd-benefit"
@@ -69,14 +69,17 @@
         >
           {{ selectedTimesheetUser.name }}
         </span>
+        <span class="text-md text-center italic text-foreground">
+          Trainer
+        </span>
       </div>
 
       <!-- Approver -->
       <div class="flex flex-col">
         <span class="text-md text-center font-semibold text-foreground"
-          >Approve By,</span
+          >Approved By,</span
         >
-        <div class="flex align-middle" style="height: 6rem">
+        <div class="flex align-middle justify-center" style="height: 6rem">
           <img
             [src]="selectedTimesheetConfirmedBy?.signatureUrl"
             alt="img-ttd-benefit"
@@ -88,6 +91,9 @@
           class="text-md text-center font-semibold text-foreground underline"
           >{{ selectedTimesheetConfirmedBy?.name }}</span
         >
+        <span class="text-md text-center italic text-foreground">
+          Chief Technology Officer
+        </span>
       </div>
     </div>
   </p-dialog>

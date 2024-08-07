@@ -47,14 +47,14 @@
     [loading]="isLoading"
   >
     <!-- Search Input  -->
-    <ng-template pTemplate="caption">
+    <ng-template pTemplate="caption" *ngIf="role !== RolesEnum.USER">
       <div class="align-center flex justify-end">
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input
             pInputText
             type="text"
-            placeholder="Search timesheet"
+            placeholder="Search by user"
             style="height: 2.5rem; width: 13rem"
             [(ngModel)]="searchValue"
             (input)="applyFilterGlobal($event, 'contains')"
@@ -74,42 +74,42 @@
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Date <p-sortIcon field="createdAt" />
+          Date
         </th>
         <th
           pSortableColumn="user.name"
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Name <p-sortIcon field="user.name" />
+          Name
         </th>
         <th
           pSortableColumn="confirmedManagerBy.name"
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Manager <p-sortIcon field="confirmedManagerBy.name" />
+          Manager
         </th>
         <th
           pSortableColumn="confirmedBenefitBy.name"
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Benefit <p-sortIcon field="confirmedBenefitBy.name" />
+          Benefit
         </th>
         <th
           pSortableColumn="total"
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Amount <p-sortIcon field="total" />
+          Amount
         </th>
         <th
           pSortableColumn="status"
           class="text-xs font-semibold text-foreground"
           style="min-width: 8rem"
         >
-          Status <p-sortIcon field="status" />
+          Status
         </th>
         <th class="text-center text-xs font-semibold text-foreground">
           Details
@@ -240,7 +240,7 @@
                   timesheet.status === StatusTimesheetsEnum.APPROVED
                 "
                 class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
-                >{{ timesheet.status }}
+                >{{ StatusTimesheetsEnum.APPROVED }}
               </span>
               <span
                 *ngIf="
@@ -249,7 +249,7 @@
                 "
                 class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10"
               >
-                {{ timesheet.status }}
+                {{ StatusTimesheetsEnum.REJECTED }}
               </span>
             </span>
           </div>
