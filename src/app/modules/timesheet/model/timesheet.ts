@@ -5,8 +5,8 @@ export interface Timesheet {
   updateAt?: Date;
   confirmedManagerBy?: string;
   confirmedBenefitBy?: string;
-  works: Overtime[];
-  status: Status;
+  timeSheetDetails: Overtime[];
+  status?: string;
 }
 
 export interface Overtime {
@@ -14,8 +14,36 @@ export interface Overtime {
   date: Date;
   startTime: Date;
   endTime: Date;
-  workID: number;
+  workId: string;
   total?: number;
+  description?: string;
+  subTotal?: number;
+}
+export interface TimesheetResponse {
+  id?: any;
+  userId?: number;
+  createdAt?: string;
+  updateAt?: string;
+  confirmedManagerBy?: string;
+  confirmedBenefitBy?: string;
+  timeSheetDetails: Overtime[];
+  total?: number;
+}
+
+export interface OvertimeResponse {
+  id?: any;
+  date: string;
+  startTime: string;
+  endTime: string;
+  workId: string;
+  total?: number;
+  subTotal: number;
+}
+
+export interface WorkOption {
+  id: string;
+  description: string;
+  fee: number;
 }
 
 export enum Status {

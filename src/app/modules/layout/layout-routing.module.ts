@@ -1,8 +1,8 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { LayoutComponent } from "./layout.component";
-import { ActivationComponent } from "../auth/pages/activation/activation.component";
-import { AuthService } from "../auth/services/auth.service";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { LayoutComponent } from './layout.component';
+import { ActivationComponent } from '../auth/pages/activation/activation.component';
+import { AuthService } from '../auth/services/auth.service';
 import { YourProfileComponent } from '../layout/components/navbar/profile-menu/your-profile/your-profile.component';
 import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/create-timesheet.component';
 import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
@@ -13,32 +13,33 @@ import { UserComponent } from "../user/user.component";
 
 const routes: Routes = [
   {
-    path: "dashboard",
+    path: 'dashboard',
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: "users",
+    path: 'users',
     component: LayoutComponent,
     children: [
       {
-        path: "",
-        component: UserComponent
+        path: '',
+        component: UserComponent,
       },
     ],
   },
   {
-    path: "works",
+    path: 'works',
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
-    path: "timesheets",
+    path: 'timesheets',
     canActivate: [DashboardGuardService],
     component: LayoutComponent,
     children: [
+      { path: '', redirectTo: 'create', pathMatch: 'full' },
       { path: 'create', component: CreateTimesheetComponent },
       { path: 'list', component: ListTimesheetComponent },
       { path: 'view/:id', component: DetailTimesheetComponent },
@@ -55,9 +56,9 @@ const routes: Routes = [
   {
     path: 'profile',
     component: YourProfileComponent,
-    loadChildren: () => import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    loadChildren: () =>
+      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
-
 
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404' },

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { IOvertimeUpdateService } from './iovertinmeUpdate.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Overtime } from '../model/timesheet';
+import { BehaviorSubject, forkJoin, map, Observable, of } from 'rxjs';
+import { Overtime, WorkOption } from '../model/timesheet';
 import { TimesheetService } from './timesheet.service';
 
 @Injectable({
@@ -12,7 +12,8 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
 
   today = new Date();
   works: Overtime[] = [];
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  // descriptionOptions: WorkOption[] = [];
+  workOptions$: Observable<WorkOption[]> = of([]);
   private totalPaySubject = new BehaviorSubject<number>(0);
   private sortedOvertime = new BehaviorSubject<Overtime[]>([]);
 
@@ -21,19 +22,25 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
   }
 
   GetWorks(works: Overtime[]): Observable<void> {
-    return new Observable((observer) => {
-      this.works.splice(0, this.works.length);
-      works.forEach((work) => {
-        work.id = this.generateId();
-        work.total = this.calculateWorkTotal(work);
-        this.works.push(work);
-      });
-
-      this.calculateTotalPay();
-      this.sortOvertimes();
-      observer.next();
-      observer.complete();
+    const workTotalObservables = works.map((work) => {
+      // if (!work.id) {
+      //   work.id = this.generateId();
+      // }
+      return this.calculateWorkTotal(work).pipe(
+        map((total) => {
+          work.total = total;
+          return work;
+        })
+      );
     });
+
+    return forkJoin(workTotalObservables).pipe(
+      map((updatedWorks) => {
+        this.works = updatedWorks;
+        this.calculateTotalPay();
+        this.sortOvertimes();
+      })
+    );
   }
 
   Update(overtime: Overtime): Observable<void> {
@@ -43,12 +50,14 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       );
       if (existingIndex !== -1) {
         this.works[existingIndex] = overtime;
-      } else {
-        this.works.push(overtime);
         this.calculateTotalPay();
         this.sortOvertimes();
+        observer.next();
+      } else {
+        console.warn(
+          `Overtime with ID ${overtime.id} not found. Update ignored.`
+        );
       }
-      observer.next();
       observer.complete();
     });
   }
@@ -96,13 +105,15 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
 
   private sortOvertimes(): void {
     const sort = this.works.sort((a, b) => {
-      const dateComparison = a.date.getTime() - b.date.getTime();
+      const dateComparison =
+        new Date(a.date).getTime() - new Date(b.date).getTime();
       if (dateComparison !== 0) return dateComparison;
 
-      const startComparison = a.startTime.getTime() - b.startTime.getTime();
+      const startComparison =
+        new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
       if (startComparison !== 0) return startComparison;
 
-      return a.endTime.getTime() - b.endTime.getTime();
+      return new Date(a.endTime).getTime() - new Date(b.endTime).getTime();
     });
 
     this.sortedOvertime.next(sort);
@@ -114,36 +125,51 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
       : 1;
   }
 
-  private calculateWorkTotal(work: Overtime): number {
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
-    const description = this.descriptionOptions.find(
-      (option) => option.id === work.workID
+  private calculateWorkTotal(work: Overtime): Observable<number> {
+    return this.timesheetService.fethcWorkOptions().pipe(
+      map((workOptions) => {
+        const description = workOptions.find(
+          (option) => option.id === work.workId
+        );
+
+        if (!description) return 0;
+
+        const start = new Date(work.startTime).getTime();
+        const end = new Date(work.endTime).getTime();
+        const hours = Math.floor((end - start) / (1000 * 60 * 60));
+        let total = hours * description.fee;
+
+        if (
+          description.description.toLowerCase().startsWith('interview') &&
+          hours >= 2
+        ) {
+          total = hours * 50000;
+        }
+
+        return total;
+      })
     );
-    if (!description) return 0;
-
-    const start = work.startTime.getTime();
-    const end = work.endTime.getTime();
-    const hours = Math.floor((end - start) / (1000 * 60 * 60));
-    let total = hours * description.fee;
-
-    if (description.id === 1 && hours >= 2) {
-      total = hours * 50000;
-    }
-
-    return total;
   }
 
-  getDetail(works: Overtime[]): Overtime[] {
-    const data: Overtime[] = [];
-    works.forEach((work) => {
+  getDetail(works: Overtime[]): Observable<Overtime[]> {
+    const workTotalObservables = works.map((work) => {
       work.id = this.generateId();
-      work.total = this.calculateWorkTotal(work);
-      data.push(work);
+      return this.calculateWorkTotal(work).pipe(
+        map((total) => {
+          work.total = total;
+          return work;
+        })
+      );
     });
 
-    this.calculateTotalPay();
-    this.sortOvertimes();
-    return data;
+    return forkJoin(workTotalObservables).pipe(
+      map((updatedWorks) => {
+        this.works = updatedWorks;
+        this.calculateTotalPay();
+        this.sortOvertimes();
+        return updatedWorks;
+      })
+    );
   }
 
   clearWorks(): void {

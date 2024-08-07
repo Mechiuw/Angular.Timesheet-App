@@ -8,16 +8,14 @@ import { Role } from '../../models/role.model';
   templateUrl: './role.list.component.html',
   styleUrls: ['./role.list.component.scss']
 })
-export class SelectDropdownComponent implements OnInit {
-    @Input() placeholder:string  = 'choose the role';
-    @Output() selectionChange = new EventEmitter<string>(); 
+export class RoleDropdownComponent implements OnInit {
+  @Input() placeholder: string = 'Choose the role';
+  @Output() selectionChange = new EventEmitter<string>();
 
-  roles : Role[] = [];
+  roles: Role[] = [];
   loading: boolean = false;
 
-  constructor(
-    private roleService : RoleService
-  ) {}
+  constructor(private roleService: RoleService) {}
 
   ngOnInit(): void {
     this.fetchData();
@@ -26,19 +24,21 @@ export class SelectDropdownComponent implements OnInit {
   fetchData(): void {
     this.loading = true;
     this.roleService.getAllRoles().subscribe({
-        next: (response) => {
-            this.roles = response.data,
-            this.loading = false;
-        },
-        error : (error) => {
-            console.log('Error Fetching Data',error);
-            this.loading = false;
-        }
-    })
+      next: (response) => {
+        this.roles = response.data;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.log('Error fetching data', error);
+        this.loading = false;
+      }
+    });
   }
 
-  onSelectionChange(event: Event) :void{
+  onSelectionChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     this.selectionChange.emit(selectElement.value);
   }
+
 }
+export default RoleDropdownComponent;
