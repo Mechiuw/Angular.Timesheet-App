@@ -1,0 +1,119 @@
+<div class="card">
+  <!-- Table -->
+  <p-table
+    #dt
+    [value]="timesheets"
+    [rows]="3"
+    [paginator]="false"
+    [globalFilterFields]="['name']"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+    [loading]="isLoading"
+  >
+    <!-- Search Input  -->
+    <!-- <ng-template pTemplate="caption">
+        <div class="align-center flex justify-end">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              placeholder="Search by User"
+              style="height: 2.5rem; width: 15rem"
+            />
+          </span>
+        </div>
+      </ng-template> -->
+
+    <!-- Table Header -->
+    <ng-template pTemplate="header">
+      <tr>
+        <th
+          pSortableColumn="no"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          No
+        </th>
+        <th
+          pSortableColumn="date"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Date <p-sortIcon field="date" />
+        </th>
+        <th
+          pSortableColumn="name"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Name <p-sortIcon field="name" />
+        </th>
+        <th
+          pSortableColumn="fee"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Fee <p-sortIcon field="fee" />
+        </th>
+        <th
+          pSortableColumn="status"
+          class="text-sm font-semibold text-muted-foreground"
+        >
+          Status <p-sortIcon field="status" />
+        </th>
+      </tr>
+    </ng-template>
+
+    <!-- Table Loader -->
+    <ng-template pTemplate="loadingbody">
+      <tr>
+        <td colspan="12">
+          <p-skeleton width="100%" height="40vh"></p-skeleton>
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Table Body -->
+    <ng-template pTemplate="body" let-timesheet let-i="rowIndex">
+      <tr>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ i + 1 }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.createdAt | date : "dd/MM/yyyy" }}
+          </span>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <span class="mb-1 text-sm font-semibold text-foreground">{{
+              timesheet.user
+            }}</span>
+            <span class="text-xs font-semibold text-muted-foreground/50">{{
+              timesheet.user
+            }}</span>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.totalFee | currency : "USD" }}
+          </span>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-muted-foreground"
+            >{{ timesheet.status }}
+          </span>
+        </td>
+        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
+      </tr>
+    </ng-template>
+
+    <!-- Table Empty Message -->
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center" colspan="7">No data found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

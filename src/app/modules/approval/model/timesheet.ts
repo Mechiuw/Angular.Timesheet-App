@@ -19,3 +19,13 @@ export interface DetailTimesheetEntry {
     detail: DetailTimesheetEntry[]; 
   }
   
+  export interface TimesheetSummary {
+    id: string;    
+    user: string
+    status: string;
+    totalFee: number;
+    createdAt: Date; 
+    updatedAt: Date; 
+    deletedAt?: Date; 
+  }
+  

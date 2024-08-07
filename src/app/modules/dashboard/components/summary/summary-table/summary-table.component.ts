@@ -1,38 +1,30 @@
-import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { TableModule } from 'primeng/table';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
-
-import { TimesheetEntry, TimesheetSummary } from '../../model/timesheet';
-import { TimesheetDetailTableComponent } from './timesheet-detail-table/timesheet-detail-table.component';
-import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-modal-print.component';
+import { TableModule } from 'primeng/table';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { TimesheetSummary } from '../../../../approval/model/timesheet';
 
 @Component({
-  selector: 'app-timesheet-table',
+  selector: 'app-summary-table',
   standalone: true,
   imports: [
     TableModule,
-    DialogModule,
     ButtonModule,
     ToolbarModule,
     InputTextModule,
     TooltipModule,
     SkeletonModule,
     CommonModule,
-    TimesheetDetailTableComponent,
-    TimesheetModalPrintComponent,
   ],
-  templateUrl: './timesheet-table.component.html',
-  styleUrls: ['./timesheet-table.component.scss'],
+  templateUrl: './summary-table.component.html',
+  styleUrl: './summary-table.component.scss'
 })
-export class TimesheetTableComponent implements OnInit {
+export class SummaryTableComponent implements OnInit {
   // Constructor
   constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
 
@@ -42,24 +34,24 @@ export class TimesheetTableComponent implements OnInit {
 
   // Data from Parent
   @Input() isLoading: boolean = true;
-  @Input() timesheets: TimesheetEntry[] | TimesheetSummary[] = [];
+  @Input() timesheets: TimesheetSummary[] = [];
   @Input() route!: string;
   @Input() role!: string;
 
   // Data Selected Timesheet
-  selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
+  selectedTimesheet: TimesheetSummary = {} as TimesheetSummary;
 
   // Data Modal
   visibleDetail: boolean = false;
   visiblePrint: boolean = false;
 
   // Function Modal
-  showDialogDetail(timesheet: TimesheetEntry) {
+  showDialogDetail(timesheet: TimesheetSummary) {
     this.selectedTimesheet = timesheet;
     this.visibleDetail = true;
   }
 
-  showDialogPrint(timesheet: TimesheetEntry) {
+  showDialogPrint(timesheet: TimesheetSummary) {
     this.selectedTimesheet = timesheet;
 
     // Navigate to Url Print

@@ -4,6 +4,7 @@ import {DashboardComponent} from './dashboard.component';
 import {NftComponent} from './pages/nft/nft.component';
 import {PodcastComponent} from './pages/podcast/podcast.component';
 import {DashboardGuardService} from '../../core/guards/dashboard-guard.service';
+import { SummaryComponent } from './pages/summary/summary.component';
 
 const routes: Routes = [
   {
@@ -11,7 +12,8 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [DashboardGuardService],
     children: [
-      { path: '', redirectTo: 'nfts', pathMatch: 'full' },
+      { path: '', component: SummaryComponent },
+      // { path: '', redirectTo: 'nfts', pathMatch: 'full' },
       { path: 'nfts', component: NftComponent },
       { path: 'podcast', component: PodcastComponent },
       { path: '**', redirectTo: 'errors/404' },
