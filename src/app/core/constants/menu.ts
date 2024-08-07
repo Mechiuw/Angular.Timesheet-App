@@ -1,4 +1,5 @@
 import { MenuItem } from '../models/menu.model';
+import { Roles } from './roles';
 
 export class Menu {
   public static pages: MenuItem[] = [
@@ -10,7 +11,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Dashboard',
           route: '/dashboard',
-          role: ['admin', 'user', 'manajer', 'benefit'],
+          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
         },
         // {
         //   icon: 'assets/icons/heroicons/outline/lock-closed.svg',
@@ -43,13 +44,13 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           route: '/users',
-          role: ['admin', 'user', 'manajer', 'benefit'],
+          role: [Roles.Admin],
         },
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
           label: 'Works',
           route: '/works',
-          role: ['admin', 'user', 'manajer', 'benefit'],
+          role: [Roles.Admin, Roles.Manager],
         },
       ],
     },
@@ -61,35 +62,35 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
+          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
           children: [
             {
               label: 'New Form',
               route: '/timesheets/create',
-              role: ['admin', 'user', 'manajer', 'benefit'],
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
             },
             {
               label: 'List',
               route: '/timesheets/list',
-              role: ['admin', 'user', 'manajer', 'benefit'],
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
             },
           ],
-          role: ['admin', 'user', 'manajer', 'benefit'],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Approvals',
           route: '/approvals',
-          role: ['admin', 'user', 'manajer', 'benefit'],
+          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
           children: [
             {
               label: 'On Progress',
               route: '/approvals/on-progress',
-              role: ['admin', 'user', 'manajer', 'benefit'],
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
             },
             {
               label: 'History',
               route: '/approvals/history',
-              role: ['admin', 'user', 'manajer', 'benefit'],
+              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
             },
           ],
         },
