@@ -36,7 +36,6 @@ export class UserFormComponent implements OnInit {
     private readonly formBuilder: FormBuilder, 
     private readonly router: Router,
     private readonly messageService: MessageService,
-    private readonly authService : AuthService,
     private readonly roleService : RoleService,
     private readonly userService : UserService,
   ) {}
@@ -68,22 +67,24 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('Form submitted');
     this.submitted = true;
     
     if (this.form.invalid) {
       return;
     }
     
-    const { email, password } = this.form.value;
+    const { email, name, role } = this.form.value;
 
-    const user: User = {
-      email : this.form.value.email,
-      name : this.form.value.name,
-      role : this.form.value.role
+    const user = {
+      email : email,
+      name : name,
+      roleId : role.id
     } 
 
     this.userService.registerUser(user).subscribe({
-      next:() => {
+      next: () => {
+        console.log('user registered successfully',user);
         this.messageService.add({
           severity: 'success',
           summary : 'Success',
@@ -100,23 +101,23 @@ export class UserFormComponent implements OnInit {
     })
 
 
-    this.authService.login({ email, password}).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Form submitted successfully.'
-        });
-        this.router.navigate(['/dashboard']);
-      },
-      error: (err:any) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err.error.responseMessage || 'An error occurred.'
-        });
-      }
-    });
+    // this.authService.login({ email, password}).subscribe({
+    //   next: () => {
+    //     this.messageService.add({
+    //       severity: 'success',
+    //       summary: 'Success',
+    //       detail: 'Form submitted successfully.'
+    //     });
+    //     this.router.navigate(['/dashboard']);
+    //   },
+    //   error: (err:any) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: err.error.responseMessage || 'An error occurred.'
+    //     });
+    //   }
+    // });
 
   }
 }
