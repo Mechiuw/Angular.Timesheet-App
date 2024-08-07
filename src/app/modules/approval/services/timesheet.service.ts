@@ -33,4 +33,45 @@ export class TimesheetService implements ITimesheetService {
       return error.message;
     }
   }
+
+  acceptTimesheetByManager(id: string): Observable<SingleResponse<string>> {
+    try {
+      return this.http.post<SingleResponse<string>>(
+        API_ENDPOINT.MANAGER.APPROVE + '/' + id,
+        null
+      );
+    } catch (error: any) {
+      return error.message;
+    }
+  }
+  denyTimesheetByManager(id: string): Observable<SingleResponse<string>> {
+    try {
+      return this.http.post<SingleResponse<string>>(
+        API_ENDPOINT.MANAGER.REJECT + '/' + id,
+        null
+      );
+    } catch (error: any) {
+      return error.message;
+    }
+  }
+  approveTimesheetByBenefit(id: string): Observable<SingleResponse<string>> {
+    try {
+      return this.http.post<SingleResponse<string>>(
+        API_ENDPOINT.BENEFIT.APPROVE + '/' + id,
+        null
+      );
+    } catch (error: any) {
+      return error.message;
+    }
+  }
+  rejectTimesheetByBenefit(id: string): Observable<SingleResponse<string>> {
+    try {
+      return this.http.post<SingleResponse<string>>(
+        API_ENDPOINT.BENEFIT.REJECT + '/' + id,
+        null
+      );
+    } catch (error: any) {
+      return error.message;
+    }
+  }
 }

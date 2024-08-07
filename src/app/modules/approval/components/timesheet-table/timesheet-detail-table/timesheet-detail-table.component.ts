@@ -15,6 +15,7 @@ import { Timesheet } from '../../../model/timesheet';
 export class TimesheetDetailTableComponent {
   // Data from Parent
   @Input() selectedTimesheet: Timesheet = {} as Timesheet;
+  @Input() route: string = '';
 
   // Data Duration
   timeDifference: string = '';

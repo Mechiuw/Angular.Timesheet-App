@@ -50,7 +50,7 @@ export class TimesheetModalPrintComponent implements OnInit {
       severity: 'info',
       summary: 'Info',
       detail:
-        'Ctrl + P to Print and Uncheked Header and Footer in Option Print',
+        'Ctrl + P to Print and unchecked header and footer in advance option print',
       life: 3000,
       styleClass: 'text-sm',
     });

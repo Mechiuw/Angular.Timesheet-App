@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NftHeaderComponent } from '../../components/nft/nft-header/nft-header.component';
+import { TitleHeaderComponent } from '../../../../shared/components/title-header/title-header.component';
 import { TimesheetTableComponent } from '../../components/timesheet-table/timesheet-table.component';
 import { Timesheet } from '../../model/timesheet';
+import { Routes } from '../../../../core/constants/routes';
+import { Roles } from '../../../../core/constants/roles';
+import { StatusTimesheets } from '../../../../core/constants/status-timesheets';
 
 // import for service session
 import { SessionService } from '../../../../core/services/session.service';
@@ -13,7 +16,7 @@ import { TimesheetService } from '../../services/timesheet.service';
 @Component({
   selector: 'app-on-progress',
   standalone: true,
-  imports: [NftHeaderComponent, TimesheetTableComponent],
+  imports: [TitleHeaderComponent, TimesheetTableComponent],
   templateUrl: './on-progress.component.html',
   styleUrl: './on-progress.component.scss',
 })
@@ -42,7 +45,7 @@ export class OnProgressComponent implements OnInit {
   timesheets: Timesheet[] = [];
 
   // Data Route
-  route: string = 'on-progress';
+  route: string = Routes.OnProgress;
 
   // Data Role
   role: string = '';
@@ -52,9 +55,12 @@ export class OnProgressComponent implements OnInit {
 
   // Get Timesheet By Auth
   getAllTimesheetByAuth() {
+    // Enable Loading
+    this.isLoading = true;
+
     switch (this.role) {
       // Role User
-      case 'user': {
+      case Roles.User: {
         // Set Query Param
         this.queryParam = '&userId=' + this.currentUser$.value?.id;
 
@@ -63,11 +69,14 @@ export class OnProgressComponent implements OnInit {
           .getAllTimesheet(this.queryParam)
           .subscribe((timesheet) => {
             // Filter Timesheet
-            const timesheetsOnProgressAdminRole = timesheet.data.filter(
+            const timesheetsOnProgressUserRole = timesheet.data.filter(
               (timesheet) =>
-                timesheet.status === 'pending' || timesheet.status === 'accept'
+                timesheet.status === StatusTimesheets.Pending ||
+                timesheet.status === StatusTimesheets.Accepted
             );
-            this.timesheets = timesheetsOnProgressAdminRole;
+
+            // Set Data
+            this.timesheets = timesheetsOnProgressUserRole;
 
             // Disable Loading
             this.isLoading = false;
@@ -75,7 +84,7 @@ export class OnProgressComponent implements OnInit {
         break;
       }
       // Role Admin
-      case 'admin': {
+      case Roles.Admin: {
         // Get Timesheet Data
         this.timesheetService
           .getAllTimesheet(this.queryParam)
@@ -83,8 +92,11 @@ export class OnProgressComponent implements OnInit {
             // Filter Timesheet
             const timesheetsOnProgressAdminRole = timesheet.data.filter(
               (timesheet) =>
-                timesheet.status === 'pending' || timesheet.status === 'accept'
+                timesheet.status === StatusTimesheets.Pending ||
+                timesheet.status === StatusTimesheets.Accepted
             );
+
+            // Set Data
             this.timesheets = timesheetsOnProgressAdminRole;
 
             // Disable Loading
@@ -94,16 +106,18 @@ export class OnProgressComponent implements OnInit {
         break;
       }
       // Role Manager
-      case 'manager': {
+      case Roles.Manager: {
         // Get Timesheet Data
         this.timesheetService
           .getAllTimesheet(this.queryParam)
           .subscribe((timesheet) => {
             // Filter Timesheet
-            const timesheetsOnProgressAdminRole = timesheet.data.filter(
-              (timesheet) => timesheet.status === 'pending'
+            const timesheetsOnProgressManagerRole = timesheet.data.filter(
+              (timesheet) => timesheet.status === StatusTimesheets.Pending
             );
-            this.timesheets = timesheetsOnProgressAdminRole;
+
+            // Set Data
+            this.timesheets = timesheetsOnProgressManagerRole;
 
             // Disable Loading
             this.isLoading = false;
@@ -112,16 +126,18 @@ export class OnProgressComponent implements OnInit {
         break;
       }
       // Role Benefit
-      case 'benefit': {
+      case Roles.Benefit: {
         // Get Timesheet Data
         this.timesheetService
           .getAllTimesheet(this.queryParam)
           .subscribe((timesheet) => {
             // Filter Timesheet
-            const timesheetsOnProgressAdminRole = timesheet.data.filter(
-              (timesheet) => timesheet.status === 'accept'
+            const timesheetsOnProgressBenefitRole = timesheet.data.filter(
+              (timesheet) => timesheet.status === StatusTimesheets.Accepted
             );
-            this.timesheets = timesheetsOnProgressAdminRole;
+
+            // Set Data
+            this.timesheets = timesheetsOnProgressBenefitRole;
 
             // Disable Loading
             this.isLoading = false;
@@ -136,7 +152,6 @@ export class OnProgressComponent implements OnInit {
     // Get Data Current User
     this.currentUser$.subscribe((user) => {
       this.role = user?.role!;
-      console.log(user);
     });
 
     // Get Timesheet

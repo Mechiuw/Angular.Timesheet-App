@@ -8,12 +8,12 @@
 
 // Input
 ::ng-deep .p-inputtext {
-    @apply bg-background text-muted-foreground;
+    @apply bg-background text-foreground;
 
 
     // placeholder
     &::placeholder {
-        @apply text-muted-foreground;
+        @apply text-foreground;
     }
 }
 
@@ -41,7 +41,7 @@
             @apply bg-background;
 
             .p-sortable-column-icon {
-                @apply text-muted-foreground;
+                @apply text-foreground;
                 height: 1rem;
                 font-size: 1.5rem !important;
             }
@@ -64,17 +64,17 @@
 
 // Paginator
 ::ng-deep .p-paginator {
-    @apply text-sm font-semibold text-muted-foreground bg-background;
+    @apply text-sm font-semibold text-foreground bg-background;
 
     padding-top: 1rem;
     padding-bottom: 1rem;
 
     .p-paginator-page {
-        @apply text-sm font-semibold text-muted-foreground;
+        @apply text-sm font-semibold text-foreground;
     }
 
     .p-paginator-current {
-        @apply text-sm font-semibold text-muted-foreground;
+        @apply text-sm font-semibold text-foreground;
     }
 
     .p-paginator-page.p-highlight {
@@ -91,14 +91,14 @@
 
 // Dialog
 ::ng-deep .p-dialog {
-    @apply bg-background text-muted-foreground;
+    @apply bg-background text-foreground;
     border: white 1px solid;
 
     .p-dialog-header {
         @apply bg-background;
 
         .p-dialog-title {
-            @apply text-muted-foreground;
+            @apply text-foreground;
         }
     }
 
@@ -110,6 +110,28 @@
 // Skeleton
 ::ng-deep .p-skeleton {
     background-color: rgb(202, 202, 202);
+}
+
+// Confirm
+::ng-deep .p-confirm-popup {
+    @apply bg-background text-foreground;
+
+    .p-confirm-popup-message {
+        @apply text-foreground;
+    }
+}
+
+// Toast
+::ng-deep .p-toast {
+
+    .p-toast-message {
+        @apply bg-background;
+
+        .p-toast-message-content {
+           border: 0;
+        }
+    }
+
 }
 
 // End Custom Style from Prime Ng
