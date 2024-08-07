@@ -5,7 +5,12 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { TimeSheetDetail, Timesheet } from '../../../model/timesheet';
+import {
+  TimeSheetDetail,
+  Timesheet,
+  User,
+  ConfirmedBy,
+} from '../../../model/timesheet';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
 
 import { TimesheetService } from '../../../services/timesheet.service';
@@ -36,6 +41,8 @@ export class TimesheetModalPrintComponent implements OnInit {
 
   // Data Timesheet
   selectedTimesheet: Timesheet = {} as Timesheet;
+  selectedTimesheetUser: User = {} as User;
+  selectedTimesheetConfirmedBy: ConfirmedBy | null = null;
   timesheetDetails: TimeSheetDetail[] = [];
 
   // Data Loading
@@ -64,6 +71,8 @@ export class TimesheetModalPrintComponent implements OnInit {
         .subscribe((timesheet) => {
           this.isLoading = false;
           this.selectedTimesheet = timesheet.data;
+          this.selectedTimesheetUser = timesheet.data.user;
+          this.selectedTimesheetConfirmedBy = timesheet.data.confirmedManagerBy || null;
         });
     }
   }

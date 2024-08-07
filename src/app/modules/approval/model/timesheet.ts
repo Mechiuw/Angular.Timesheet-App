@@ -32,6 +32,8 @@ export interface Timesheet {
   updatedAt: string; // ISO 8601 date-time string
   status : string;
   user: User;
+  confirmedManagerBy?: ConfirmedBy; // Optional field
+  confirmedBenefitBy?: ConfirmedBy; // Optional field
   timeSheetDetails: TimeSheetDetail[];
   total: number;
 }

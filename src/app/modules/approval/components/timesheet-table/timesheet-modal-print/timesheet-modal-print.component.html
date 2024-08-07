@@ -18,7 +18,7 @@
       <div class="align-items-center justify-content-center flex-col gap-2">
         <h3 class="text-md font-semibold text-foreground">Timesheet Trainer</h3>
         <span class="text-sm font-semibold text-muted-foreground"
-          >Timesheet #{{ paramTimesheetId }} from route</span
+          >Timesheet #{{ paramTimesheetId }}</span
         >
       </div>
     </ng-template>
@@ -43,44 +43,51 @@
 
     <!-- Date Now -->
     <div class="justify-content-end flex gap-2">
-      <span class="text-md font-semibold text-foreground"
+      <span class="text-md text-center font-semibold text-foreground"
         >Jakarta, {{ currentDate | date : "dd MMMM yyyy" }}</span
       >
     </div>
 
     <!-- Footer TTD -->
-    <div class="mt-6 flex justify-between gap-2">
+    <div class="mt-8 flex justify-between gap-2">
       <!-- Trainer -->
       <div class="flex flex-col">
-        <span class="text-md font-semibold text-foreground">Made By,</span>
+        <span class="text-md text-center font-semibold text-foreground"
+          >Made By,</span
+        >
         <div class="flex align-middle" style="height: 6rem">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Tanda_tangan_Arsul_Sani.svg/1280px-Tanda_tangan_Arsul_Sani.svg.png"
+            [src]="selectedTimesheetUser.signatureUrl"
             alt="img-ttd-benefit"
             class="my-4"
             style="width: 8rem; max-height: 6rem"
           />
         </div>
 
-        <!-- <span class="text-md font-semibold text-foreground underline">{{
-          selectedTimesheet.user.name
-        }}</span> -->
+        <span
+          class="text-md text-center font-semibold text-foreground underline"
+        >
+          {{ selectedTimesheetUser.name }}
+        </span>
       </div>
 
       <!-- Approver -->
       <div class="flex flex-col">
-        <span class="text-md font-semibold text-foreground">Approve By,</span>
+        <span class="text-md text-center font-semibold text-foreground"
+          >Approve By,</span
+        >
         <div class="flex align-middle" style="height: 6rem">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Tanda_Tangan_Mick_Schumacher.png"
+            [src]="selectedTimesheetConfirmedBy?.signatureUrl"
             alt="img-ttd-benefit"
             class="my-4"
             style="width: 8rem; max-height: 6rem"
           />
         </div>
-        <!-- <span class="text-md font-semibold text-foreground underline">{{
-          selectedTimesheet.confirmedBenefitBy.name
-        }}</span> -->
+        <span
+          class="text-md text-center font-semibold text-foreground underline"
+          >{{ selectedTimesheetConfirmedBy?.name }}</span
+        >
       </div>
     </div>
   </p-dialog>
