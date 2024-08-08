@@ -1,25 +1,26 @@
 <div class="card">
-  <!-- Export Button -->
-  <p-toolbar styleClass="mb-4 gap-2 p-4">
+  <!-- Confirm Popup -->
+  <p-toast />
+  <p-confirmPopup />
+
+  <!-- Table Toolbar -->
+  <!-- <p-toolbar styleClass="mb-4 gap-2 p-4">
     <ng-template pTemplate="left">
-      <span class="text-lg text-muted-foreground">
+      <span class="text-lg text-foreground">
         {{ role }} & {{ route }}
       </span>
     </ng-template>
 
     <ng-template pTemplate="right">
-      <span class="text-lg text-muted-foreground">
+      <span class="text-lg text-foreground">
         selected timesheet: {{ selectedTimesheet.id }} -
         {{ selectedTimesheet.user }}
       </span>
-      <!-- <button
-        class="hover:bg-primary-600 flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
-      >
-        <i class="pi pi-upload mr-1" style="font-size: 0.8rem"></i>
-        Export to PDF
-      </button> -->
+      <span class="text-lg text-foreground">
+        Authority : {{ role }}
+      </span>
     </ng-template>
-  </p-toolbar>
+  </p-toolbar> -->
 
   <!-- Table -->
   <p-table
@@ -27,7 +28,17 @@
     [value]="timesheets"
     [rows]="5"
     [paginator]="true"
-    [globalFilterFields]="['name']"
+    [globalFilterFields]="[
+      'user.name',
+      'user.email',
+      'createdAt',
+      'status',
+      'confirmedManagerBy.name',
+      'confirmedManagerBy.email',
+      'confirmedBenefitBy.name',
+      'confirmedBenefitBy.email',
+      'total'
+    ]"
     [rowHover]="true"
     dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
@@ -36,15 +47,17 @@
     [loading]="isLoading"
   >
     <!-- Search Input  -->
-    <ng-template pTemplate="caption">
+    <ng-template pTemplate="caption" *ngIf="role !== RolesEnum.USER">
       <div class="align-center flex justify-end">
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input
             pInputText
             type="text"
-            placeholder="Search by User"
-            style="height: 2.5rem; width: 15rem"
+            placeholder="Search by user"
+            style="height: 2.5rem; width: 13rem"
+            [(ngModel)]="searchValue"
+            (input)="applyFilterGlobal($event, 'contains')"
           />
         </span>
       </div>
@@ -53,66 +66,63 @@
     <!-- Table Header -->
     <ng-template pTemplate="header">
       <tr>
-        <th
-          pSortableColumn="no"
-          class="text-sm font-semibold text-muted-foreground"
-        >
+        <th pSortableColumn="no" class="text-xs font-semibold text-foreground">
           No
         </th>
         <th
-          pSortableColumn="date"
-          class="text-sm font-semibold text-muted-foreground"
+          pSortableColumn="createdAt"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
         >
-          Date <p-sortIcon field="date" />
+          Date
         </th>
         <th
-          pSortableColumn="name"
-          class="text-sm font-semibold text-muted-foreground"
+          pSortableColumn="user.name"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
         >
-          Name <p-sortIcon field="name" />
+          Name
         </th>
         <th
-          pSortableColumn="fee"
-          class="text-sm font-semibold text-muted-foreground"
+          pSortableColumn="confirmedManagerBy.name"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
         >
-          Fee <p-sortIcon field="fee" />
+          Manager
+        </th>
+        <th
+          pSortableColumn="confirmedBenefitBy.name"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
+        >
+          Benefit
+        </th>
+        <th
+          pSortableColumn="total"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
+        >
+          Amount
         </th>
         <th
           pSortableColumn="status"
-          class="text-sm font-semibold text-muted-foreground"
+          class="text-xs font-semibold text-foreground"
+          style="min-width: 8rem"
         >
-          Status <p-sortIcon field="status" />
+          Status
         </th>
-        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
-        <th
-          *ngIf="
-            role === 'benefit' || (route === 'history' && role === 'manager')
-          "
-          pSortableColumn="manager"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          Manager <p-sortIcon field="manager" />
-        </th>
-        <!-- Column Benefit -> Authority Benefit in History -->
-        <th
-          *ngIf="route === 'history' && role === 'benefit'"
-          pSortableColumn="benefit"
-          class="text-sm font-semibold text-muted-foreground"
-        >
-          Benefit <p-sortIcon field="benefit" />
-        </th>
-        <th class="text-center text-sm font-semibold text-muted-foreground">
-          Detail
+        <th class="text-center text-xs font-semibold text-foreground">
+          Details
         </th>
         <!-- Column Action -> Authority : -->
         <th
           *ngIf="
-            (route === 'on-progress' && role === 'manager') ||
-            (route === 'on-progress' && role === 'benefit') ||
-            (route === 'history' && role === 'benefit') ||
-            (route === 'history' && role === 'admin')
+            (route === RoutesEnum.ONPROGRESS && role === RolesEnum.MANAGER) ||
+            (route === RoutesEnum.ONPROGRESS && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.ADMIN)
           "
-          class="text-center text-sm font-semibold text-muted-foreground"
+          class="text-center text-xs font-semibold text-foreground"
         >
           Action
         </th>
@@ -130,117 +140,192 @@
 
     <!-- Table Body -->
     <ng-template pTemplate="body" let-timesheet let-i="rowIndex">
-      <tr>
+      <tr *ngIf="this.isLoading === false">
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
+          <span class="text-sm font-semibold text-foreground"
             >{{ i + 1 }}
           </span>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.createdAt | date : "dd/MM/yyyy" }}
+          <span class="text-sm font-semibold text-foreground"
+            >{{ timesheet.createdAt | date : "dd/MMM/yyyy" }}
           </span>
         </td>
         <td>
           <div class="flex flex-col justify-items-start">
             <span class="mb-1 text-sm font-semibold text-foreground">{{
-              timesheet.user
+              timesheet.user.name
             }}</span>
-            <span class="text-xs font-semibold text-muted-foreground/50">{{
-              timesheet.user
+            <span class="text-xs font-semibold text-foreground/50">{{
+              timesheet.user.email
             }}</span>
           </div>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.totalFee | currency : "USD" }}
+          <div *ngIf="timesheet.confirmedManagerBy.userId === ''">
+            <span
+              *ngIf="route === RoutesEnum.ONPROGRESS"
+              class="text-xs font-semibold text-foreground/50"
+            >
+              Waiting Accepted by Manager IT
+            </span>
+            <span
+              *ngIf="route === RoutesEnum.HISTORY"
+              class="text-xs font-semibold text-foreground/50"
+            >
+              -
+            </span>
+          </div>
+          <div *ngIf="timesheet.confirmedManagerBy.userId !== ''">
+            <div class="flex flex-col justify-items-start">
+              <span class="mb-1 text-sm font-semibold text-foreground">{{
+                timesheet.confirmedManagerBy.name
+              }}</span>
+              <span class="text-xs font-semibold text-foreground/50">{{
+                timesheet.confirmedManagerBy.email
+              }}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="flex flex-col justify-items-start">
+            <div *ngIf="timesheet.confirmedBenefitBy.userId === ''">
+              <span
+                *ngIf="
+                  route === RoutesEnum.ONPROGRESS ||
+                  (route === RoutesEnum.HISTORY &&
+                    role === RolesEnum.MANAGER &&
+                    timesheet.status === StatusTimesheetsEnum.ACCEPTED)
+                "
+                class="text-xs font-semibold text-foreground/50"
+              >
+                Waiting Approved by Benefit Team
+              </span>
+              <span
+                *ngIf="route === RoutesEnum.HISTORY"
+                class="text-xs font-semibold text-foreground/50"
+              >
+                -
+              </span>
+            </div>
+            <div *ngIf="timesheet.confirmedBenefitBy.userId !== ''">
+              <div class="flex flex-col justify-items-start">
+                <span class="mb-1 text-sm font-semibold text-foreground">{{
+                  timesheet.confirmedBenefitBy.name
+                }}</span>
+                <span class="text-xs font-semibold text-foreground/50">{{
+                  timesheet.confirmedBenefitBy.email
+                }}</span>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <span class="text-sm font-semibold text-foreground">
+            {{ timesheet.total | currency : "Rp." : "symbol" }}
           </span>
         </td>
         <td>
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.status }}
-          </span>
-        </td>
-        <!-- Column Manager -> Authority Benefit Team and Route History Role Manager -->
-        <td
-          *ngIf="
-            role === 'benefit' || (route === 'history' && role === 'manager')
-          "
-        >
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.manager }}
-          </span>
-        </td>
-        <!-- Column Benefit -> Authority Benefit Team and Route History -->
-        <td *ngIf="route === 'history' && role === 'benefit'">
-          <span class="text-sm font-semibold text-muted-foreground"
-            >{{ timesheet.benefit }}
-          </span>
+          <div>
+            <span class="text-sm font-semibold text-foreground">
+              <span
+                *ngIf="timesheet.status === StatusTimesheetsEnum.PENDING"
+                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10"
+              >
+                {{ timesheet.status }}
+              </span>
+              <span
+                *ngIf="
+                  timesheet.status === StatusTimesheetsEnum.ACCEPTED ||
+                  timesheet.status === StatusTimesheetsEnum.APPROVED
+                "
+                class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+                >{{ StatusTimesheetsEnum.APPROVED }}
+              </span>
+              <span
+                *ngIf="
+                  timesheet.status === StatusTimesheetsEnum.DENIED ||
+                  timesheet.status === StatusTimesheetsEnum.REJECTED
+                "
+                class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10"
+              >
+                {{ StatusTimesheetsEnum.REJECTED }}
+              </span>
+            </span>
+          </div>
         </td>
         <td>
           <div class="flex justify-center">
             <button
               (click)="showDialogDetail(timesheet)"
-              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-foreground hover:bg-muted hover:text-foreground"
               pTooltip="Timesheet Detail"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-file" style="font-size: 1rem"></i>
             </button>
           </div>
         </td>
-        <!-- Column Action -> Authority Benefit Team, Admin and Route History -->
+        <!-- Column Action Button -> Route On Progress -->
         <td
           *ngIf="
-            (route === 'history' && role === 'benefit') ||
-            (route === 'history' && role === 'admin')
+            route === RoutesEnum.ONPROGRESS &&
+            (role === RolesEnum.MANAGER || role === RolesEnum.BENEFIT)
+          "
+        >
+          <!-- Button Action -> Manager or Benefit -->
+          <div
+            *ngIf="role === RolesEnum.MANAGER || role === RolesEnum.BENEFIT"
+            class="flex flex-row justify-center"
+          >
+            <button
+              (click)="
+                confirmY($event, timesheet.status);
+                this.selectedTimesheet = timesheet
+              "
+              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="{{
+                timesheet.status === StatusTimesheetsEnum.ACCEPTED
+                  ? 'Approve'
+                  : 'Accept'
+              }} Timesheet"
+              tooltipPosition="left"
+            >
+              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
+            </button>
+            <button
+              (click)="
+                confirmX($event, timesheet.status);
+                this.selectedTimesheet = timesheet
+              "
+              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-foreground text-white hover:bg-muted hover:text-foreground"
+              pTooltip="{{
+                timesheet.status === StatusTimesheetsEnum.ACCEPTED
+                  ? 'Rejected'
+                  : 'Deny'
+              }} Timesheet"
+              tooltipPosition="left"
+            >
+              <i class="pi pi-times" style="font-size: 1rem"></i>
+            </button>
+          </div>
+        </td>
+        <!-- Column Action Print -> Authority Benefit Team, Admin and Route History -->
+        <td
+          *ngIf="
+            (route === RoutesEnum.HISTORY && role === RolesEnum.BENEFIT) ||
+            (route === RoutesEnum.HISTORY && role === RolesEnum.ADMIN)
           "
         >
           <div class="flex justify-center">
             <button
+              *ngIf="timesheet.status === StatusTimesheetsEnum.APPROVED"
               (click)="showDialogPrint(timesheet)"
-              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
+              class="flex h-7 w-7 items-center justify-center rounded-md bg-card text-foreground hover:bg-muted hover:text-foreground"
               pTooltip="Print Timesheet"
-              tooltipPosition="bottom"
+              tooltipPosition="left"
             >
               <i class="pi pi-file-export" style="font-size: 1rem"></i>
-            </button>
-          </div>
-        </td>
-        <!-- Column Action -> Route On Progress -->
-        <td *ngIf="route === 'on-progress'">
-          <!-- Button Action -> Approve or Deny -> Manager -->
-          <div *ngIf="role === 'manager'" class="flex flex-row justify-center">
-            <button
-              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Approve Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
-            </button>
-            <button
-              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Reject Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-times" style="font-size: 1rem"></i>
-            </button>
-          </div>
-          <!-- Button Action -> Settelement or Reject -->
-          <div *ngIf="role === 'benefit'" class="flex flex-row justify-center">
-            <button
-              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Settel Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
-            </button>
-            <button
-              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-muted-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="Reject Timesheet"
-              tooltipPosition="bottom"
-            >
-              <i class="pi pi-times" style="font-size: 1rem"></i>
             </button>
           </div>
         </td>
@@ -262,10 +347,11 @@
       [(visible)]="visibleDetail"
       [modal]="true"
       [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-      [style]="{ width: '50vw' }"
+      [style]="{ width: '70vw', height: 'auto' }"
       [draggable]="false"
       [resizable]="false"
       [maximizable]="true"
+      selectionMode="single"
     >
       <!-- Modal Header -->
       <ng-template pTemplate="header">
@@ -273,7 +359,7 @@
           <h3 class="text-md font-semibold text-foreground">
             Timesheet Details
           </h3>
-          <span class="text-sm font-semibold text-muted-foreground"
+          <span class="text-sm font-semibold text-foreground"
             >Timesheet #{{ selectedTimesheet.id }}</span
           >
         </div>
@@ -281,7 +367,7 @@
 
       <!-- Detail Table -->
       <app-timesheet-detail-table
-        [timesheetDetails]="selectedTimesheet.detail || []"
+        [selectedTimesheet]="selectedTimesheet"
       ></app-timesheet-detail-table>
     </p-dialog>
   </div>

@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LayoutComponent } from './layout.component';
-import { ActivationComponent } from '../auth/pages/activation/activation.component';
-import { AuthService } from '../auth/services/auth.service';
+import { DashboardGuardService } from "../../core/guards/dashboard-guard.service";
 import { YourProfileComponent } from '../layout/components/navbar/profile-menu/your-profile/your-profile.component';
 import { CreateTimesheetComponent } from '../timesheet/pages/create-timesheet/create-timesheet.component';
-import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
-import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
 import { DetailTimesheetComponent } from '../timesheet/pages/detail-timesheet/detail-timesheet.component';
-import { DashboardGuardService } from "../../core/guards/dashboard-guard.service";
+import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-timesheet.component';
+import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 import { UserComponent } from "../user/user.component";
+import { LayoutComponent } from './layout.component';
 
 const routes: Routes = [
   {
