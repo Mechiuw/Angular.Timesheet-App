@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { TableModule } from 'primeng/table';
 
-import { Timesheet } from '../../../model/timesheet';
+import { Timesheet } from '../../../model/timesheet.model';
 
 @Component({
   selector: 'app-timesheet-detail-table',

@@ -12,7 +12,7 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
             'Bearer ' + sessionService.get('token')
           ),
           setHeaders: {
-            'ngrok-skip-browser-warning': 'true',
+            'ngrok-skip-browser-warning': 'true'
           }
         },)
       : req

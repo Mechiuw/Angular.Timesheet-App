@@ -25,7 +25,7 @@ import {
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ToastModule } from 'primeng/toast';
 
-import { Timesheet } from '../../model/timesheet';
+import { Timesheet } from '../../model/timesheet.model';
 import { TimesheetDetailTableComponent } from './timesheet-detail-table/timesheet-detail-table.component';
 import { TimesheetModalPrintComponent } from './timesheet-modal-print/timesheet-modal-print.component';
 import { StatusTimesheets } from '../../../../core/constants/status-timesheets';

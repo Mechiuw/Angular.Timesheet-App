@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Timesheet } from '../model/timesheet';
+import { Timesheet } from '../model/timesheet.model';
 import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
 
 export interface ITimesheetService {

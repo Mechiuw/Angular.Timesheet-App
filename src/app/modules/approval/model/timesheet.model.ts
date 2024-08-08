@@ -37,3 +37,13 @@ export interface Timesheet {
   timeSheetDetails: TimeSheetDetail[];
   total: number;
 }
+
+export interface TimesheetSummary {
+  id: string;    
+  user: User;
+  status: string;
+  createdAt: Date; 
+  updatedAt: Date; 
+  deletedAt?: Date;
+  total: number;
+}

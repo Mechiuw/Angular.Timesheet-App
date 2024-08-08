@@ -10,7 +10,7 @@ import {
   Timesheet,
   User,
   ConfirmedBy,
-} from '../../../model/timesheet';
+} from '../../../model/timesheet.model';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
 
 import { TimesheetService } from '../../../services/timesheet.service';

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
-import { Timesheet } from '../model/timesheet';
+import { Timesheet } from '../model/timesheet.model';
 import { ITimesheetService } from './itimesheet.service';
 import { Roles } from '../../../core/constants/roles';
 import { Routes } from '../../../core/constants/routes';
