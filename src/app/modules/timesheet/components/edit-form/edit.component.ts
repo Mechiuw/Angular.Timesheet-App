@@ -58,6 +58,7 @@ export class EditComponent implements OnInit {
     this.overtimeForm.valueChanges.subscribe(() => {
       this.calculateTotal();
     });
+    this.overtimeForm.disable();
   }
 
   private readonly timesheetService: TimesheetService =
@@ -92,6 +93,11 @@ export class EditComponent implements OnInit {
       workID: overtime.workId,
       total: overtime.total,
     });
+    if (overtime.id) {
+      this.overtimeForm.enable();
+    } else {
+      this.overtimeForm.disable();
+    }
   }
 
   saveOvertime() {
@@ -132,6 +138,7 @@ export class EditComponent implements OnInit {
         timer: 1000,
       });
       this.overtimeForm.reset();
+      this.overtimeForm.disable();
     });
   }
 
