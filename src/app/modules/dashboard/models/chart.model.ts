@@ -6,14 +6,14 @@ export interface Chart {
     backgroundColor?: string[];
     hoverBackgroundColor?: string[];
     fill?: boolean;
-    borderColor?: string[];
+    borderColor?: string;
     tension?: number;
   }[];
 }
 
 export interface ChartOptions {
   maintainAspectRatio?: boolean;
-  aspectRatio: number;
+  aspectRatio?: number;
   plugins: {
     legend: {
       labels: {

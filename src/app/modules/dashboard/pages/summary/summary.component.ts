@@ -1,15 +1,29 @@
 import { Component, OnInit } from "@angular/core";
-import { ChartModule } from "primeng/chart";
-import { NftHeaderComponent } from "../../../approval/components/nft/nft-header/nft-header.component";
-import { TimesheetTableComponent } from "../../../approval/components/timesheet-table/timesheet-table.component";
-import { TimesheetSummary } from "../../../approval/model/timesheet";
-import { SummaryTableComponent } from "../../components/summary/summary-table/summary-table.component";
 import { RouterLink } from "@angular/router";
+import { ChartModule } from "primeng/chart";
+import { StatusTimesheets } from "../../../../core/constants/status-timesheets";
+import { TitleHeaderComponent } from "../../../../shared/components/title-header/title-header.component";
+import { TimesheetTableComponent } from "../../../approval/components/timesheet-table/timesheet-table.component";
+import { Timesheet, TimesheetSummary } from "../../../approval/model/timesheet.model";
+import { SummaryTableComponent } from "../../components/summary/summary-table/summary-table.component";
+import { Chart, ChartOptions } from "../../models/chart.model";
+import { SummaryService } from "../../services/summary.service";
+import { RupiahFormatPipe } from "../../../../shared/pipes/rupiah-format.pipe";
+import { Roles } from "../../../../core/constants/roles";
+import { NgIf } from "@angular/common";
 
 @Component({
   selector: "app-summary",
   standalone: true,
-  imports: [RouterLink, NftHeaderComponent, ChartModule, TimesheetTableComponent, SummaryTableComponent],
+  imports: [
+    NgIf,
+    RupiahFormatPipe,
+    RouterLink,
+    ChartModule,
+    TimesheetTableComponent,
+    SummaryTableComponent,
+    TitleHeaderComponent,
+  ],
   templateUrl: "./summary.component.html",
   styleUrl: "./summary.component.scss",
 })
@@ -17,93 +31,64 @@ export class SummaryComponent implements OnInit {
   title = "Dashboard";
   subtitle = "Timesheet Summary";
 
-  pieData: any;
-  pieOptions: any;
+  pieData?: Chart;
+  pieOptions?: ChartOptions;
 
-  lineData: any;
-  lineOptions: any;
+  lineData?: Chart;
+  lineOptions?: ChartOptions;
 
   total: number = 540 + 325 + 702;
+  submission: number = 100;
+  submissionItems: number = 200;
 
+  
   // Example Timesheet
   timesheets: TimesheetSummary[] = [];
-
+  recentTimesheets: TimesheetSummary[] = [];
+  
   // Data Role
-  role: string = "admin";
-
+  paymentTitle: string = "Payment Estimation"
+  
   // Data Loading
   isLoading: boolean = true;
 
-  // Generate Data
-  generateDummyData() {
-    this.timesheets = [
-      {
-        id: "entry1",
-        user: "user1",
-        status: "pending", // Updated status
-        totalFee: 3500,
-        createdAt: new Date("2024-08-01T10:00:00Z"),
-        updatedAt: new Date("2024-08-01T12:00:00Z"),
-        deletedAt: undefined,
-       
-      },
-      {
-        id: "entry2",
-        user: "user2",
-        status: "approved", // Updated status
-        totalFee: 1700,
-        createdAt: new Date("2024-08-02T11:00:00Z"),
-        updatedAt: new Date("2024-08-02T13:00:00Z"),
-        deletedAt: new Date("2024-08-03T14:00:00Z"),
-        
-      },
-      {
-        id: "entry3",
-        user: "user3",
-        status: "settlement", // Updated status
-        totalFee: 1800,
-        createdAt: new Date("2024-08-03T09:00:00Z"),
-        updatedAt: new Date("2024-08-03T10:00:00Z"),
-        deletedAt: undefined,
-        
-      },
-    ];
+  pieLabels: string[] = [
+    StatusTimesheets.APPROVED,
+    StatusTimesheets.REJECTED,
+    StatusTimesheets.PENDING,
+  ];
+
+  month: string = new Date().toLocaleString("default", { month: "long" });
+ 
+  constructor(private readonly summaryService: SummaryService) {}
+  ngOnInit() {
+    this.summaryService.getSummary().subscribe((response) => {
+      this.timesheets = response.data;
+      this.isLoading = false;
+      this.recentTimesheets = this.getRecentTimesheets();
+    });
+    console.log(this.summaryService.role);
+    this.paymentTitle = this.summaryService.role === Roles.USER ? "Overtime Bonus" : this.paymentTitle
+    this.getPieChart();
+
+    // this.getLineChart();
+
+    // this.summaryService.getSummaryTrend().subscribe({
+    //   next: (response) => {
+    //     console.log(response);
+    //   },
+    //   error: (err) => {
+    //     console.log("Error fetch data : " + err.error.message);
+    //   },
+    // })
+   
   }
 
-  ngOnInit() {
-    const pieDocumentStyle = getComputedStyle(document.documentElement);
-    const pieTextColor = pieDocumentStyle.getPropertyValue("--text-color");
+  private getRecentTimesheets() {
+    return this.timesheets.slice(0, 3);
+  }
 
-    this.pieData = {
-      labels: ["Diterima", "Ditolak", "Ongoing"],
-      datasets: [
-        {
-          data: [540, 325, 702],
-          backgroundColor: [
-            pieDocumentStyle.getPropertyValue("--green-500"),
-            pieDocumentStyle.getPropertyValue("--red-500"),
-            pieDocumentStyle.getPropertyValue("--blue-500"),
-          ],
-          hoverBackgroundColor: [
-            pieDocumentStyle.getPropertyValue("--green-400"),
-            pieDocumentStyle.getPropertyValue("--red-400"),
-            pieDocumentStyle.getPropertyValue("--blue-400"),
-          ],
-        },
-      ],
-    };
-
-    this.pieOptions = {
-      plugins: {
-        legend: {
-          labels: {
-            usePointStyle: true,
-            color: pieTextColor,
-          },
-        },
-      },
-    };
-
+  private getLineChart() {
     const lineDocumentStyle = getComputedStyle(document.documentElement);
     const lineTextColor = lineDocumentStyle.getPropertyValue("--text-color");
     const lineTextColorSecondary = lineDocumentStyle.getPropertyValue(
@@ -163,11 +148,74 @@ export class SummaryComponent implements OnInit {
         },
       },
     };
+  }
 
-    // Dummy Loading
-    setTimeout(() => {
-      this.isLoading = false;
-      this.generateDummyData();
-    }, 3000);
+  private getPieChart() {
+    const pieDocumentStyle = getComputedStyle(document.documentElement);
+    const pieTextColor = pieDocumentStyle.getPropertyValue("--text-color");
+    this.pieOptions = {
+      plugins: {
+        legend: {
+          labels: {
+            usePointStyle: true,
+            color: pieTextColor,
+          },
+        },
+      },
+    };
+
+    this.summaryService.getMonthReport().subscribe({
+      next: ({ data }) => {
+        const getDataCounts = (data: Timesheet[]) => {
+          let approvedCount = 0;
+          let rejectedCount = 0;
+          let pendingCount = 0;
+          this.total = data.reduce(
+            (acc, timesheet) => acc + timesheet.total,
+            0
+          );
+          this.submission = data.length;
+          this.submissionItems = data.reduce(
+            (acc, timesheet) => acc + timesheet.timeSheetDetails.length, 0
+          )
+
+          data.forEach((element) => {
+            switch (element.status) {
+              case StatusTimesheets.APPROVED:
+                approvedCount += 1;
+                break;
+              case (StatusTimesheets.REJECTED, StatusTimesheets.DENIED):
+                rejectedCount += 1;
+                break;
+              default:
+                pendingCount += 1;
+                break;
+            }
+          });
+          return [approvedCount, rejectedCount, pendingCount];
+        };
+        this.pieData = {
+          labels: this.pieLabels.map((label) => label.toUpperCase()),
+          datasets: [
+            {
+              data: getDataCounts(data),
+              backgroundColor: [
+                pieDocumentStyle.getPropertyValue("--green-500"),
+                pieDocumentStyle.getPropertyValue("--red-500"),
+                pieDocumentStyle.getPropertyValue("--blue-500"),
+              ],
+              hoverBackgroundColor: [
+                pieDocumentStyle.getPropertyValue("--green-400"),
+                pieDocumentStyle.getPropertyValue("--red-400"),
+                pieDocumentStyle.getPropertyValue("--blue-400"),
+              ],
+            },
+          ],
+        };
+      },
+      error(err) {
+        console.log("Error fetch data : "+err.error.message);
+      },
+    });
   }
 }

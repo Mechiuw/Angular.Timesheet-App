@@ -5,8 +5,15 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 
-import { DetailTimesheetEntry, TimesheetEntry } from '../../../model/timesheet';
+import {
+  TimeSheetDetail,
+  Timesheet,
+  User,
+  ConfirmedBy,
+} from '../../../model/timesheet.model';
 import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timesheet-detail-table.component';
+
+import { TimesheetService } from '../../../services/timesheet.service';
 
 @Component({
   selector: 'app-timesheet-modal-print',
@@ -23,15 +30,20 @@ import { TimesheetDetailTableComponent } from '../timesheet-detail-table/timeshe
   providers: [MessageService],
 })
 export class TimesheetModalPrintComponent implements OnInit {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private readonly timesheetService: TimesheetService
+  ) {}
 
   // Data from Parent
   @Input() visiblePrint: boolean = false;
   @Input() paramTimesheetId: string | null = '';
 
   // Data Timesheet
-  selectedTimesheet: TimesheetEntry = {} as TimesheetEntry;
-  timesheetDetails: DetailTimesheetEntry[] = [];
+  selectedTimesheet: Timesheet = {} as Timesheet;
+  selectedTimesheetUser: User = {} as User;
+  selectedTimesheetConfirmedBy: ConfirmedBy | null = null;
+  timesheetDetails: TimeSheetDetail[] = [];
 
   // Data Loading
   isLoading: boolean = true;
@@ -45,58 +57,33 @@ export class TimesheetModalPrintComponent implements OnInit {
       severity: 'info',
       summary: 'Info',
       detail:
-        'Ctrl + P to Print and Uncheked Header and Footer in Option Print',
-      life: 5000,
+        'Ctrl + P to Print and unchecked header and footer in advance option print',
+      life: 3000,
       styleClass: 'text-sm',
     });
   }
 
-  // Generate Data
-  generateDummyData() {
-    this.selectedTimesheet = {
-      id: 'entry1',
-      user: 'user1',
-      status: 'pending', // Updated status
-      totalFee: 3500,
-      createdAt: new Date('2024-08-01T10:00:00Z'),
-      updatedAt: new Date('2024-08-01T12:00:00Z'),
-      deletedAt: undefined,
-      manager: 'manager1',
-      benefit: 'Team Alpha', // Updated benefit field
-      detail: [
-        {
-          workId: 'work101',
-          fee: 1500,
-          startTime: new Date('2024-08-01T10:00:00Z'),
-          endTime: new Date('2024-08-01T12:00:00Z'),
-          date: '2024-08-01',
-        },
-        {
-          workId: 'work102',
-          fee: 2000,
-          startTime: new Date('2024-08-01T13:00:00Z'),
-          endTime: new Date('2024-08-01T15:00:00Z'),
-          date: '2024-08-01',
-        },
-        {
-          workId: 'work103',
-          fee: 1500,
-          startTime: new Date('2024-08-01T16:00:00Z'),
-          endTime: new Date('2024-08-01T18:00:00Z'),
-          date: '2024-08-01',
-        },
-      ],
-    };
+  // Get Timesheet By Id from Service
+  getTimesheetById() {
+    if (this.paramTimesheetId) {
+      this.timesheetService
+        .getTimesheetById(this.paramTimesheetId)
+        .subscribe((timesheet) => {
+          this.isLoading = false;
+          this.selectedTimesheet = timesheet.data;
+          this.selectedTimesheetUser = timesheet.data.user;
+          this.selectedTimesheetConfirmedBy = timesheet.data.confirmedManagerBy || null;
+        });
+    }
   }
+
   ngOnInit(): void {
     // Show Toast Information after a slight delay to ensure rendering
     setTimeout(() => {
       this.showInfo();
     }, 0);
 
-    setTimeout(() => {
-      this.isLoading = false;
-      this.generateDummyData();
-    }, 500);
+    // Get Timesheet By Id
+    this.getTimesheetById();
   }
 }
