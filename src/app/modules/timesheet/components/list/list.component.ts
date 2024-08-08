@@ -1,12 +1,14 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
-import { Overtime } from '../../model/timesheet';
+import { Overtime, WorkOption } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { TimesheetService } from '../../services/timesheet.service';
+import { TableModule } from 'primeng/table';
+import { map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TableModule],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss',
 })
@@ -14,16 +16,18 @@ export class ListComponent implements OnInit {
   @Input() overtimeForm: Overtime[] = [];
   @Input() delete!: (id: any) => void;
 
-  private readonly timesheetService = inject(TimesheetService);
-
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  private workDescriptions: { [id: string]: string } = {};
+  @Input() workOptions$: Observable<WorkOption[]> = of([]);
 
   ngOnInit(): void {
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+    this.workOptions$.subscribe((options) => {
+      options.forEach((option) => {
+        this.workDescriptions[option.id] = option.description;
+      });
+    });
   }
 
-  getWorkDescription(id: number): string {
-    const option = this.descriptionOptions.find((opt) => opt.id === id);
-    return option ? option.desc : 'Unknown';
+  getWorkDescription(id: string): string {
+    return this.workDescriptions[id] || 'Unknown';
   }
 }

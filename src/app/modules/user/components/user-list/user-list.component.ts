@@ -11,6 +11,9 @@ import { NftHeaderComponent } from '../../../dashboard/components/nft/nft-header
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user.service';
+import { PagedResponse } from '../../../../core/models/api.model';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-user-list',
@@ -35,41 +38,63 @@ import { CommonModule } from '@angular/common';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent implements OnInit {
+  constructor(private userService: UserService) {}
 
   @ViewChild('dt1') dt: Table | undefined;
 
   searchValue: string | undefined;
 
+  users: User[] = [];
+  first: number | undefined = 0;
+  totalRecords: number = 0;
+  page: number = 1;
+  loading: boolean = false;
+  rowsOption: number[] = [5, 10, 50];
+
   clear(table: Table) {
-    table.clear();
     this.searchValue = '';
+    table.clear();
   }
 
   applyFilterGlobal($event: any, stringVal: any) {
     this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
   }
 
-  users: User[] = [];
-  ngOnInit(): void {
-    this.users = [
-      {
-        email: 'ranchodas@gmail.com',
-        name: 'rancho',
-        role: 'manager',
-        status: 'active',
-      },
-      {
-        email: 'jarjit@gmail.com',
-        name: 'Jarjit',
-        role: 'benefit',
-        status: 'active',
-      },
-      {
-        email: 'mael@gmail.com',
-        name: 'mael',
-        role: 'trainer',
-        status: 'active',
-      },
-    ];
+  loadUsers($event: LazyLoadEvent) {
+    let rows = $event.rows;
+    this.loading = true;
+    this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
+
+    if (this.searchValue != '') {
+      this.userService.filterUsersByName(this.searchValue || '').subscribe({
+        next: (response: PagedResponse<User[]>) => {
+          this.totalRecords = response.paging.totalRows;
+          rows = response.paging.rowsPerPage;
+          this.users = response.data;
+          this.loading = false;
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error('Error fetching users:', error);
+        },
+      });
+    } else {
+      console.log(this.searchValue);
+      
+      this.userService.getUsers(rows ?? 1, this.page).subscribe({
+        next: (response: PagedResponse<User[]>) => {
+          this.totalRecords = response.paging.totalRows;
+          rows = response.paging.rowsPerPage;
+          this.users = response.data;
+          this.loading = false;
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error('Error fetching users:', error);
+        },
+      });
+    }
   }
+
+  ngOnInit() {}
 }

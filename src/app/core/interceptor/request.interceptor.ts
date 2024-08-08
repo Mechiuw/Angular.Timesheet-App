@@ -10,7 +10,10 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
           headers: req.headers.set(
             'Authorization',
             'Bearer ' + sessionService.get('token')
-          )
+          ),
+          setHeaders: {
+            'ngrok-skip-browser-warning': 'true'
+          }
         },)
       : req
   )

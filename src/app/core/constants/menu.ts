@@ -11,7 +11,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/chart-pie.svg',
           label: 'Dashboard',
           route: '/dashboard',
-          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+          role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],
         },
         // {
         //   icon: 'assets/icons/heroicons/outline/lock-closed.svg',
@@ -37,52 +37,52 @@ export class Menu {
       ],
     },
     {
-      group: "Master",
+      group: 'Master',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/users.svg',
           label: 'Users',
           route: '/users',
-          role: [Roles.Admin],
+          role: [Roles.ADMIN],
         },
         {
           icon: 'assets/icons/heroicons/outline/folder.svg',
           label: 'Works',
           route: '/works',
-          role: [Roles.Admin, Roles.Manager],
+          role: [Roles.ADMIN, Roles.MANAGER],
         },
-      ]
+      ],
     },
     {
-      group: "Timesheet",
+      group: 'Timesheet',
       separator: true,
       items: [
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Timesheets',
           route: '/timesheets',
-          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+          role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],
           children: [
-            { label: 'New Form', route: '/timesheets/create', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
-            { label: 'List', route: '/timesheets/list', role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit], },
+            { label: 'New Form', route: '/timesheets/create', role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT], },
+            { label: 'List', route: '/timesheets/list', role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT], },
           ],
         },
         {
           icon: 'assets/icons/heroicons/outline/bell.svg',
           label: 'Approvals',
           route: '/approvals',
-          role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+          role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],
           children: [
             {
               label: 'On Progress',
               route: '/approvals/on-progress',
-              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+              role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],
             },
             {
               label: 'History',
               route: '/approvals/history',
-              role: [Roles.Admin, Roles.User, Roles.Manager, Roles.Benefit],
+              role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],
             },
           ],
         },

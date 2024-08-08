@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NftHeaderComponent } from './nft-header.component';
+import { NftHeaderComponent } from './title-header.component';
 
 describe('NftHeaderComponent', () => {
   let component: NftHeaderComponent;

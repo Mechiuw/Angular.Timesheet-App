@@ -1,83 +1,55 @@
 <div class="-mx-3 flex flex-wrap">
   <div class="w-full max-w-full flex-none px-3">
-    <div
-      class="dark:bg-slate-850 dark:shadow-dark-xl relative mb-6 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid border-transparent bg-white bg-clip-border shadow-xl"
-    >
-      <div class="flex-auto px-0 pb-2 pt-0">
+    <div class="">
+      <div class="flex-auto p-2">
         <div class="overflow-x-auto p-0">
-          <table
-            class="mb-0 w-full border-collapse items-center align-top text-slate-500 dark:border-white/40"
+          <p-table
+            [value]="overtimeForm"
+            [tableStyle]="{ 'min-width': '40rem' }"
+            [scrollable]="true"
+            scrollHeight="300px"
           >
-            <thead class="align-bottom">
+            <ng-template pTemplate="header">
               <tr>
-                <th
-                  class="text-xxs border-b-solid tracking-none border-collapse whitespace-nowrap border-b bg-transparent px-6 py-3 text-left align-middle font-bold uppercase text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                >
+                <th style="width: 5%">
+                  <span class="border-b-4 border-primary pb-1"> No. </span>
+                </th>
+                <th style="width: 20%">
                   <span class="border-b-4 border-primary pb-1">
                     Overtime Date
                   </span>
                 </th>
-                <th
-                  class="text-xxs border-b-solid tracking-none border-collapse whitespace-nowrap border-b bg-transparent px-6 py-3 text-center align-middle font-bold uppercase text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                >
+                <th class="text-center" style="width: 15%">
                   <span class="border-b-4 border-primary pb-1">
                     Start Time
                   </span>
                 </th>
-                <th
-                  class="text-xxs border-b-solid tracking-none border-collapse whitespace-nowrap border-b bg-transparent px-6 py-3 text-center align-middle font-bold uppercase text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                >
+                <th class="text-center" style="width: 15%">
                   <span class="border-b-4 border-primary pb-1"> End Time </span>
                 </th>
-                <th
-                  class="text-xxs border-b-solid tracking-none border-collapse whitespace-nowrap border-b bg-transparent px-6 py-3 text-center align-middle font-bold uppercase text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                >
+                <th style="width: 30%">
                   <span class="border-b-4 border-primary pb-1">
                     Description
                   </span>
                 </th>
-                <th
-                  class="text-xxs border-b-solid tracking-none border-collapse whitespace-nowrap border-b bg-transparent px-6 py-3 text-center align-middle font-bold uppercase text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                >
+                <th style="width: 20%">
                   <span class="border-b-4 border-primary pb-1"> Pay </span>
                 </th>
-                <th
-                  class="tracking-none border-collapse whitespace-nowrap border-b border-solid bg-transparent px-6 py-3 align-middle font-semibold capitalize text-slate-800 opacity-70 shadow-none dark:border-white/40 dark:text-black"
-                ></th>
+                <th style="width: 5%"></th>
               </tr>
-            </thead>
-            <tbody>
-              @for (item of overtimeForm; track item.id) {
+            </ng-template>
+            <ng-template pTemplate="body" let-form let-i="rowIndex">
               <tr>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 ps-6 align-middle shadow-transparent dark:border-white/40"
-                >
-                  {{ item.date | date }}
+                <td>{{ i + 1 }}</td>
+                <td>{{ form.date | date }}</td>
+                <td class="text-center">
+                  {{ form.startTime | date : "HH:mm" }}
                 </td>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"
-                >
-                  {{ item.startTime | date : "HH:mm" }}
-                </td>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle text-sm leading-normal shadow-transparent dark:border-white/40"
-                >
-                  {{ item.endTime | date : "HH:mm" }}
-                </td>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"
-                >
-                  {{ getWorkDescription(item.workID) }}
-                </td>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 text-center align-middle shadow-transparent dark:border-white/40"
-                >
-                  {{ item.total | currency : "IDR" }}
-                </td>
-                <td
-                  class="whitespace-nowrap border-b bg-transparent p-2 align-middle shadow-transparent dark:border-white/40"
-                >
-                  <button (click)="delete(item.id)">
+                <td class="text-center">{{ form.endTime | date : "HH:mm" }}</td>
+                <td>{{ getWorkDescription(form.workId) }}</td>
+                <td>{{ form.total | currency : "IDR" }}</td>
+                <td>
+                  <button (click)="delete(form.id)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -93,9 +65,8 @@
                   </button>
                 </td>
               </tr>
-              }
-            </tbody>
-          </table>
+            </ng-template>
+          </p-table>
         </div>
       </div>
     </div>
