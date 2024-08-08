@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,11 +19,12 @@ import {
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
-import { Overtime } from '../../model/timesheet';
+import { Overtime, WorkOption } from '../../model/timesheet';
 import { OvertimeService } from '../../services/overtime.service';
 import { ValidationMessageComponent } from '../validation-message/validation-message.component';
 import { TimesheetService } from '../../services/timesheet.service';
 import Swal from 'sweetalert2';
+import { Observable, of, map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-form',
@@ -41,7 +47,8 @@ import Swal from 'sweetalert2';
 export class FormComponent implements OnInit {
   minDate: Date | null = null;
   maxDate: Date | null = null;
-  descriptionOptions: { id: number; desc: string; fee: number }[] = [];
+  descriptionOptions: WorkOption[] = [];
+  @Input() workOptions$: Observable<WorkOption[]> = of([]);
 
   overtimeForm: FormGroup = new FormGroup(
     {
@@ -62,7 +69,7 @@ export class FormComponent implements OnInit {
   ngOnInit(): void {
     this.minDate = this.OvertimeService.getMinDate();
     this.maxDate = this.OvertimeService.getMaxDate();
-    this.descriptionOptions = this.timesheetService.GetWorkOptions();
+
     this.overtimeForm.valueChanges.subscribe(() => {
       this.calculateTotal();
     });
@@ -91,7 +98,7 @@ export class FormComponent implements OnInit {
       date: formValue.selectedDate,
       startTime: startTimeISO,
       endTime: endTimeISO,
-      workID: formValue.workID,
+      workId: formValue.workID,
       total: formValue.total,
     };
     this.OvertimeService.Save(overtime).subscribe(() => {
@@ -121,7 +128,7 @@ export class FormComponent implements OnInit {
 
     const diff = (endTime - startTime) / (1000 * 60 * 60);
 
-    if (diff <= 1) {
+    if (diff < 1) {
       return true;
     }
     return false;
@@ -147,34 +154,45 @@ export class FormComponent implements OnInit {
   calculateTotal(): void {
     const startTime = this.overtimeForm.get('startTime')?.value;
     const endTime = this.overtimeForm.get('endTime')?.value;
-    const description = this.overtimeForm.get('workID')?.value;
+    const workID = this.overtimeForm.get('workID')?.value;
 
-    if (startTime && endTime && description) {
-      const fee =
-        this.descriptionOptions.find((option) => option.id === description)
-          ?.fee || 0;
+    if (startTime && endTime && workID) {
+      this.workOptions$
+        .pipe(
+          map((options: WorkOption[]) =>
+            options.find((option) => option.id === workID)
+          ),
+          switchMap((work) => {
+            if (!work) {
+              return of(0);
+            }
 
-      const start = new Date(`1970-01-01T${startTime}:00`);
-      const end = new Date(`1970-01-01T${endTime}:00`);
+            const fee = work.fee;
 
-      if (start > end) {
-        return this.overtimeForm
-          .get('total')
-          ?.setValue(0, { emitEvent: false });
-      }
+            const start = new Date(`1970-01-01T${startTime}:00`);
+            const end = new Date(`1970-01-01T${endTime}:00`);
 
-      const overtimeHours = Math.floor(
-        (end.getTime() - start.getTime()) / (1000 * 60 * 60)
-      );
+            if (start > end) {
+              return of(0);
+            }
 
-      if (overtimeHours >= 2 && description == 1) {
-        const total = overtimeHours * 50000;
-        return this.overtimeForm
-          .get('total')
-          ?.setValue(total, { emitEvent: false });
-      }
-      const total = overtimeHours * fee;
-      this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
+            const overtimeHours = Math.floor(
+              (end.getTime() - start.getTime()) / (1000 * 60 * 60)
+            );
+
+            if (
+              overtimeHours >= 2 &&
+              work.description.toLowerCase().startsWith('interview')
+            ) {
+              return of(overtimeHours * 50000);
+            }
+
+            return of(overtimeHours * fee);
+          })
+        )
+        .subscribe((total) => {
+          this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
+        });
     }
   }
 

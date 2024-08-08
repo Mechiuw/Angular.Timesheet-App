@@ -9,6 +9,9 @@ import { ToastModule } from 'primeng/toast';
 import { ButtonComponent } from "../../../../shared/components/button/button.component";
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { RoleService } from '../../../role/service/role.service';
+import { Role } from '../../../role/models/role.model';
+import { UserService } from '../../services/user.service';
 
 
 @Component({
@@ -25,33 +28,34 @@ export class UserFormComponent implements OnInit {
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
-  cities: { name: string, code: string }[] | undefined;
+  roles : Role[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder, 
     private readonly router: Router,
-    private readonly messageService: MessageService
+    private readonly messageService: MessageService,
+    private readonly roleService : RoleService,
+    private readonly userService : UserService,
   ) {}
 
-  // onClick() {
-  //   alert('Button clicked');
-  // }
-
   ngOnInit(): void {
-    this.cities = [
-      { name: 'New York', code: 'NY' },
-      { name: 'Rome', code: 'RM' },
-      { name: 'London', code: 'LDN' },
-      { name: 'Istanbul', code: 'IST' },
-      { name: 'Paris', code: 'PRS' }
-  ];
-
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       name: ['', Validators.required],
-      // role: ['', Validators.required],
-      role: new FormControl<{ name: string, code: string } | null>(null)
+      role: new FormControl<Role | null>(null, Validators.required),
+    });
 
+    this.roleService.getAllRoles().subscribe({
+      next:(roles) => {
+        this.roles = roles;
+      },
+      error:(error) => {
+        this.messageService.add({
+          severity:'error',
+          summary:'Error',
+          detail:'Failed to load roles'
+        });
+      }
     });
   }
 
@@ -60,33 +64,44 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log('Form submitted');
     this.submitted = true;
-    const { email, password } = this.form.value;
-
-    // stop here if form is invalid
+    
     if (this.form.invalid) {
+      console.log('Form is invalid');
       return;
     }
+    
+    const { email, name, role } = this.form.value;
+    console.log(email);
+    console.log(name);
+    console.log(role);
+    
 
-    // this.authService.login({ email, password }).subscribe({
-    //   next: () => {
-    //     // console.log(this.authService.currentUser);
-    //     this.router.navigate(['/dashboard']);
-    //   },
-    //   error: (err) => {
-    //     // console.log(err.error.responseMessage);
-    //     this.messageService.add({
-    //       severity: 'warn',
-    //       summary: 'Warn',
-    //       detail: err.error.responseMessage,
-    //     })
-    //   },
-    // });
+    const user = {
+      email : email,
+      name : name,
+      roleId : role.id
+    } 
 
-    // this.authService.loginDummy().subscribe((token) => {
-    //   console.log("SignIn.loginDummy : "+token);
-    //   console.log("SignIn.currentUser : "+ this.authService.currentUser?.email);
-    //   // this.router.navigate(['/dashboard']);
-    // });
+    this.userService.registerUser(user).subscribe({
+      next: () => {
+        console.log('user registered successfully',user);
+        this.messageService.add({
+          severity: 'success',
+          summary : 'Success',
+          detail: 'User saved Successfully'
+        });
+      },
+      error: (err:any)=>{
+        console.log('user failed register');
+        this.messageService.add({
+          severity : 'error',
+          summary : 'Error',
+          detail : err.error.responseMessage || 'An error occured'
+        })
+      }
+    })
+
   }
 }
