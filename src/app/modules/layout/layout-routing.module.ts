@@ -8,6 +8,7 @@ import { ListTimesheetComponent } from '../timesheet/pages/list-timesheet/list-t
 import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/update-timesheet.component';
 import { UserComponent } from "../user/user.component";
 import { LayoutComponent } from './layout.component';
+import { WorkComponent } from '../work/work.component';
 
 const routes: Routes = [
   {
@@ -29,8 +30,16 @@ const routes: Routes = [
   {
     path: 'works',
     component: LayoutComponent,
-    loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    children: [
+      {
+        path: '',
+        component: WorkComponent,
+      },
+      {
+        path: ':id',
+        component: WorkComponent,
+      },
+    ],
   },
   {
     path: 'timesheets',

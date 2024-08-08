@@ -14,11 +14,15 @@ export class WorkService implements IWorkService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly authService: AuthService
   ) { }
+ 
   
-  List(): Observable<PagedResponse<Work[]>> {
-    return this.http.get<PagedResponse<Work[]>>(API_ENDPOINT.WORK);
+  List(rows: number = 10, page: number = 1): Observable<PagedResponse<Work[]>> {
+    try {
+      return this.http.get<PagedResponse<Work[]>>(`${API_ENDPOINT.WORK}?paging=${page}&rowsPerPage=${rows}`)
+    } catch (error: any) {
+      return error.message;
+    }
   }
   Get(id: number): Observable<SingleResponse<Work>> {
     return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
@@ -29,8 +33,15 @@ export class WorkService implements IWorkService {
   Update(work: Work): Observable<SingleResponse<Work>> {
     return this.http.put<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${work.id}`, work);
   }
-  Delete(id: number): Observable<void> {
+  Delete(id: string): Observable<void> {
     return this.http.delete<void>(`${API_ENDPOINT.WORK}/${id}`);
+  }
+  GetByName(name: string): Observable<PagedResponse<Work[]>> {
+    try {
+      return this.http.get<PagedResponse<Work[]>>(`${API_ENDPOINT.WORK}?description=${name}`)
+    } catch (error: any) {
+      return error.message;
+    }
   }
   
 }
