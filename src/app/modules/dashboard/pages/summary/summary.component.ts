@@ -28,9 +28,6 @@ export class SummaryComponent implements OnInit {
   // Example Timesheet
   timesheets: TimesheetSummary[] = [];
 
-  // Example Route
-  route: string = "on-progress";
-
   // Data Role
   role: string = "admin";
 

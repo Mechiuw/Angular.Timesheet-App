@@ -78,7 +78,9 @@ export class SubmitButtonComponent implements OnInit {
             });
           }
         );
-        this.router.navigate(['/timesheets/list']);
+        setTimeout(() => {
+          this.router.navigate(['/timesheets/list']);
+        }, 3000);
       }
     });
   }
