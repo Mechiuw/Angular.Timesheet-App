@@ -70,7 +70,7 @@ export class TimesheetService {
         return this.fetchTimesheetDataID;
       }),
       catchError((error) => {
-        console.error('Error fetching work options:', error);
+        // console.error('Error fetching work options:', error);
         return of();
       })
     );
@@ -84,7 +84,7 @@ export class TimesheetService {
         // console.log('Timesheet saved successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error saving timesheet:', error);
+        // console.error('Error saving timesheet:', error);
         return throwError(error);
       })
     );
@@ -95,10 +95,10 @@ export class TimesheetService {
 
     return this.http.put(reqUrl, timesheet).pipe(
       tap((response) => {
-        console.log('Timesheet edited successfully:', response);
+        // console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error Edited timesheet:', error);
+        // console.error('Error Edited timesheet:', error);
         return throwError(error);
       })
     );
@@ -112,7 +112,7 @@ export class TimesheetService {
         // console.log('Timesheet deleted successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error deleting timesheet:', error);
+        // console.error('Error deleting timesheet:', error);
         return throwError(error);
       })
     );
@@ -126,7 +126,7 @@ export class TimesheetService {
         // console.log('Timesheet submited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error submiting timesheet:', error);
+        // console.error('Error submiting timesheet:', error);
         return throwError(error);
       })
     );
