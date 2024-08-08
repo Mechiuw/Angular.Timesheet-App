@@ -20,6 +20,9 @@ export class WorkService implements IWorkService {
   List(): Observable<PagedResponse<Work[]>> {
     return this.http.get<PagedResponse<Work[]>>(API_ENDPOINT.WORK);
   }
+  Get(id: number): Observable<SingleResponse<Work>> {
+    return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
+  }
   Add(work: Work): Observable<SingleResponse<Work>> {
     return this.http.post<SingleResponse<Work>>(API_ENDPOINT.WORK, work);
   }
@@ -29,7 +32,5 @@ export class WorkService implements IWorkService {
   Delete(id: number): Observable<void> {
     return this.http.delete<void>(`${API_ENDPOINT.WORK}/${id}`);
   }
-
-
   
 }

@@ -1,3 +1,5 @@
 export interface Work{
-    id:string
+    id?:string
+    description: string
+    fee: number
 }
