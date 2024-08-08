@@ -62,17 +62,32 @@ export class UpdateButtonComponent implements OnInit {
           ),
         };
 
-        console.log(timesheet);
-        console.log(this.timesheetId);
-        this.timesheetService.UpdateTimesheet(this.timesheetId, timesheet);
-        this.formSubmitted.emit();
-        this.update.clearWorks();
-        Swal.fire({
-          title: 'Success!',
-          text: 'Your form has been updated.',
-          icon: 'success',
-        });
-        this.router.navigate(['/timesheets/list']);
+        // console.log(timesheet);
+        // console.log(this.timesheetId);
+        this.timesheetService
+          .UpdateTimesheet(this.timesheetId, timesheet)
+          .subscribe(
+            (response) => {
+              this.formSubmitted.emit();
+              this.update.clearWorks();
+              Swal.fire({
+                title: 'Success!',
+                text: 'Your form has been updated.',
+                icon: 'success',
+              });
+            },
+            (error) => {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'There was a problem updating your form. Please try again later.',
+              });
+            }
+          );
+
+        setTimeout(() => {
+          this.router.navigate(['/timesheets/list']);
+        }, 3000);
       }
     });
   }

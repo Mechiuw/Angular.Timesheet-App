@@ -77,16 +77,8 @@ export class TimesheetService {
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
   private apiUrl = API_ENDPOINT.TIMESHEET;
-  // private apiUrl = 'https://api.yusharwz.my.id/api/v1';
-  private readonly token =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU2NDEyMjgsImlhdCI6MTcyMzA0OTIyOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiY2NmYzAyYjktZDA3MS00MmZmLWIwMTgtN2JiMWZmZjQ3Mjg3IiwidXNlcm5hbWUiOiJBa3VuIFVzZXIgNDUiLCJlbWFpbCI6ImVwYzQxODA1QHpjY2NrLmNvbSIsInJvbGUiOiJ1c2VyIn0.j0Pcwfv1WXtFsaYPtkjhDmjOhC1e8ZzNA54kJsZaJ3s';
 
   GetTimesheet(): Observable<Timesheet[]> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     return this.http.get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET).pipe(
       map((response) => {
         // Filter only timesheets with status 'created'
@@ -114,13 +106,7 @@ export class TimesheetService {
   }
 
   GetTimesheetById(id: any): Observable<TimesheetResponse> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
 
     return this.http.get<{ data: TimesheetResponse }>(reqUrl).pipe(
       map((response) => {
@@ -141,11 +127,6 @@ export class TimesheetService {
   }
 
   SaveTimesheet(timesheet: Timesheet): Observable<any> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     const reqUrl = `${this.apiUrl}/`;
 
     return this.http.post(reqUrl, timesheet).pipe(
@@ -160,19 +141,11 @@ export class TimesheetService {
   }
 
   UpdateTimesheet(id: any, timesheet: Timesheet): Observable<any> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('id:', id);
-    // console.log('Edit Timesheet: ' + timesheet);
 
     return this.http.put(reqUrl, timesheet).pipe(
       tap((response) => {
-        // console.log('Timesheet edited successfully:', response);
+        console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
         console.error('Error Edited timesheet:', error);
@@ -182,14 +155,7 @@ export class TimesheetService {
   }
 
   DeleteTimesheet(id: any): Observable<any> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('Delete Timesheet: ' + JSON.stringify(id));
 
     return this.http.delete(reqUrl).pipe(
       tap((response) => {
@@ -203,14 +169,7 @@ export class TimesheetService {
   }
 
   SubmitTimesheet(id: any): Observable<any> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     const reqUrl = `${this.apiUrl}/${id}/submit`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('submit Timesheet: ' + JSON.stringify(id));
 
     return this.http.put(reqUrl, {}).pipe(
       tap((response) => {
@@ -228,11 +187,6 @@ export class TimesheetService {
   }
 
   fethcWorkOptions(): Observable<WorkOption[]> {
-    // const headers = new HttpHeaders({
-    //   Authorization: `Bearer ${this.token}`,
-    //   'ngrok-skip-browser-warning': 'true',
-    // });
-
     return this.http.get<PagedResponse<WorkOption[]>>(API_ENDPOINT.WORK).pipe(
       map((response) => {
         this.fetchWorkData = response.data;
