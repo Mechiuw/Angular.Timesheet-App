@@ -38,8 +38,7 @@ export class TableComponent {
       if (result.isConfirmed) {
         this.timesheetService.SubmitTimesheet(id).subscribe(
           (response) => {
-            console.log('Timesheet submitted successfully', response);
-            console.log({ id });
+            // console.log('Timesheet submitted successfully', response);
             Swal.fire(
               'Submitted!',
               'Your timesheet has been submitted.',
@@ -48,10 +47,11 @@ export class TableComponent {
             this.timesheetDeleted.emit();
           },
           (error) => {
-            console.error('Error submitting timesheet', error);
+            // console.error('Error submitting timesheet', error);
             Swal.fire(
               'Error!',
-              'Failed to submit timesheet, submit only on the 19th and 20th..'
+              'Failed to submit timesheet, submit only on the 19th and 20th..',
+              'error'
             );
           }
         );

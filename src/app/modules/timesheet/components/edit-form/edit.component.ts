@@ -95,7 +95,6 @@ export class EditComponent implements OnInit {
   }
 
   saveOvertime() {
-    console.log('save', this.overtimeForm.value);
     if (this.hasEmptyField())
       return this.errorAlert('All form fields must be filled out');
 

@@ -17,62 +17,6 @@ import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 export class TimesheetService {
   private readonly http = inject(HttpClient);
 
-  // private dummyData: Timesheet[] = [
-  //   {
-  //     id: 1,
-  //     userId: 1,
-  //     createdAt: new Date('2024-07-03T17:00:00.000Z'),
-  //     confirmedManagerBy: 'ManagerName',
-  //     confirmedBenefitBy: 'BenefitName',
-  //     timeSheetDetails: [
-  //       {
-  //         date: new Date('2024-07-03T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-04T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-04T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         date: new Date('2024-07-05T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-06T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-06T03:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //     ],
-  //     status: Status.Pending,
-  //   },
-  //   {
-  //     id: 2,
-  //     userId: 2,
-  //     createdAt: new Date('2024-08-02T08:06:19.799Z'),
-  //     confirmedManagerBy: 'ManagerName',
-  //     confirmedBenefitBy: 'BenefitName',
-  //     timeSheetDetails: [
-  //       {
-  //         id: 1722585911431,
-  //         date: new Date('2024-07-08T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-09T02:00:00.000Z'),
-  //         endTime: new Date('2024-07-09T03:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         id: 1722585968767,
-  //         date: new Date('2024-07-09T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-10T03:00:00.000Z'),
-  //         endTime: new Date('2024-07-10T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //       {
-  //         id: 1722585934135,
-  //         date: new Date('2024-07-10T17:00:00.000Z'),
-  //         startTime: new Date('2024-07-11T03:00:00.000Z'),
-  //         endTime: new Date('2024-07-11T05:00:00.000Z'),
-  //         workID: 'ab88eadb-3f49-47cb-9dbe-6a0bc92784ba',
-  //       },
-  //     ],
-  //     status: Status.OnProgress,
-  //   },
-  // ];
-
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
@@ -120,7 +64,7 @@ export class TimesheetService {
         return this.fetchTimesheetDataID;
       }),
       catchError((error) => {
-        console.error('Error fetching work options:', error);
+        // console.error('Error fetching work options:', error);
         return of();
       })
     );
@@ -134,7 +78,7 @@ export class TimesheetService {
         // console.log('Timesheet saved successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error saving timesheet:', error);
+        // console.error('Error saving timesheet:', error);
         return throwError(error);
       })
     );
@@ -145,10 +89,10 @@ export class TimesheetService {
 
     return this.http.put(reqUrl, timesheet).pipe(
       tap((response) => {
-        console.log('Timesheet edited successfully:', response);
+        // console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error Edited timesheet:', error);
+        // console.error('Error Edited timesheet:', error);
         return throwError(error);
       })
     );
@@ -162,7 +106,7 @@ export class TimesheetService {
         // console.log('Timesheet deleted successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error deleting timesheet:', error);
+        // console.error('Error deleting timesheet:', error);
         return throwError(error);
       })
     );
@@ -176,7 +120,7 @@ export class TimesheetService {
         // console.log('Timesheet submited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error submiting timesheet:', error);
+        // console.error('Error submiting timesheet:', error);
         return throwError(error);
       })
     );
