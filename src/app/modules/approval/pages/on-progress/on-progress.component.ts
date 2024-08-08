@@ -5,9 +5,9 @@ import { Timesheet } from '../../model/timesheet';
 import { Routes } from '../../../../core/constants/routes';
 
 // import for service session
-import { SessionService } from '../../../../core/services/session.service';
 import { UserInfo } from '../../../../core/models/user-info.model';
 import { BehaviorSubject } from 'rxjs';
+import { SessionService } from '../../../../core/services/session.service';
 
 import { TimesheetService } from '../../services/timesheet.service';
 

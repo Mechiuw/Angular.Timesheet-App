@@ -1,8 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
 import { OvertimeService } from '../../services/overtime.service';
 import { Overtime, Timesheet, Status } from '../../model/timesheet';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-submit-button',
@@ -20,13 +21,21 @@ export class SubmitButtonComponent implements OnInit {
     private readonly overtimeService: OvertimeService,
     private readonly timesheetService: TimesheetService
   ) {}
+  private router = inject(Router);
+
   ngOnInit(): void {
+    this.loadData();
+  }
+
+  loadData(): void {
     this.overtimeService.List().subscribe((data) => {
       this.timesheetDetails = data;
     });
   }
 
   onclick() {
+    this.ngOnInit();
+
     if (this.timesheetDetails.length === 0) {
       Swal.fire({
         icon: 'error',
@@ -36,35 +45,42 @@ export class SubmitButtonComponent implements OnInit {
     }
 
     Swal.fire({
-      title: 'Submit?',
+      title: 'Save?',
       icon: 'question',
-      text: 'Are you sure you want to submit?',
+      text: 'Are you sure you want to save?',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, submit!',
+      confirmButtonText: 'Yes, save!',
     }).then((result) => {
       if (result.isConfirmed) {
         const timesheet: Timesheet = {
-          // userId: 1,
-          // createdAt: new Date(Date.now()),
-          // confirmedManagerBy: 'ManagerName',
-          // confirmedBenefitBy: 'BenefitName',
-          works: this.timesheetDetails.map(
+          timeSheetDetails: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
-          status: Status.Created,
         };
 
-        console.log('Timesheet detail: ', timesheet);
-        this.formSubmitted.emit();
-        this.overtimeService.clearWorks();
-
-        Swal.fire({
-          title: 'Success!',
-          text: 'Your form has been submitted.',
-          icon: 'success',
-        });
+        this.timesheetService.SaveTimesheet(timesheet).subscribe(
+          (response) => {
+            this.formSubmitted.emit();
+            this.overtimeService.clearWorks();
+            Swal.fire({
+              title: 'Success!',
+              text: 'Your form has been saved.',
+              icon: 'success',
+            });
+          },
+          (error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error!',
+              text: 'There was a problem submitting your form. Please try again later.',
+            });
+          }
+        );
+        setTimeout(() => {
+          this.router.navigate(['/timesheets/list']);
+        }, 3000);
       }
     });
   }

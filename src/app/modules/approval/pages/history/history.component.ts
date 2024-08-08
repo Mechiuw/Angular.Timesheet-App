@@ -7,9 +7,9 @@ import { Roles } from '../../../../core/constants/roles';
 import { StatusTimesheets } from '../../../../core/constants/status-timesheets';
 
 // import for service session
-import { SessionService } from '../../../../core/services/session.service';
 import { UserInfo } from '../../../../core/models/user-info.model';
 import { BehaviorSubject } from 'rxjs';
+import { SessionService } from '../../../../core/services/session.service';
 
 import { TimesheetService } from '../../services/timesheet.service';
 

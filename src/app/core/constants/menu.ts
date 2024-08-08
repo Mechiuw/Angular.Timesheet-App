@@ -37,7 +37,7 @@ export class Menu {
       ],
     },
     {
-      group: "Master",
+      group: 'Master',
       separator: true,
       items: [
         {
@@ -52,10 +52,10 @@ export class Menu {
           route: '/works',
           role: [Roles.ADMIN, Roles.MANAGER],
         },
-      ]
+      ],
     },
     {
-      group: "Timesheet",
+      group: 'Timesheet',
       separator: true,
       items: [
         {
