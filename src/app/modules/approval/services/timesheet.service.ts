@@ -6,6 +6,7 @@ import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
 import { Timesheet } from '../model/timesheet.model';
 import { ITimesheetService } from './itimesheet.service';
 import { Roles } from '../../../core/constants/roles';
+import { Routes } from '../../../core/constants/routes';
 import { StatusTimesheets } from '../../../core/constants/status-timesheets';
 
 // import for service session
@@ -29,147 +30,73 @@ export class TimesheetService implements ITimesheetService {
     );
   }
 
-  getAllTimesheet(params: string): Observable<PagedResponse<Timesheet[]>> {
-    try {
-      return this.http.get<PagedResponse<Timesheet[]>>(
-        API_ENDPOINT.TIMESHEET + params
-      );
-    } catch (error: any) {
-      return error.message;
-    }
-  }
-
-  // TODO : IMPLEMENTASI SERVER SIDE PAGINATION
-  // currently using client side pagination
-  // currently using filter by FE
   getAllTimesheetByAuth(
     role: string,
-    route: string
+    route: string,
+    rows?: number,
+    page?: number,
+    filterByName?: string
   ): Observable<PagedResponse<Timesheet[]>> {
-    const baseUrl = API_ENDPOINT.TIMESHEET + '?rowsPerPage=1000&';
+    let queryParams = `?paging=${page}&rowsPerPage=${rows}&name=${filterByName}`;
 
+    // Condition for get timesheet by role and route
     switch (role) {
       // Role User
       case Roles.USER: {
-        try {
-          return this.http
-            .get<PagedResponse<Timesheet[]>>(
-              baseUrl + 'userId=' + this.currentUser$.value?.id
-            )
-            .pipe(
-              map((response) => {
-                const filteredData = response.data.filter((timesheet) => {
-                  if (route === 'on-progress') {
-                    return (
-                      timesheet.status === StatusTimesheets.PENDING ||
-                      timesheet.status === StatusTimesheets.ACCEPTED
-                    );
-                  } else if (route === 'history') {
-                    return (
-                      timesheet.status === StatusTimesheets.DENIED ||
-                      timesheet.status === StatusTimesheets.APPROVED ||
-                      timesheet.status === StatusTimesheets.REJECTED
-                    );
-                  } else {
-                    return timesheet;
-                  }
-                });
+        queryParams += `&userId=${this.currentUser$.value?.id}`;
 
-                return { ...response, data: filteredData };
-              })
-            );
-        } catch (error: any) {
-          return error.message;
+        if (route === Routes.ONPROGRESS) {
+          queryParams += '&status=pending:accepted';
+        } else if (route === Routes.HISTORY) {
+          queryParams += '&status=denied:approved:rejected';
         }
+
+        break;
       }
+
       // Role Admin
       case Roles.ADMIN: {
-        try {
-          return this.http
-            .get<PagedResponse<Timesheet[]>>(baseUrl)
-            .pipe(
-              map((response) => {
-                const filteredData = response.data.filter((timesheet) => {
-                  if (route === 'on-progress') {
-                    return (
-                      timesheet.status === StatusTimesheets.PENDING ||
-                      timesheet.status === StatusTimesheets.ACCEPTED
-                    );
-                  } else if (route === 'history') {
-                    return (
-                      timesheet.status === StatusTimesheets.DENIED ||
-                      timesheet.status === StatusTimesheets.APPROVED ||
-                      timesheet.status === StatusTimesheets.REJECTED
-                    );
-                  } else {
-                    return timesheet;
-                  }
-                });
-
-                return { ...response, data: filteredData };
-              })
-            );
-        } catch (error: any) {
-          return error.message;
+        if (route === Routes.ONPROGRESS) {
+          queryParams += '&status=pending:accepted';
+        } else if (route === Routes.HISTORY) {
+          queryParams += '&status=denied:approved:rejected';
         }
+
+        break;
       }
+
       // Role Manager
       case Roles.MANAGER: {
-        try {
-          return this.http
-            .get<PagedResponse<Timesheet[]>>(baseUrl)
-            .pipe(
-              map((response) => {
-                const filteredData = response.data.filter((timesheet) => {
-                  if (route === 'on-progress') {
-                    return timesheet.status === StatusTimesheets.PENDING;
-                  } else if (route === 'history') {
-                    return (
-                      timesheet.status === StatusTimesheets.ACCEPTED ||
-                      timesheet.status === StatusTimesheets.DENIED
-                    );
-                  } else {
-                    return false;
-                  }
-                });
-
-                return { ...response, data: filteredData };
-              })
-            );
-        } catch (error: any) {
-          return error.message;
+        if (route === Routes.ONPROGRESS) {
+          queryParams += '&status=pending';
+        } else if (route === Routes.HISTORY) {
+          queryParams += '&status=accepted:denied';
         }
+
+        break;
       }
+
       // Role Benefit
       case Roles.BENEFIT: {
-        try {
-          return this.http
-            .get<PagedResponse<Timesheet[]>>(baseUrl)
-            .pipe(
-              map((response) => {
-                const filteredData = response.data.filter((timesheet) => {
-                  if (route === 'on-progress') {
-                    return timesheet.status === StatusTimesheets.ACCEPTED;
-                  } else if (route === 'history') {
-                    return (
-                      timesheet.status === StatusTimesheets.APPROVED ||
-                      timesheet.status === StatusTimesheets.REJECTED
-                    );
-                  } else {
-                    return timesheet;
-                  }
-                });
-
-                return { ...response, data: filteredData };
-              })
-            );
-        } catch (error: any) {
-          return error.message;
+        if (route === Routes.ONPROGRESS) {
+          queryParams += '&status=accepted';
+        } else if (route === Routes.HISTORY) {
+          queryParams += '&status=approved:rejected';
         }
+
+        break;
       }
-      default: {
-        return of({} as PagedResponse<Timesheet[]>);
-      }
+    }
+
+    // Get Timesheet
+    try {
+      console.log(queryParams);
+
+      return this.http.get<PagedResponse<Timesheet[]>>(
+        API_ENDPOINT.TIMESHEET + queryParams
+      );
+    } catch (error: any) {
+      return error.message;
     }
   }
 

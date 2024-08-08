@@ -17,7 +17,11 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import {
+  ConfirmationService,
+  LazyLoadEvent,
+  MessageService,
+} from 'primeng/api';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
 import { ToastModule } from 'primeng/toast';
 
@@ -28,7 +32,13 @@ import { StatusTimesheets } from '../../../../core/constants/status-timesheets';
 import { Roles } from '../../../../core/constants/roles';
 import { Routes } from '../../../../core/constants/routes';
 
+// import for service session
+import { SessionService } from '../../../../core/services/session.service';
+import { UserInfo } from '../../../../core/models/user-info.model';
+import { BehaviorSubject } from 'rxjs';
+
 import { TimesheetService } from '../../services/timesheet.service';
+import { PagedResponse } from '../../../../core/models/api.model';
 
 @Component({
   selector: 'app-timesheet-table',
@@ -53,28 +63,41 @@ import { TimesheetService } from '../../services/timesheet.service';
   providers: [ConfirmationService, MessageService],
 })
 export class TimesheetTableComponent implements OnInit {
+  // Data user from session
+  private currentUser$: BehaviorSubject<UserInfo | null>;
+
   // Constructor
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
+    private readonly sessionService: SessionService,
     private readonly timesheetService: TimesheetService
-  ) {}
+  ) {
+    this.currentUser$ = new BehaviorSubject<UserInfo | null>(
+      sessionService.getCurrentUser()
+    );
+  }
 
   @ViewChild('dt') dt: Table | undefined;
 
+  // Data Loading
+  isLoading: boolean = true;
+
+  // Data Timesheet
+  timesheets: Timesheet[] = [];
+
+  // Data Role
+  role: string = '';
+
   // Data Search
-  searchValue: string | undefined;
+  searchValue: string = '';
 
-  //  Apply Filter Search
-  applyFilterGlobal($event: any, stringVal: any) {
-    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
-  }
-
-  // Data Url & Params
+  // Data Route Url & Params
   urlTimesheetId?: string | null;
   paramTimesheetId?: string | null;
+  route: string = '';
 
   // Data Enum Roles
   RolesEnum = {
@@ -99,14 +122,6 @@ export class TimesheetTableComponent implements OnInit {
     REJECTED: StatusTimesheets.REJECTED,
   };
 
-  // Data and Function from Parent
-  @Input() isLoading: boolean = true;
-  @Input() timesheets: Timesheet[] = [];
-  @Input() route!: string;
-  @Input() role!: string;
-  @Output() getTimesheetsFromService = new EventEmitter<void>();
-  @Output() checkDeleteAllData = new EventEmitter<void>();
-
   // Data Selected Timesheet
   selectedTimesheet: Timesheet = {} as Timesheet;
 
@@ -118,8 +133,47 @@ export class TimesheetTableComponent implements OnInit {
   first: number | undefined = 0;
   totalRecords: number = 0;
   page: number = 1;
-  rowsOption: number[] = [1,2,5]
+  rowsOption: number[] = [5, 10, 50];
 
+  // Function Filter
+  applyFilterGlobal($event: any, stringVal: any) {
+    this.dt!.filterGlobal(($event.target as HTMLInputElement).value, stringVal);
+  }
+
+  // Function Load Timesheet
+  loadTimesheets($event: LazyLoadEvent) {
+    this.isLoading = true;
+
+    let rows = $event.rows;
+    this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
+
+    // Get Timesheet Data with Pagination
+    this.timesheetService
+      .getAllTimesheetByAuth(
+        this.role,
+        this.route,
+        rows ?? 1,
+        this.page,
+        this.searchValue
+      )
+      .subscribe({
+        next: (response: PagedResponse<Timesheet[]>) => {
+          // Set Data Pagination
+          this.totalRecords = response.paging.totalRows;
+          rows = response.paging.rowsPerPage;
+
+          // Set Data Timesheet
+          this.timesheets = response.data;
+
+          // Disable Loading
+          this.isLoading = false;
+          console.log(response);
+        },
+        error: (error: any) => {
+          console.error('Error fetching timesheet:', error);
+        },
+      });
+  }
 
   // Function Modal
   showDialogDetail(timesheet: Timesheet) {
@@ -152,8 +206,8 @@ export class TimesheetTableComponent implements OnInit {
       life: 3000,
     });
 
-    // Call Service Funtion from Parent to Update Data
-    this.getTimesheetsFromService.emit();
+    // Load Data
+    this.loadTimesheets({ first: 0, rows: 5 });
   }
 
   reloadSuccessX() {
@@ -168,8 +222,8 @@ export class TimesheetTableComponent implements OnInit {
       life: 3000,
     });
 
-    // Call Service Funtion from Service
-    this.getTimesheetsFromService.emit();
+    // Load Data
+    this.loadTimesheets({ first: 0, rows: 5 });
   }
 
   // Function Confirmation Button
@@ -258,9 +312,15 @@ export class TimesheetTableComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Get Route from URL
+    // Get Data Current User
+    this.currentUser$.subscribe((user) => {
+      this.role = user?.role!;
+    });
+
+    // Get Route from URL and Set Data
     const currentRoute = this.router.url.split('/');
     this.urlTimesheetId = currentRoute[currentRoute.length - 2];
+    this.route = currentRoute[currentRoute.length - 1];
 
     // Get param 'timesheetId' from URL
     this.activatedRoute.firstChild?.paramMap.subscribe({

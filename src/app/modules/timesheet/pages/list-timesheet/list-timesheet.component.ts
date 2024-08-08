@@ -28,7 +28,7 @@ export class ListTimesheetComponent implements OnInit {
       .subscribe((response) => (this.timesheets = response));
   }
 
-  onTimesheetDeleted(): void {
+  refresh(): void {
     this.ngOnInit();
   }
 }

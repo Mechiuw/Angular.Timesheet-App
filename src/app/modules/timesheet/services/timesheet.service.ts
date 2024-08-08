@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { SessionService } from '../../../core/services/session.service';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -22,37 +23,29 @@ export class TimesheetService {
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
-  // private apiUrl = 'https://api.yusharwz.my.id/api/v1';
+
   private apiUrl = API_ENDPOINT.TIMESHEET;
   private readonly token = this.session.get('token');
-  // private readonly token =
-  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTUwMTgsImlhdCI6MTcyMzAwMzAxOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJBa3UgVXNlciIsImVtYWlsIjoiZXBjNDE4MDVAemNjY2suY29tIiwicm9sZSI6InVzZXIifQ.s19zyTJ7_QJCvNHoDkSCJBRETjyxcbAb_SwgwKZLfuc';
+
+  private date: Date = new Date();
 
   GetTimesheet(): Observable<Timesheet[]> {
-    return this.http.get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET).pipe(
-      map((response) => {
-        // Filter only timesheets with status 'created'
-        this.fetchTimesheetData = response.data
-          .filter((timesheet) => timesheet.status === 'created')
-          .map((timesheet) => ({
-            ...timesheet,
-          }));
+    const monthPrev = this.date.getMonth();
+    const monthNow = this.date.getMonth() + 1;
+    const decodedToken: any = jwtDecode(this.token!);
 
-        return this.sortTimesheetsByDate(this.fetchTimesheetData);
+    const reqUrl = `${API_ENDPOINT.TIMESHEET}?period=${monthPrev}:${monthNow}&userId=${decodedToken.id}&status=created`;
+    return this.http.get<{ data: Timesheet[] }>(reqUrl).pipe(
+      map((response) => {
+        this.fetchTimesheetData = response.data;
+
+        return this.fetchTimesheetData;
       }),
       catchError((error) => {
         this.fetchTimesheetData = [];
         return of(this.fetchTimesheetData);
       })
     );
-  }
-
-  private sortTimesheetsByDate(timesheets: Timesheet[]): Timesheet[] {
-    return timesheets.sort((a, b) => {
-      const dateA = new Date(a.createdAt!).getTime();
-      const dateB = new Date(b.createdAt!).getTime();
-      return dateA - dateB;
-    });
   }
 
   GetTimesheetById(id: any): Observable<TimesheetResponse> {
@@ -70,7 +63,7 @@ export class TimesheetService {
         return this.fetchTimesheetDataID;
       }),
       catchError((error) => {
-        console.error('Error fetching work options:', error);
+        // console.error('Error fetching work options:', error);
         return of();
       })
     );
@@ -84,7 +77,7 @@ export class TimesheetService {
         // console.log('Timesheet saved successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error saving timesheet:', error);
+        // console.error('Error saving timesheet:', error);
         return throwError(error);
       })
     );
@@ -95,10 +88,10 @@ export class TimesheetService {
 
     return this.http.put(reqUrl, timesheet).pipe(
       tap((response) => {
-        console.log('Timesheet edited successfully:', response);
+        // console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error Edited timesheet:', error);
+        // console.error('Error Edited timesheet:', error);
         return throwError(error);
       })
     );
@@ -112,7 +105,7 @@ export class TimesheetService {
         // console.log('Timesheet deleted successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error deleting timesheet:', error);
+        // console.error('Error deleting timesheet:', error);
         return throwError(error);
       })
     );
@@ -126,7 +119,7 @@ export class TimesheetService {
         // console.log('Timesheet submited successfully:', response);
       }),
       catchError((error) => {
-        console.error('Error submiting timesheet:', error);
+        // console.error('Error submiting timesheet:', error);
         return throwError(error);
       })
     );
