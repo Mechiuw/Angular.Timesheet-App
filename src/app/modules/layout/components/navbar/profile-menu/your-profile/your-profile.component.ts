@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ProfileService } from '../../../../services/profile.service';
 import {
+  ChangePasswordRequest,
   ProfileRequest,
   ProfileResponse,
 } from '../../../../models/profile.model';
@@ -33,6 +34,7 @@ import { MessageService } from 'primeng/api';
 })
 export class YourProfileComponent implements OnInit {
   profile: ProfileResponse['data'] | null = null;
+  newPassword: string = '';
   errorMessage: string | null = null;
   successMessage: string = '';
   selectedFile: File | null = null;
@@ -41,6 +43,7 @@ export class YourProfileComponent implements OnInit {
   loadingUpload: boolean = false;
   showForm: boolean = false;
   uploadedFiles: any;
+  changePasswordForm: boolean = false;
 
   constructor(
     private location: Location,
@@ -155,6 +158,54 @@ export class YourProfileComponent implements OnInit {
     } else {
       this.errorMessage = 'Profile data is not available';
     }
+  }
+
+  toggleChangePassword(): void {
+    this.changePasswordForm = true;
+  }
+
+  fetchChangePassword(): void {
+    const payload: ChangePasswordRequest = {
+      newPassword: this.newPassword,
+    };
+    console.log('Payload: ', payload);
+    this.loadingUpload = true;
+    this.profileService.changePassword(payload).subscribe({
+      next: (response) => {
+        this.loadingUpload = false;
+        if (response.status.code === 200) {
+          this.successMessage = 'Password changed successfully';
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: this.successMessage,
+          });
+          this.changePasswordForm = false;
+        }
+        else if (this.newPassword === '') {
+          this.errorMessage = 'Password cannot be empty';
+          this.messageService.add({
+            severity: 'error',
+            summary: 'error',
+            detail: this.errorMessage,
+          });
+          this.loadingUpload = false;
+        } else {
+          this.errorMessage = `Error: ${response.status.message}`;
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: this.errorMessage,
+          });
+        }
+      },
+      error: (error) => {
+        this.loadingUpload = false;
+        this.errorMessage = `Error: ${
+          error.message || 'An unknown error occurred'
+        }`;
+      },
+    });
   }
 
   goBack(): void {

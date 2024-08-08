@@ -19,3 +19,7 @@ export interface ProfileRequest {
   name: string,
   phone: string
 }
+
+export interface ChangePasswordRequest {
+  newPassword: string
+}
