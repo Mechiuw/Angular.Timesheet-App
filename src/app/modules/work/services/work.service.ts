@@ -14,19 +14,18 @@ export class WorkService implements IWorkService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly authService: AuthService
   ) { }
   
   List(): Observable<PagedResponse<Work[]>> {
     return this.http.get<PagedResponse<Work[]>>(API_ENDPOINT.WORK);
   }
-  Get(id: number): Observable<SingleResponse<Work>> {
+  Get(id: string): Observable<SingleResponse<Work>> {
     return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
   }
   Add(work: Work): Observable<SingleResponse<Work>> {
     return this.http.post<SingleResponse<Work>>(API_ENDPOINT.WORK, work);
   }
-  Update(work: Work): Observable<SingleResponse<Work>> {
+  Update(id:string, work: Work): Observable<SingleResponse<Work>> {
     return this.http.put<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${work.id}`, work);
   }
   Delete(id: number): Observable<void> {

@@ -4,8 +4,8 @@ import { Work } from "../models/work.model";
 
 export interface IWorkService {
     List(): Observable<PagedResponse<Work[]>>;
-    Get(id: number): Observable<SingleResponse<Work>>;
+    Get(id: string): Observable<SingleResponse<Work>>;
     Add(work: Work): Observable<SingleResponse<Work>>;
-    Update(work: Work): Observable<SingleResponse<Work>>;
+    Update(id:string,work: Work): Observable<SingleResponse<Work>>;
     Delete(id: number): Observable<void>;
 }
