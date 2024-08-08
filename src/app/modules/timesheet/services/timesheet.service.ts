@@ -10,6 +10,8 @@ import {
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
+import { jwtDecode } from 'jwt-decode';
+import { token } from '../../../core/interceptor/request.interceptor.ts';
 
 @Injectable({
   providedIn: 'root',
@@ -22,31 +24,25 @@ export class TimesheetService {
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
   private apiUrl = API_ENDPOINT.TIMESHEET;
 
-  GetTimesheet(): Observable<Timesheet[]> {
-    return this.http.get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET).pipe(
-      map((response) => {
-        // Filter only timesheets with status 'created'
-        this.fetchTimesheetData = response.data
-          .filter((timesheet) => timesheet.status === 'created')
-          .map((timesheet) => ({
-            ...timesheet,
-          }));
+  private date: Date = new Date();
+  private readonly token = token;
 
-        return this.sortTimesheetsByDate(this.fetchTimesheetData);
+  GetTimesheet(): Observable<Timesheet[]> {
+    const monthNow = this.date.getMonth() + 1;
+    const decodedToken: any = jwtDecode(this.token);
+
+    const reqUrl = `${API_ENDPOINT.TIMESHEET}?userId=${decodedToken.id}&status=created`;
+    return this.http.get<{ data: Timesheet[] }>(reqUrl).pipe(
+      map((response) => {
+        this.fetchTimesheetData = response.data;
+
+        return this.fetchTimesheetData;
       }),
       catchError((error) => {
         this.fetchTimesheetData = [];
         return of(this.fetchTimesheetData);
       })
     );
-  }
-
-  private sortTimesheetsByDate(timesheets: Timesheet[]): Timesheet[] {
-    return timesheets.sort((a, b) => {
-      const dateA = new Date(a.createdAt!).getTime();
-      const dateB = new Date(b.createdAt!).getTime();
-      return dateA - dateB;
-    });
   }
 
   GetTimesheetById(id: any): Observable<TimesheetResponse> {

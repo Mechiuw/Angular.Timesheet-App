@@ -50,7 +50,7 @@ export class TableComponent {
             // console.error('Error submitting timesheet', error);
             Swal.fire(
               'Error!',
-              'Failed to submit timesheet, submit only on the 19th and 20th..',
+              'Failed to submit timesheet, submit only on the 19th and 20th each month.',
               'error'
             );
           }
