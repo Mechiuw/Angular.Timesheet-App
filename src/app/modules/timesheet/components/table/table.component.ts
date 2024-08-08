@@ -19,7 +19,7 @@ export class TableComponent {
   private timesheetService = inject(TimesheetService);
 
   @Input() dataTable: Timesheet[] = [];
-  @Output() timesheetDeleted = new EventEmitter<void>();
+  @Output() refresh = new EventEmitter<void>();
 
   editTimesheet(id: number) {
     this.router.navigate(['/timesheets/update/' + id]);
@@ -44,7 +44,7 @@ export class TableComponent {
               'Your timesheet has been submitted.',
               'success'
             );
-            this.timesheetDeleted.emit();
+            this.refresh.emit();
           },
           (error) => {
             // console.error('Error submitting timesheet', error);
@@ -82,7 +82,7 @@ export class TableComponent {
               'Your timesheet has been deleted.',
               'success'
             );
-            this.timesheetDeleted.emit();
+            this.refresh.emit();
           },
           (error) => {
             // console.error('Error deleting timesheet', error);
