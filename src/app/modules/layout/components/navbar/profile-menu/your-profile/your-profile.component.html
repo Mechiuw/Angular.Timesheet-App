@@ -85,7 +85,7 @@
             No signature, please upload
           </h3>
         </div>
-        <div class="mb-10">
+        <div class="mb-4">
           <p-fileUpload
             mode="basic"
             name="file"
@@ -102,6 +102,37 @@
             styleClass="w-10 h-10"
             strokeWidth="5"
           ></p-progressSpinner>
+        </div>
+        <div *ngIf="!changePasswordForm" class="mb-10 mt-2 flex">
+          <p-button
+            label="Change Password"
+            class="rounded-xl text-foreground"
+            severity="help"
+            (click)="toggleChangePassword()"
+          />
+        </div>
+        <div *ngIf="changePasswordForm">
+          <div class="flex flex-col">
+            <label for="phone" class="font-bold text-foreground mb-2"
+              >Type New Password</label
+            >
+            <input
+              pInputText
+              [(ngModel)]="newPassword"
+              class="mb-2 rounded-xl border-primary bg-background text-foreground ring-primary"
+            />
+            <small id="password-help" class="max-w-48">
+              *password must contain at least one uppercase letter, one number and one special character
+            </small>
+          </div>
+          <div class="mb-10 mt-2 flex">
+            <p-button
+              label="Change Password"
+              class="rounded-xl text-foreground"
+              severity="help"
+              (click)="fetchChangePassword()"
+            />
+          </div>
         </div>
         <div class="mt-2 flex">
           <p-button
