@@ -32,9 +32,14 @@ export class SummaryService implements ISummaryService {
   }`;
 
   getMonthReport(): Observable<PagedResponse<Timesheet[]>> {
-    let params = status;
+    let status = "";
+    if (this.role === Roles.USER) {
+      status = `&userId=${this.authService.currentUser?.id!}`;
+    }
+    this.params += status;
+
     return this.http
-      .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET + params)
+      .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET + this.params)
   }
   // getSummaryTrend(): Observable<any> {
   //   const top = this.month
@@ -56,9 +61,10 @@ export class SummaryService implements ISummaryService {
       status += `${StatusTimesheets.ACCEPTED}`;
     } else if (this.role === Roles.ADMIN) {
       status += `${StatusTimesheets.PENDING}:${StatusTimesheets.ACCEPTED}:${StatusTimesheets.APPROVED}`;
-    } else status = `&userId=${this.authService.currentUser?.id}`;
+    } else status = `&userId=${this.authService.currentUser?.id!}`;
 
     this.params += status;
+    console.log(this.params);
     return this.http
       .get<PagedResponse<TimesheetSummary[]>>(
         API_ENDPOINT.TIMESHEET + this.params

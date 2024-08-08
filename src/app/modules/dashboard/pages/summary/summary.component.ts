@@ -37,9 +37,9 @@ export class SummaryComponent implements OnInit {
   lineData?: Chart;
   lineOptions?: ChartOptions;
 
-  total: number = 540 + 325 + 702;
-  submission: number = 100;
-  submissionItems: number = 200;
+  total: number = 0;
+  submission: number = 0;
+  submissionItems: number = 0;
 
   
   // Example Timesheet
@@ -167,6 +167,7 @@ export class SummaryComponent implements OnInit {
     this.summaryService.getMonthReport().subscribe({
       next: ({ data }) => {
         const getDataCounts = (data: Timesheet[]) => {
+          if (!data || data.length === 0) return [0, 0, 0];
           let approvedCount = 0;
           let rejectedCount = 0;
           let pendingCount = 0;
