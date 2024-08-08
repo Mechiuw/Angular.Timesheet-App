@@ -29,29 +29,22 @@ export class TimesheetService {
   //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjU1OTUwMTgsImlhdCI6MTcyMzAwMzAxOCwiaXNzIjoidGltZXNoZWV0LWFwcCIsImlkIjoiYjZhZmY4ODUtZWM0My00YmU5LWJiZDItOTI5OWUxMDE4ZTNiIiwidXNlcm5hbWUiOiJBa3UgVXNlciIsImVtYWlsIjoiZXBjNDE4MDVAemNjY2suY29tIiwicm9sZSI6InVzZXIifQ.s19zyTJ7_QJCvNHoDkSCJBRETjyxcbAb_SwgwKZLfuc';
 
   GetTimesheet(): Observable<Timesheet[]> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
+    return this.http.get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET).pipe(
+      map((response) => {
+        // Filter only timesheets with status 'created'
+        this.fetchTimesheetData = response.data
+          .filter((timesheet) => timesheet.status === 'created')
+          .map((timesheet) => ({
+            ...timesheet,
+          }));
 
-    return this.http
-      .get<{ data: Timesheet[] }>(API_ENDPOINT.TIMESHEET, { headers })
-      .pipe(
-        map((response) => {
-          // Filter only timesheets with status 'created'
-          this.fetchTimesheetData = response.data
-            .filter((timesheet) => timesheet.status === 'created')
-            .map((timesheet) => ({
-              ...timesheet,
-            }));
-
-          return this.sortTimesheetsByDate(this.fetchTimesheetData);
-        }),
-        catchError((error) => {
-          this.fetchTimesheetData = [];
-          return of(this.fetchTimesheetData);
-        })
-      );
+        return this.sortTimesheetsByDate(this.fetchTimesheetData);
+      }),
+      catchError((error) => {
+        this.fetchTimesheetData = [];
+        return of(this.fetchTimesheetData);
+      })
+    );
   }
 
   private sortTimesheetsByDate(timesheets: Timesheet[]): Timesheet[] {
@@ -63,15 +56,9 @@ export class TimesheetService {
   }
 
   GetTimesheetById(id: any): Observable<TimesheetResponse> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
 
-    return this.http.get<{ data: TimesheetResponse }>(reqUrl, { headers }).pipe(
+    return this.http.get<{ data: TimesheetResponse }>(reqUrl).pipe(
       map((response) => {
         // console.log('Fetch Work Data:', response.data.timeSheetDetails);
         const timesheet = {
@@ -90,12 +77,9 @@ export class TimesheetService {
   }
 
   SaveTimesheet(timesheet: Timesheet): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
+    const reqUrl = `${this.apiUrl}/`;
 
-    return this.http.post(API_ENDPOINT.TIMESHEET, timesheet, { headers }).pipe(
+    return this.http.post(reqUrl, timesheet).pipe(
       tap((response) => {
         // console.log('Timesheet saved successfully:', response);
       }),
@@ -107,19 +91,11 @@ export class TimesheetService {
   }
 
   UpdateTimesheet(id: any, timesheet: Timesheet): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('id:', id);
-    // console.log('Edit Timesheet: ' + timesheet);
 
-    return this.http.put(reqUrl, timesheet, { headers }).pipe(
+    return this.http.put(reqUrl, timesheet).pipe(
       tap((response) => {
-        // console.log('Timesheet edited successfully:', response);
+        console.log('Timesheet edited successfully:', response);
       }),
       catchError((error) => {
         console.error('Error Edited timesheet:', error);
@@ -129,16 +105,9 @@ export class TimesheetService {
   }
 
   DeleteTimesheet(id: any): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
-
     const reqUrl = `${this.apiUrl}/${id}`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('Delete Timesheet: ' + JSON.stringify(id));
 
-    return this.http.delete(reqUrl, { headers }).pipe(
+    return this.http.delete(reqUrl).pipe(
       tap((response) => {
         // console.log('Timesheet deleted successfully:', response);
       }),
@@ -150,16 +119,9 @@ export class TimesheetService {
   }
 
   SubmitTimesheet(id: any): Observable<any> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
-
     const reqUrl = `${this.apiUrl}/${id}/submit`;
-    // console.log('Request URL:', reqUrl);
-    // console.log('submit Timesheet: ' + JSON.stringify(id));
 
-    return this.http.put(reqUrl, { headers }).pipe(
+    return this.http.put(reqUrl, {}).pipe(
       tap((response) => {
         // console.log('Timesheet submited successfully:', response);
       }),
@@ -175,24 +137,17 @@ export class TimesheetService {
   }
 
   fethcWorkOptions(): Observable<WorkOption[]> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${this.token}`,
-      'ngrok-skip-browser-warning': 'true',
-    });
-
-    return this.http
-      .get<PagedResponse<WorkOption[]>>(API_ENDPOINT.WORK, { headers })
-      .pipe(
-        map((response) => {
-          this.fetchWorkData = response.data;
-          // console.log('Fetch Work Data:', this.fetchWorkData);
-          return this.fetchWorkData;
-        }),
-        catchError((error) => {
-          // console.error('Error fetching work options:', error);
-          this.fetchWorkData = [];
-          return of(this.fetchWorkData);
-        })
-      );
+    return this.http.get<PagedResponse<WorkOption[]>>(API_ENDPOINT.WORK).pipe(
+      map((response) => {
+        this.fetchWorkData = response.data;
+        // console.log('Fetch Work Data:', this.fetchWorkData);
+        return this.fetchWorkData;
+      }),
+      catchError((error) => {
+        // console.error('Error fetching work options:', error);
+        this.fetchWorkData = [];
+        return of(this.fetchWorkData);
+      })
+    );
   }
 }
