@@ -5,7 +5,9 @@ import { ListComponent } from '../../components/list/list.component';
 import { FormComponent } from '../../components/form/form.component';
 import { CommonModule } from '@angular/common';
 import { OvertimeService } from '../../services/overtime.service';
-import { Overtime } from '../../model/timesheet';
+import { Overtime, WorkOption } from '../../model/timesheet';
+import { Observable, of, map } from 'rxjs';
+import { TimesheetService } from '../../services/timesheet.service';
 
 @Component({
   selector: 'app-create-timesheet',
@@ -23,14 +25,17 @@ import { Overtime } from '../../model/timesheet';
 export class CreateTimesheetComponent implements OnInit {
   @ViewChild(FormComponent) formComponent!: FormComponent;
   private readonly overtimeService = inject(OvertimeService);
+  private readonly timesheetService = inject(TimesheetService);
 
   overtimeForm: Overtime[] = [];
   date: Date = new Date();
   totalPay: number = 0;
+  workOptions$: Observable<WorkOption[]> = of([]);
 
   ngOnInit(): void {
     this.getTotal();
     this.initData();
+    this.fetchWorkOptions();
   }
 
   getTotal(): void {
@@ -55,5 +60,12 @@ export class CreateTimesheetComponent implements OnInit {
     if (this.formComponent) {
       this.formComponent.resetForm();
     }
+  }
+
+  fetchWorkOptions(): void {
+    // console.log('fetch work options', this.workOptions$);
+    this.workOptions$ = this.timesheetService
+      .fethcWorkOptions()
+      .pipe(map((data) => data ?? []));
   }
 }

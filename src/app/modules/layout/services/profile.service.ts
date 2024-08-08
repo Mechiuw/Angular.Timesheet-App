@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
-import { ProfileResponse } from '../models/profile.model';
+import { ProfileRequest, ProfileResponse } from '../models/profile.model';
 import { SessionService } from '../../../core/services/session.service';
 
 @Injectable({
@@ -42,11 +42,7 @@ export class ProfileService {
     formData.append('image', file, file.name);
 
     return this.http
-      .post<any>(
-        'https://api.yusharwz.my.id/api/v1/accounts/profile/upload-signature',
-        formData,
-        { headers }
-      )
+      .post<any>(API_ENDPOINT.AUTH.UPLOAD_SIGNATURE, formData, { headers })
       .pipe(
         map((response) => {
           return response;
@@ -56,7 +52,32 @@ export class ProfileService {
           return of({
             status: { code: 500, message: 'Internal Server Error' },
             data: null,
-          } as unknown as ProfileResponse);
+          });
+        })
+      );
+  }
+
+  updateProfile(payload: ProfileRequest): Observable<any> {
+    const token = this.sessionService.get('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    console.log('Token: ', token);
+    console.log('Headers: ', headers);
+
+    return this.http
+      .put<ProfileRequest>(API_ENDPOINT.AUTH.UPDATE_ACCOUNTS, payload, {
+        headers,
+      })
+      .pipe(
+        map((response) => {
+          return response;
+        }),
+        catchError((error) => {
+          console.error('Error:', error);
+          return of({
+            status: { code: 500, message: 'Internal Server Error' },
+            data: null,
+          });
         })
       );
   }
