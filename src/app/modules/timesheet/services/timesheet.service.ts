@@ -28,10 +28,11 @@ export class TimesheetService {
   private readonly token = token;
 
   GetTimesheet(): Observable<Timesheet[]> {
+    const monthPrev = this.date.getMonth();
     const monthNow = this.date.getMonth() + 1;
     const decodedToken: any = jwtDecode(this.token);
 
-    const reqUrl = `${API_ENDPOINT.TIMESHEET}?userId=${decodedToken.id}&status=created`;
+    const reqUrl = `${API_ENDPOINT.TIMESHEET}?period=${monthPrev}:${monthNow}&userId=${decodedToken.id}&status=created`;
     return this.http.get<{ data: Timesheet[] }>(reqUrl).pipe(
       map((response) => {
         this.fetchTimesheetData = response.data;
