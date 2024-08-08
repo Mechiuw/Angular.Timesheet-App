@@ -11,7 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { jwtDecode } from 'jwt-decode';
-import { token } from '../../../core/interceptor/request.interceptor.ts';
+import { token } from '../../../core/interceptor/request.interceptor';
 
 @Injectable({
   providedIn: 'root',

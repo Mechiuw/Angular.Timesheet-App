@@ -12,7 +12,7 @@ import {
   withFetch,
   withInterceptors,
 } from '@angular/common/http';
-import { requestInterceptor } from './app/core/interceptor/request.interceptor.ts';
+import { requestInterceptor } from './app/core/interceptor/request.interceptor';
 
 if (environment.production) {
   enableProdMode();
