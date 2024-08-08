@@ -90,8 +90,6 @@ export class TimesheetService implements ITimesheetService {
 
     // Get Timesheet
     try {
-      console.log(queryParams);
-
       return this.http.get<PagedResponse<Timesheet[]>>(
         API_ENDPOINT.TIMESHEET + queryParams
       );

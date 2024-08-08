@@ -167,7 +167,6 @@ export class TimesheetTableComponent implements OnInit {
 
           // Disable Loading
           this.isLoading = false;
-          console.log(response);
         },
         error: (error: any) => {
           console.error('Error fetching timesheet:', error);
