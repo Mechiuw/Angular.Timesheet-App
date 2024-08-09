@@ -181,8 +181,7 @@ export class YourProfileComponent implements OnInit {
             detail: this.successMessage,
           });
           this.changePasswordForm = false;
-        }
-        else if (this.newPassword === '') {
+        } else if (this.newPassword === '') {
           this.errorMessage = 'Password cannot be empty';
           this.messageService.add({
             severity: 'error',
@@ -208,8 +207,22 @@ export class YourProfileComponent implements OnInit {
     });
   }
 
-  goBack(): void {
-    this.location.back();
+  preventNonNumeric(event: KeyboardEvent): void {
+    const validKeys = [
+      'Backspace',
+      'ArrowLeft',
+      'ArrowRight',
+      'Delete',
+      'Tab',
+      'Enter',
+    ];
+    if (
+      validKeys.includes(event.key) ||
+      (!isNaN(Number(event.key)) && event.key !== ' ')
+    ) {
+      return;
+    }
+    event.preventDefault();
   }
 
   load() {
