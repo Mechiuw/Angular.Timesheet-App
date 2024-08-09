@@ -9,6 +9,7 @@ import { UpdateTimesheetComponent } from '../timesheet/pages/update-timesheet/up
 import { UserComponent } from "../user/user.component";
 import { LayoutComponent } from './layout.component';
 import { WorkComponent } from '../work/work.component';
+import { MasterGuardService } from '../../core/guards/master-guard.service';
 
 const routes: Routes = [
   {
@@ -21,7 +22,7 @@ const routes: Routes = [
   {
     path: 'users',
     component: LayoutComponent,
-    canActivate: [DashboardGuardService],
+    canActivate: [DashboardGuardService, MasterGuardService],
     children: [
       {
         path: '',
@@ -32,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'works',
-    canActivate: [DashboardGuardService],
+    canActivate: [DashboardGuardService, MasterGuardService],
     component: LayoutComponent,
     children: [
       {

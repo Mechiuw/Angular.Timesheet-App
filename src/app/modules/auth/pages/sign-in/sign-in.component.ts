@@ -23,7 +23,7 @@ export class SignInComponent implements OnInit {
   passwordTextType!: boolean;
 
   constructor(
-    private readonly formBuilder: FormBuilder, 
+    private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly authService: AuthService,
     private readonly messageService: MessageService
@@ -61,6 +61,7 @@ export class SignInComponent implements OnInit {
       next: () => {
         console.log(this.authService.currentUser);
         this.router.navigate(['/dashboard']);
+        window.location.reload()
       },
       error: (err) => {
         // console.log(err.error.responseMessage);

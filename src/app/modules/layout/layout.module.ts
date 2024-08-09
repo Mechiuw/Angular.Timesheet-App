@@ -10,9 +10,11 @@ import { DashboardGuardService } from "../../core/guards/dashboard-guard.service
 import { requestInterceptor } from "../../core/interceptor/request.interceptor";
 import { AuthService } from "../auth/services/auth.service";
 import { LayoutRoutingModule } from "./layout-routing.module";
+import { MasterGuardService } from "../../core/guards/master-guard.service";
+import { ManagerGuardService } from "../../core/guards/manager-guard.service";
 @NgModule({
   imports: [LayoutRoutingModule, AngularSvgIconModule.forRoot()],
-  providers: [provideHttpClient(withFetch(),withInterceptors([requestInterceptor])), AuthService, DashboardGuardService],
+  providers: [provideHttpClient(withFetch(),withInterceptors([requestInterceptor])), AuthService, DashboardGuardService, MasterGuardService, ManagerGuardService],
 
 })
 export class LayoutModule {}

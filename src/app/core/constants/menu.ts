@@ -29,7 +29,7 @@ export class Menu {
           icon: 'assets/icons/heroicons/outline/folder.svg',
           label: 'Works',
           route: '/works',
-          role: [Roles.ADMIN, Roles.MANAGER],
+          role: [Roles.ADMIN],
         },
       ],
     },
