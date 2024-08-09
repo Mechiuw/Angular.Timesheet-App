@@ -17,7 +17,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
       { path: 'sign-in', canActivate: [AuthGuardService], component: SignInComponent, data: { returnUrl: window.location.pathname } },
       { path: 'sign-up', component: SignUpComponent },
-      { path: 'forgot-password', component: ForgotPasswordComponent },
+      { path: 'forgot-password', canActivate: [AuthGuardService], component: ForgotPasswordComponent },
       { path: 'new-password', component: NewPasswordComponent },
       { path: 'two-steps', component: TwoStepsComponent },
       { path: 'logout', component: LogoutComponent },
