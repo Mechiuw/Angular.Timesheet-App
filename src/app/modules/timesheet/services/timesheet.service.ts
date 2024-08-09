@@ -12,6 +12,7 @@ import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { SessionService } from '../../../core/services/session.service';
 import { jwtDecode } from 'jwt-decode';
+// import { token } from '../../../core/interceptor/request.interceptor';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,7 @@ export class TimesheetService {
 
   private apiUrl = API_ENDPOINT.TIMESHEET;
   private readonly token = this.session.get('token');
+  // private readonly token = token;
 
   private date: Date = new Date();
 
