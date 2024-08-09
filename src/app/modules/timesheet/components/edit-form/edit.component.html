@@ -11,6 +11,7 @@
         [max]="maxDate"
         [matDatepicker]="picker"
         formControlName="selectedDate"
+        readonly
       />
       <mat-hint class="text-slate-800 dark:text-white">MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle
@@ -112,4 +113,10 @@
     [control]="overtimeForm.get('endTime')"
     label="End Time"
   />
+
+  <div *ngIf="overtimeForm.hasError('checkTimeValidator')">
+    <p class="mt-2 text-sm text-red-600 dark:text-red-500">
+      <li>Set Time Failed</li>
+    </p>
+  </div>
 </div>
