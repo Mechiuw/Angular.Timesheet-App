@@ -1,38 +1,48 @@
-<form class="flex items-center space-x-4 bg-background p-4 rounded-lg my-10" [formGroup]="postWorkForm" (ngSubmit)="saveWork()">
-  <div class="relative">
+<form
+  class="flex flex-col md:flex-row items-center md:space-x-4 bg-background p-6 rounded-lg my-10 shadow-lg"
+  [formGroup]="postWorkForm"
+  (ngSubmit)="saveWork()"
+>
+  <div class="flex-1 relative mb-4 md:mb-0">
     <input
       type="text"
       id="description"
       formControlName="description"
       placeholder=" "
-      class="peer block w-full text-base bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+      class="peer block w-full text-base bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-3 focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white transition duration-200 ease-in-out"
     />
     <label
       for="description"
-      class="absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary"
+      class="absolute left-3 top-3 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-3 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-rose-500"
     >
       Description
     </label>
-    <div *ngIf="postWorkForm.get('description')?.invalid && postWorkForm.get('description')?.touched" class="text-red-600">
+    <div
+      *ngIf="postWorkForm.get('description')?.invalid && postWorkForm.get('description')?.touched"
+      class="absolute mt-1 text-xs text-red-600"
+    >
       Description is required.
     </div>
   </div>
 
-  <div class="relative">
+  <div class="flex-1 relative mb-4 md:mb-0">
     <input
       type="number"
       id="fee"
       formControlName="fee"
       placeholder=" "
-      class="peer block w-full text-base bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-2.5 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+      class="peer block w-full text-base bg-gray-50 border border-gray-300 text-gray-900 rounded-lg p-3 focus:ring-rose-500 focus:border-rose-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white transition duration-200 ease-in-out"
     />
     <label
       for="fee"
-      class="absolute left-1 top-2 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-primary"
+      class="absolute left-3 top-3 z-10 origin-[0] -translate-y-4 scale-95 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-3 peer-focus:-translate-y-4 peer-focus:scale-95 peer-focus:px-2 peer-focus:text-rose-500"
     >
       Fee
     </label>
-    <div *ngIf="postWorkForm.get('fee')?.invalid && postWorkForm.get('fee')?.touched" class="text-red-600">
+    <div
+      *ngIf="postWorkForm.get('fee')?.invalid && postWorkForm.get('fee')?.touched"
+      class="absolute mt-1 text-xs text-red-600"
+    >
       Fee is required.
     </div>
   </div>
@@ -41,13 +51,13 @@
     <button
       type="button"
       (click)="cancel()"
-      class="bg-rose-500 text-white rounded-lg p-2 px-5 hover:bg-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300"
+      class="bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg p-3 px-6 hover:from-rose-600 hover:to-rose-700 focus:ring-4 focus:outline-none focus:ring-rose-300 transition duration-200 ease-in-out transform hover:scale-105 active:scale-100"
     >
       Cancel
     </button>
     <button
       type="submit"
-      class="bg-rose-700 text-white rounded-lg p-2 px-5 hover:bg-rose-800 focus:ring-4 focus:outline-none focus:ring-rose-300"
+      class="bg-gradient-to-r from-rose-700 to-rose-800 text-white rounded-lg p-3 px-6 hover:from-rose-800 hover:to-rose-900 focus:ring-4 focus:outline-none focus:ring-rose-300 transition duration-200 ease-in-out transform hover:scale-105 active:scale-100"
       [disabled]="postWorkForm.invalid"
     >
       SAVE
