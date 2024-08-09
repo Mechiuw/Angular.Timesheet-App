@@ -14,6 +14,7 @@ import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { PagedResponse } from '../../../../core/models/api.model';
 import { LazyLoadEvent } from 'primeng/api';
+import { SkeletonModule } from 'primeng/skeleton';
 
 @Component({
   selector: 'app-user-list',
@@ -32,6 +33,7 @@ import { LazyLoadEvent } from 'primeng/api';
     MultiSelectModule,
     DropdownModule,
     NftHeaderComponent,
+    SkeletonModule,
   ],
 
   templateUrl: './user-list.component.html',
@@ -42,13 +44,13 @@ export class UserListComponent implements OnInit {
 
   @ViewChild('dt1') dt: Table | undefined;
 
-  searchValue: string | undefined;
+  searchValue: string = '';
 
   users: User[] = [];
   first: number | undefined = 0;
   totalRecords: number = 0;
   page: number = 1;
-  loading: boolean = false;
+  loading: boolean = true;
   rowsOption: number[] = [5, 10, 50];
 
   clear(table: Table) {
@@ -62,7 +64,7 @@ export class UserListComponent implements OnInit {
 
   loadUsers($event: LazyLoadEvent) {
     let rows = $event.rows;
-    this.loading = true;
+    this.loading = true
     this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
 
     if (this.searchValue != '') {
@@ -72,7 +74,6 @@ export class UserListComponent implements OnInit {
           rows = response.paging.rowsPerPage;
           this.users = response.data;
           this.loading = false;
-          console.log(response);
         },
         error: (error: any) => {
           console.error('Error fetching users:', error);
@@ -80,14 +81,13 @@ export class UserListComponent implements OnInit {
       });
     } else {
       console.log(this.searchValue);
-      
+
       this.userService.getUsers(rows ?? 1, this.page).subscribe({
         next: (response: PagedResponse<User[]>) => {
           this.totalRecords = response.paging.totalRows;
           rows = response.paging.rowsPerPage;
           this.users = response.data;
           this.loading = false;
-          console.log(response);
         },
         error: (error: any) => {
           console.error('Error fetching users:', error);
