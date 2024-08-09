@@ -13,21 +13,25 @@ const routes: Routes = [
   {
     path: 'dashboard',
     component: LayoutComponent,
+    canActivate: [DashboardGuardService],
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
   {
     path: 'users',
     component: LayoutComponent,
+    canActivate: [DashboardGuardService],
     children: [
       {
         path: '',
+        canActivate: [DashboardGuardService],
         component: UserComponent,
       },
     ],
   },
   {
     path: 'works',
+    canActivate: [DashboardGuardService],
     component: LayoutComponent,
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
@@ -54,6 +58,7 @@ const routes: Routes = [
   {
     path: 'profile',
     component: YourProfileComponent,
+    canActivate: [DashboardGuardService],
     loadChildren: () =>
       import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
   },
