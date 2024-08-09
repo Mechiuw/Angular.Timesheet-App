@@ -1,5 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Work } from '../../models/work.model';
+import { Component,  OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WorkService } from '../../services/work.service';
@@ -8,8 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import { ToastrService } from 'ngx-toastr';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { WorkListComponent } from '../work-list/work-list.component';
 @Component({
   selector: 'app-work-description-form',
   standalone: true,
@@ -109,6 +106,7 @@ export class WorkFormComponent implements OnInit{
   }
 
   cancel(): void {
-    this.router.navigate(['/layout']);
+    this.postWorkForm.reset();
+    this.router.navigate(['/works']);
   }
 }
