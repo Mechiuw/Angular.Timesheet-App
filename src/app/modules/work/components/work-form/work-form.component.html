@@ -1,1 +1,24 @@
-<p>work-form works!</p>
+<form class="max-w-sm mx-auto" [formGroup]="postWorkForm">
+    <div class="mb-5">
+      <h2 class="text-2xl mb-4">{{ isEdit ? 'Edit Work' : 'Add New Work' }}</h2>
+      <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+      <input type="text" id="description" formControlName="description" placeholder="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+      <div *ngIf="postWorkForm.get('description')?.invalid && postWorkForm.get('description')?.touched" class="text-red-600">
+        Description is required.
+      </div>
+    </div>
+    <div class="mb-5">
+      <label for="fee" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fee</label>
+      <input type="number" id="fee" formControlName="fee" placeholder="fee" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white">
+      <div *ngIf="postWorkForm.get('fee')?.invalid && postWorkForm.get('fee')?.touched" class="text-red-600">
+        Fee is required.
+      </div>
+    </div>
+    <div class="flex justify-end items-end mb-5 ">
+    <button type="button" (click)="cancel()" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-3 mr-2">Cancel</button>
+    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 justify-end" (click)="saveWork()" [disabled]="postWorkForm.invalid">SAVE</button>
+  </div>
+  </form>
+  
+  
+  

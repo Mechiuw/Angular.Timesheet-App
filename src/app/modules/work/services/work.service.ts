@@ -24,11 +24,16 @@ export class WorkService implements IWorkService {
       return error.message;
     }
   }
-  Get(id: number): Observable<SingleResponse<Work>> {
+  Get(id: string): Observable<SingleResponse<Work>> {
     return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
   }
   Add(work: Work): Observable<SingleResponse<Work>> {
-    return this.http.post<SingleResponse<Work>>(API_ENDPOINT.WORK, work);
+    console.log(work);
+    try {
+      return this.http.post<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/`, work);
+    } catch (error: any) {
+      return error.message;
+    }
   }
   Update(work: Work): Observable<SingleResponse<Work>> {
     return this.http.put<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${work.id}`, work);

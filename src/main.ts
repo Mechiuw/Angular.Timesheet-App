@@ -13,6 +13,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { requestInterceptor } from './app/core/interceptor/request.interceptor';
+import { provideToastr } from 'ngx-toastr';
 
 if (environment.production) {
   enableProdMode();
@@ -27,6 +28,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(BrowserModule, AppRoutingModule),
     provideAnimations(),
     provideAnimationsAsync(),
+    provideToastr(),
     provideHttpClient(withFetch(), withInterceptors([requestInterceptor])),
   ],
 }).catch((err) => console.error(err));
