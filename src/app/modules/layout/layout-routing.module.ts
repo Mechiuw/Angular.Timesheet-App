@@ -67,10 +67,14 @@ const routes: Routes = [
   },
   {
     path: 'profile',
-    component: YourProfileComponent,
+    component: LayoutComponent,
     canActivate: [DashboardGuardService],
-    loadChildren: () =>
-      import('../dashboard/dashboard.module').then((m) => m.DashboardModule),
+    children: [
+      {
+        path: '',
+        component: YourProfileComponent
+      }
+    ]
   },
 
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
