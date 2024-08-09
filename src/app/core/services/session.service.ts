@@ -60,12 +60,12 @@ export class SessionService {
     }
   }
 
-  private getJwtClaims(token: string | null): JwtClaims | null {
+  private getJwtClaims(token: string | null): any | null {
     return token ? jwtDecode<JwtClaims>(token) : null
   }
 
   public getCurrentUser(): UserInfo | null {
-    const { id, email, name, role } = this.getJwtClaims(this.token || this.get('token')) || {}
+    const { id, email, username:name, role } = this.getJwtClaims(this.token || this.get('token')) || {}
     return id && email && role ? { id, email, name, role } : null
   }
 }
