@@ -93,11 +93,10 @@ export class WorkListComponent {
         },
         error: (error: any) => {
           console.error("Error fetching users:", error);
+          this.isLoading = false
         },
       });
     } else {
-      console.log(this.searchValue);
-
       this.workService.List(rows ?? 1, this.page).subscribe({
         next: (response: PagedResponse<Work[]>) => {
           this.totalRecords = response.paging.totalRows;
@@ -108,6 +107,7 @@ export class WorkListComponent {
         },
         error: (error: any) => {
           console.error("Error fetching users:", error);
+          this.isLoading = false
         },
       });
     }

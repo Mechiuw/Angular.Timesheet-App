@@ -81,7 +81,7 @@ export class WorkFormComponent implements OnInit{
           this.workService.Update({...this.postWorkForm.value, id}).subscribe(
             () => {
               this.toaster.success("Work has been successfully updated", "Success")
-              this.router.navigate(['/layout']);
+              this.router.navigate(['/works']);
             },
             error => {
               console.error('Error updating work:', error);
@@ -95,7 +95,7 @@ export class WorkFormComponent implements OnInit{
           (res) => {
             console.log('Response from Backend:', res);
             this.toaster.success("Work has been successfully added", "Success")
-            this.router.navigate(['/layout']);
+            this.router.navigate(['/works']);
           },
           (err) => {
             console.error('Error creating work:', err);
