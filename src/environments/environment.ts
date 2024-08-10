@@ -4,6 +4,9 @@
 
 export const environment = {
   production: false,
+  // API_URL: 'https://api.yusharwz.my.id/api/v1',
+  API_URL: 'http://localhost:8080/api/v1',
+  BASIC_AUTH: 'dGltZXNoZWV0LWFwcDplbmlnbWEtY2FtcA=='
 };
 
 /*

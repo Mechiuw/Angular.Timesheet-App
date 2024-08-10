@@ -6,20 +6,21 @@ import { SingleResponse } from "../../../core/models/api.model";
 import { UserInfo } from "../../../core/models/user-info.model";
 import { SessionService } from "../../../core/services/session.service";
 import { LoginRequest, LoginResponse } from "../models/auth.model";
+import {IAuthInterface} from "./iauth.interface";
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements IAuthInterface {
   currentUser: UserInfo | null = null;
 
   constructor(
-    private readonly sessionService: SessionService,
-    private readonly http: HttpClient
+    private readonly http: HttpClient,
+    private readonly sessionService: SessionService
   ) {
     this.sessionService.token$.subscribe(() => {
       this.currentUser = this.sessionService.getCurrentUser();
-    })
+    });
   }
 
   // get currentUser(): UserInfo | null {
@@ -44,8 +45,8 @@ export class AuthService {
 
   loginDummy(): Observable<string> {
     const token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoiQURNSU4ifQ.A_fASBjH2u-vuAdpKRN-evWN_NnxbjF5QiwQ-eAZFkM";
-    this.sessionService.set("token", token);
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNVQk9XTyIsImlhdCI6MTUxNjIzOTAyMiwiaWQiOiI2NTUzNiIsImVtYWlsIjoic3Vib3dAbWFpbC5jb20iLCJyb2xlIjoiQURNSU4ifQ.A_fASBjH2u-vuAdpKRN-evWN_NnxbjF5QiwQ-eAZFkM';
+    this.sessionService.set('token', token);
     // this.currentUser$.next(this.sessionService.getCurrentUser());
     return of(token);
   }
@@ -55,6 +56,4 @@ export class AuthService {
     this.sessionService.clearSession();
     this.sessionService.clearToken();
   }
-
-  
 }
