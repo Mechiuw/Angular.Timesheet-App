@@ -9,8 +9,7 @@ export const requestInterceptor: HttpInterceptorFn = (req, next) => {
   if (
     req.url.includes('/api/v1/login') ||
     req.url.includes('/api/v1/accounts/activate') ||
-    req.url.includes('/api/v1/accounts/forget-password') ||
-    (req.url.includes('/api/v1/timesheets') && req.method == 'GET')
+    req.url.includes('/api/v1/accounts/forget-password') 
   ) {
     newReq = req.clone({
       setHeaders: {
