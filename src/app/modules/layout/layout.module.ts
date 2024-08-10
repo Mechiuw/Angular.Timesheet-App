@@ -1,7 +1,7 @@
 import {
   provideHttpClient,
   withFetch,
-  withInterceptors
+  withInterceptors,
 } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { AngularSvgIconModule } from "angular-svg-icon";
@@ -14,7 +14,11 @@ import { MasterGuardService } from "../../core/guards/master-guard.service";
 import { ManagerGuardService } from "../../core/guards/manager-guard.service";
 @NgModule({
   imports: [LayoutRoutingModule, AngularSvgIconModule.forRoot()],
-  providers: [provideHttpClient(withFetch(),withInterceptors([requestInterceptor])), AuthService, DashboardGuardService, MasterGuardService, ManagerGuardService],
-
+  providers: [
+    AuthService,
+    DashboardGuardService,
+    MasterGuardService,
+    ManagerGuardService,
+  ],
 })
 export class LayoutModule {}
