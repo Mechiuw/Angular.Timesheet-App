@@ -145,7 +145,7 @@ export class FormComponent implements OnInit {
         new Date(`1970-01-01T${endTime}:00`) <
           new Date(`1970-01-01T${startTime}:00`)
       ) {
-        return { endTimeValidator: true };
+        return { checkTimeValidator: true };
       }
       return null;
     };
