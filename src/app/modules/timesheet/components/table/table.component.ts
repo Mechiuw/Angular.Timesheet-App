@@ -1,4 +1,4 @@
-import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { Timesheet } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -36,26 +36,16 @@ export class TableComponent {
       confirmButtonText: 'Yes, submit it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.timesheetService.SubmitTimesheet(id).subscribe(
-          (response) => {
-            // console.log('Timesheet submitted successfully', response);
-            Swal.fire(
-              'Submitted!',
-              'Your timesheet has been submitted.',
-              'success'
-            );
+        this.timesheetService.SubmitTimesheet(id).subscribe({
+          next: (response) => {
+            Swal.fire('Submitted!', 'Your timesheet has been submitted.', 'success');
             this.refresh.emit();
           },
-          (error) => {
-            // console.error('Error submitting timesheet', error);
-            Swal.fire(
-              'Error!',
-              'Failed to submit timesheet, submit only on the 19th and 20th each month.',
-              'error'
-            );
-          }
-        );
-      }
+          error: (err) => {
+            Swal.fire('Error!', 'Failed to submit timesheet, submit only on the 19th and 20th each month.', 'error');
+          },
+        });
+      } 
     });
   }
 

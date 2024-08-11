@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { ITimesheetService } from './itimesheet.service';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import {
   Status,
   Timesheet,
@@ -8,7 +8,7 @@ import {
   WorkOption,
 } from '../model/timesheet';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { PagedResponse } from '../../../core/models/api.model';
+import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { SessionService } from '../../../core/services/session.service';
 import { jwtDecode } from 'jwt-decode';
@@ -21,6 +21,8 @@ export class TimesheetService {
   private readonly http = inject(HttpClient);
   private session = inject(SessionService);
 
+  private isLoading$ = new BehaviorSubject<boolean>(false);
+
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
@@ -31,7 +33,12 @@ export class TimesheetService {
 
   private date: Date = new Date();
 
+  get isLoading(): Observable<boolean> {
+    return this.isLoading$.asObservable();
+  }
+
   GetTimesheet(): Observable<Timesheet[]> {
+    this.isLoading$.next(true);
     const monthPrev = this.date.getMonth();
     const monthNow = this.date.getMonth() + 1;
     const decodedToken: any = jwtDecode(this.token!);
@@ -40,11 +47,14 @@ export class TimesheetService {
     return this.http.get<{ data: Timesheet[] }>(reqUrl).pipe(
       map((response) => {
         this.fetchTimesheetData = response.data;
+        this.isLoading$.next(false);
 
         return this.fetchTimesheetData;
       }),
       catchError((error) => {
         this.fetchTimesheetData = [];
+        this.isLoading$.next(false);
+
         return of(this.fetchTimesheetData);
       })
     );
@@ -113,18 +123,19 @@ export class TimesheetService {
     );
   }
 
-  SubmitTimesheet(id: any): Observable<any> {
+  SubmitTimesheet(id: any): Observable<SingleResponse<string>> {
+    this.isLoading$.next(true);
     const reqUrl = `${this.apiUrl}/${id}/submit`;
 
-    return this.http.put(reqUrl, {}).pipe(
+    return this.http.put<SingleResponse<string>>(reqUrl, {}).pipe(
       tap((response) => {
-        // console.log('Timesheet submited successfully:', response);
+        this.isLoading$.next(false);
       }),
       catchError((error) => {
-        // console.error('Error submiting timesheet:', error);
+        this.isLoading$.next(false);
         return throwError(error);
       })
-    );
+    )
   }
 
   GetWorkOptions(): WorkOption[] {

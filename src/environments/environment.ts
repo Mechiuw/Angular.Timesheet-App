@@ -4,13 +4,13 @@
 
 export const environment = {
   production: false,
-  // API_URL: 'https://api.yusharwz.my.id/api/v1',
-  API_URL: 'http://localhost:8080/api/v1',
+  API_URL: 'https://api.yusharwz.my.id/api/v1',
+  // API_URL: 'http://localhost:8080/api/v1',
   BASIC_AUTH: 'dGltZXNoZWV0LWFwcDplbmlnbWEtY2FtcA=='
 };
 
 /*
- * For easier debugging in development mode, you can import the following file
+ * For easier debugging in development mode, you can import the following file  
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
  *
  * This import should be commented out in production mode because it will have a negative impact

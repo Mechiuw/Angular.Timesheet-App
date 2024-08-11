@@ -4,20 +4,26 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { Timesheet } from '../../model/timesheet';
 import { TimesheetService } from '../../services/timesheet.service';
+import { LoadingComponent } from "../../components/loading/loading.component";
 
 @Component({
   selector: 'app-list-timesheet',
   standalone: true,
-  imports: [TableComponent, TableModule, CommonModule],
+  imports: [TableComponent, TableModule, CommonModule, LoadingComponent],
   templateUrl: './list-timesheet.component.html',
   styleUrl: './list-timesheet.component.scss',
 })
 export class ListTimesheetComponent implements OnInit {
-  ngOnInit(): void {
-    this.fetchData();
-  }
 
   private readonly timesheetService = inject(TimesheetService);
+  isLoading: boolean = true;
+  ngOnInit(): void {
+    this.fetchData();
+    this.timesheetService.isLoading.subscribe((value) => {
+      this.isLoading = value
+    })
+  }
+
   indexPage: number = 0;
 
   timesheets: Timesheet[] = [];
@@ -25,7 +31,10 @@ export class ListTimesheetComponent implements OnInit {
   fetchData(): void {
     this.timesheetService
       .GetTimesheet()
-      .subscribe((response) => (this.timesheets = response));
+      .subscribe((response) => {
+        this.timesheets = response
+        this.isLoading = false;
+      });
   }
 
   refresh(): void {
