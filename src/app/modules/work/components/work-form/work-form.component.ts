@@ -1,32 +1,51 @@
-import { Component,  OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { WorkService } from '../../services/work.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import { ToastrService } from 'ngx-toastr';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-work-description-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatInputModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    ToastModule,
+  ],
   templateUrl: './work-form.component.html',
   styleUrl: './work-form.component.scss',
-
+  providers: [MessageService],
 })
-export class WorkFormComponent implements OnInit{
+export class WorkFormComponent implements OnInit {
   postWorkForm: FormGroup;
   isEdit: boolean = false;
   workId: string | null = null;
   isModalOpen = false;
+  isLoadingSave: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private workService: WorkService,
     private route: ActivatedRoute,
     private router: Router,
-    private toaster: ToastrService
+    private messageService: MessageService
   ) {
     this.postWorkForm = this.fb.group({
       description: ['', Validators.required],
@@ -34,7 +53,7 @@ export class WorkFormComponent implements OnInit{
     });
   }
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
       if (id) {
         this.isEdit = true;
@@ -54,34 +73,61 @@ export class WorkFormComponent implements OnInit{
         description: work.data.description,
         fee: work.data.fee,
         createdAt: work.data.createdAt ? new Date(work.data.createdAt) : null,
-        updatedAt: work.data.updatedAt ? new Date(work.data.updatedAt) : null
+        updatedAt: work.data.updatedAt ? new Date(work.data.updatedAt) : null,
       });
     });
   }
 
   saveWork(): void {
+    this.isLoadingSave = true;
+
     if (this.postWorkForm.valid) {
       const formData = this.postWorkForm.value;
       let calculatedFee = Number(formData.fee) || 0;
 
       if (formData.description.toLowerCase() === 'interview') {
-        calculatedFee -= calculatedFee * 0.40;
+        calculatedFee -= calculatedFee * 0.4;
       }
 
       formData.fee = calculatedFee;
 
-      console.log('Form Data Before Posting:', formData);
+      // console.log('Form Data Before Posting:', formData);
 
       if (this.isEdit) {
         if (this.workId !== null) {
           const id = this.workId.toString();
-          this.workService.Update({...this.postWorkForm.value, id}).subscribe(
+          this.workService.Update({ ...this.postWorkForm.value, id }).subscribe(
             () => {
-              this.toaster.success("Work has been successfully updated", "Success")
-              this.router.navigate(['/works']);
+              // Notify success
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Work updated successfully',
+                life: 3000,
+              });
+
+              // // Navigate back
+              // this.router.navigate(['/works']);
+
+              // Disable loading
+              this.isLoadingSave = false;
+
+              // Data load
+              this.workService.updateWorks();
             },
-            error => {
-              console.error('Error updating work:', error);
+            (error) => {
+              // console.error('Error updating work:', error);
+
+              // notify error
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error creating work: ' + error.error.data,
+                life: 3000,
+              });
+
+              // Disable loading
+              this.isLoadingSave = false;
             }
           );
         } else {
@@ -90,18 +136,49 @@ export class WorkFormComponent implements OnInit{
       } else {
         this.workService.Add(formData).subscribe(
           (res) => {
-            console.log('Response from Backend:', res);
-            this.toaster.success("Work has been successfully added", "Success")
-            this.router.navigate(['/works']);
+            // Notify success
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Work created successfully',
+              life: 3000,
+            });
+
+            // Disable loading
+            this.isLoadingSave = false;
+
+            // Data load
+            this.workService.updateWorks();
           },
           (err) => {
-            console.error('Error creating work:', err);
+            // console.error('Error creating work:', err);
+
+            // notify error
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error creating work: ' + err.error.data,
+              life: 3000,
+            });
+
+            // Disable loading
+            this.isLoadingSave = false;
           }
         );
       }
     } else {
-      this.toaster.error('Form is invalid. Please fill out all required fields.', 'Error');
-      console.error('Form is invalid');
+      // console.error('Form is invalid');
+
+      // notify error
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Error creating work',
+        life: 3000,
+      });
+
+      // Disable loading
+      this.isLoadingSave = false;
     }
   }
 
