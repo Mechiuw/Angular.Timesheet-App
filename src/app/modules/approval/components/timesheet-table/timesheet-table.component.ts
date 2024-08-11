@@ -188,7 +188,7 @@ export class TimesheetTableComponent implements OnInit {
   }
 
   // Notification Success and reload data
-  reloadSuccessY() {
+  reloadSuccessY(status: string) {
     // Show Message
     this.messageService.add({
       severity: 'success',
@@ -204,7 +204,7 @@ export class TimesheetTableComponent implements OnInit {
     this.loadTimesheets({ first: 0, rows: 5 });
   }
 
-  reloadSuccessX() {
+  reloadSuccessX(status: string) {
     // Show Message
     this.messageService.add({
       severity: 'success',
@@ -244,7 +244,7 @@ export class TimesheetTableComponent implements OnInit {
               this.isLoadingActionY = false;
 
               // Reload Data
-              this.reloadSuccessY();
+              this.reloadSuccessY(status);
             });
         } else if (status === StatusTimesheets.ACCEPTED) {
           // Update Status to 'approved' (call service)
@@ -255,7 +255,7 @@ export class TimesheetTableComponent implements OnInit {
               this.isLoadingActionY = false;
 
               // Reload Data
-              this.reloadSuccessY();
+              this.reloadSuccessY(status);
             });
         }
       },
@@ -295,7 +295,7 @@ export class TimesheetTableComponent implements OnInit {
               this.isLoadingActionX = false;
 
               // Reload Data
-              this.reloadSuccessX();
+              this.reloadSuccessX(status);
             });
         } else if (status === StatusTimesheets.ACCEPTED) {
           // Update Status to 'rejected'
@@ -306,7 +306,7 @@ export class TimesheetTableComponent implements OnInit {
               this.isLoadingActionX = false;
 
               // Reload Data
-              this.reloadSuccessX();
+              this.reloadSuccessX(status);
             });
         }
       },

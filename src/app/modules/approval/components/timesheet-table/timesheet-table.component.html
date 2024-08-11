@@ -38,10 +38,10 @@
           />
         </span>
         <button
-          class="hover:bg-primary-600 ml-2 flex-none rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground"
+          class="hover:bg-primary-600 ml-2 flex-none rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
           (click)="applyFilterGlobal($event, 'contains')"
         >
-          <span class="px-2"> Search </span>
+          <span class="px-2">Search </span>
         </button>
       </div>
     </ng-template>
@@ -267,7 +267,9 @@
               severity="success"
               [label]="
                 isLoadingActionY
-                  ? 'Loading...'
+                  ? timesheet.status === StatusTimesheetsEnum.ACCEPTED
+                  ? 'Approving...'
+                  : 'Accepting...'
                   : timesheet.status === StatusTimesheetsEnum.ACCEPTED
                   ? 'Approve'
                   : 'Accept'
@@ -285,7 +287,9 @@
               severity="danger"
               [label]="
                 isLoadingActionX
-                  ? 'Loading...'
+                  ? timesheet.status === StatusTimesheetsEnum.ACCEPTED
+                  ? 'Rejecting...'
+                  : 'Denying...'
                   : timesheet.status === StatusTimesheetsEnum.ACCEPTED
                   ? 'Reject'
                   : 'Deny'
