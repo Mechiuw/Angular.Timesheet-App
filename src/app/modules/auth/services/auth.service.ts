@@ -53,7 +53,7 @@ export class AuthService implements IAuthInterface {
 
   logout(): void {
     // this.currentUser$.next(null);
-    this.sessionService.clearSession();
+    // this.sessionService.clearSession();
     this.sessionService.clearToken();
   }
 }
