@@ -61,6 +61,7 @@ export class SignInComponent implements OnInit {
       next: () => {
         console.log(this.authService.currentUser);
         this.router.navigate(['/dashboard']);
+        window.location.reload()
       },
       error: (err) => {
         // console.log(err.error.responseMessage);
