@@ -82,6 +82,10 @@
         padding: 0rem;
     }
 
+    .p-paginator-page:not(.p-disabled):not(.p-highlight):hover {
+        @apply bg-primary text-white;
+    }
+
     .p-paginator-rpp-options {
         @apply bg-background;
         height: 3rem;
