@@ -24,7 +24,7 @@
   >
     <!-- Search Input  -->
     <ng-template pTemplate="caption" *ngIf="role !== RolesEnum.USER">
-      <div class="align-center flex justify-end w-full">
+      <div class="align-center flex w-full justify-end">
         <span class="p-input-icon-left">
           <i class="pi pi-search"></i>
           <input
@@ -32,7 +32,7 @@
             type="text"
             placeholder="Search by user"
             class="w-full"
-            style="height: 2.5rem; max-width: 13rem;"
+            style="height: 2.5rem; max-width: 13rem"
             [(ngModel)]="searchValue"
             (keyup.enter)="applyFilterGlobal($event, 'contains')"
           />
@@ -256,38 +256,44 @@
           <!-- Button Action -> Manager or Benefit -->
           <div
             *ngIf="role === RolesEnum.MANAGER || role === RolesEnum.BENEFIT"
-            class="flex flex-row justify-center"
+            class="flex flex-row justify-center gap-2"
           >
-            <button
+            <p-button
               (click)="
                 confirmY($event, timesheet.status);
                 this.selectedTimesheet = timesheet
               "
-              class="cek flex h-7 w-7 items-center justify-center rounded-md bg-card bg-green-600 text-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="{{
-                timesheet.status === StatusTimesheetsEnum.APPROVED
+              class="btn-action"
+              severity="success"
+              [label]="
+                isLoadingActionY
+                  ? 'Loading...'
+                  : timesheet.status === StatusTimesheetsEnum.ACCEPTED
                   ? 'Approve'
                   : 'Accept'
-              }} Timesheet"
-              tooltipPosition="left"
-            >
-              <i class="pi pi-check" color="white" style="font-size: 1rem"></i>
-            </button>
-            <button
+              "
+              icon="pi pi-check"
+              [loading]="isLoadingActionY"
+              [disabled]="isLoadingActionY || isLoadingActionX"
+            />
+            <p-button
               (click)="
                 confirmX($event, timesheet.status);
                 this.selectedTimesheet = timesheet
               "
-              class="ml-3 flex h-7 w-7 items-center justify-center rounded-md bg-card bg-red-600 text-foreground text-white hover:bg-muted hover:text-foreground"
-              pTooltip="{{
-                timesheet.status === StatusTimesheetsEnum.APPROVED
-                  ? 'Rejected'
+              class="btn-action"
+              severity="danger"
+              [label]="
+                isLoadingActionX
+                  ? 'Loading...'
+                  : timesheet.status === StatusTimesheetsEnum.ACCEPTED
+                  ? 'Reject'
                   : 'Deny'
-              }} Timesheet"
-              tooltipPosition="left"
-            >
-              <i class="pi pi-times" style="font-size: 1rem"></i>
-            </button>
+              "
+              icon="pi pi-times"
+              [loading]="isLoadingActionX"
+              [disabled]="isLoadingActionY || isLoadingActionX"
+            />
           </div>
         </td>
         <!-- Column Action Print -> Authority Benefit Team, Admin and Route History -->

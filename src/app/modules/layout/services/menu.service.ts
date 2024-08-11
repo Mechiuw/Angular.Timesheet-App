@@ -24,7 +24,6 @@ export class MenuService implements OnDestroy {
       this.currentUser = this.sessionService.getCurrentUser();
       this._role[0] = <string>this.currentUser?.role;
       this._pagesMenu.set(this.filteredMenuByRole(Menu.pages, this._role));
-      console.log(this._role);
     });
 
     /** Set dynamic menu by role */

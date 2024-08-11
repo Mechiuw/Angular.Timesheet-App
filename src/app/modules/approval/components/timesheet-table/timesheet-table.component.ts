@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -84,6 +77,8 @@ export class TimesheetTableComponent implements OnInit {
 
   // Data Loading
   isLoading: boolean = true;
+  isLoadingActionY: boolean = false;
+  isLoadingActionX: boolean = false;
 
   // Data Timesheet
   timesheets: Timesheet[] = [];
@@ -238,11 +233,16 @@ export class TimesheetTableComponent implements OnInit {
 
       accept: () => {
         // Process Data
+        this.isLoadingActionY = true;
+
         if (status === StatusTimesheets.PENDING) {
           // Update Status to 'accepted' (call service)
           this.timesheetService
             .acceptTimesheetByManager(this.selectedTimesheet.id)
             .subscribe(() => {
+              // Disable Loading
+              this.isLoadingActionY = false;
+
               // Reload Data
               this.reloadSuccessY();
             });
@@ -251,6 +251,9 @@ export class TimesheetTableComponent implements OnInit {
           this.timesheetService
             .approveTimesheetByBenefit(this.selectedTimesheet.id)
             .subscribe(() => {
+              // Disable Loading
+              this.isLoadingActionY = false;
+
               // Reload Data
               this.reloadSuccessY();
             });
@@ -280,11 +283,17 @@ export class TimesheetTableComponent implements OnInit {
 
       accept: () => {
         // Process Data
+        this.isLoadingActionX = true;
+
+        // Process Data
         if (status === StatusTimesheets.PENDING) {
           // Update Status to 'denied'
           this.timesheetService
             .denyTimesheetByManager(this.selectedTimesheet.id)
             .subscribe(() => {
+              // Disable Loading
+              this.isLoadingActionX = false;
+
               // Reload Data
               this.reloadSuccessX();
             });
@@ -293,6 +302,9 @@ export class TimesheetTableComponent implements OnInit {
           this.timesheetService
             .rejectTimesheetByBenefit(this.selectedTimesheet.id)
             .subscribe(() => {
+              // Disable Loading
+              this.isLoadingActionX = false;
+
               // Reload Data
               this.reloadSuccessX();
             });
