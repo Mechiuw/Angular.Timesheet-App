@@ -41,14 +41,14 @@ export class SummaryComponent implements OnInit {
   submission: number = 0;
   submissionItems: number = 0;
 
-  
+
   // Example Timesheet
   timesheets: TimesheetSummary[] = [];
   recentTimesheets: TimesheetSummary[] = [];
-  
+
   // Data Role
   paymentTitle: string = "Payment Estimation"
-  
+
   // Data Loading
   isLoading: boolean = true;
 
@@ -59,7 +59,7 @@ export class SummaryComponent implements OnInit {
   ];
 
   month: string = new Date().toLocaleString("default", { month: "long" });
- 
+
   constructor(private readonly summaryService: SummaryService) {}
   ngOnInit() {
     this.summaryService.getSummary().subscribe((response) => {
@@ -81,75 +81,12 @@ export class SummaryComponent implements OnInit {
     //     console.log("Error fetch data : " + err.error.message);
     //   },
     // })
-   
+
   }
 
   private getRecentTimesheets() {
     return this.timesheets.slice(0, 3);
   }
-
-  private getLineChart() {
-    const lineDocumentStyle = getComputedStyle(document.documentElement);
-    const lineTextColor = lineDocumentStyle.getPropertyValue("--text-color");
-    const lineTextColorSecondary = lineDocumentStyle.getPropertyValue(
-      "--text-color-secondary"
-    );
-    const lineSurfaceBorder =
-      lineDocumentStyle.getPropertyValue("--surface-border");
-
-    this.lineData = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-        {
-          label: "First Dataset",
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: lineDocumentStyle.getPropertyValue("--blue-500"),
-          tension: 0.4,
-        },
-        {
-          label: "Second Dataset",
-          data: [28, 48, 40, 19, 86, 27, 90],
-          fill: false,
-          borderColor: lineDocumentStyle.getPropertyValue("--pink-500"),
-          tension: 0.4,
-        },
-      ],
-    };
-
-    this.lineOptions = {
-      maintainAspectRatio: false,
-      aspectRatio: 0.6,
-      plugins: {
-        legend: {
-          labels: {
-            color: lineTextColor,
-          },
-        },
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: lineTextColorSecondary,
-          },
-          grid: {
-            color: lineSurfaceBorder,
-            drawBorder: false,
-          },
-        },
-        y: {
-          ticks: {
-            color: lineTextColorSecondary,
-          },
-          grid: {
-            color: lineSurfaceBorder,
-            drawBorder: false,
-          },
-        },
-      },
-    };
-  }
-
   private getPieChart() {
     const pieDocumentStyle = getComputedStyle(document.documentElement);
     const pieTextColor = pieDocumentStyle.getPropertyValue("--text-color");
