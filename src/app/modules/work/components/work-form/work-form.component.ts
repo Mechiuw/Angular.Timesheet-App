@@ -149,6 +149,9 @@ export class WorkFormComponent implements OnInit {
 
             // Data load
             this.workService.updateWorks();
+
+            // Reset form
+            this.postWorkForm.reset();
           },
           (err) => {
             // console.error('Error creating work:', err);
