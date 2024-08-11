@@ -15,6 +15,7 @@ import { UserService } from '../../services/user.service';
 import { PagedResponse } from '../../../../core/models/api.model';
 import { LazyLoadEvent } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
+import { StatusUsers } from '../../../../core/constants/status-users';
 
 @Component({
   selector: 'app-user-list',
@@ -53,6 +54,12 @@ export class UserListComponent implements OnInit {
   loading: boolean = true;
   rowsOption: number[] = [5, 10, 50];
 
+  // Data Enum Status User
+  StatusUsersEnum = {
+    ACTIVE: StatusUsers.ACTIVE,
+    INACTIVE: StatusUsers.INACTIVE,
+  };
+
   clear(table: Table) {
     this.searchValue = '';
     table.clear();
@@ -64,7 +71,7 @@ export class UserListComponent implements OnInit {
 
   loadUsers($event: LazyLoadEvent) {
     let rows = $event.rows;
-    this.loading = true
+    this.loading = true;
     this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
 
     if (this.searchValue != '') {
@@ -96,5 +103,13 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Subscribe to the observable to get real-time updates
+    this.userService.users$.subscribe((users) => {
+      this.users = users;
+    });
+
+    // Initial load
+    this.userService.updateUsers();
+  }
 }

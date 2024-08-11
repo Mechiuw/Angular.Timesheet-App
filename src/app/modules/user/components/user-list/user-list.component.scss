@@ -8,14 +8,15 @@
 
 // Input
 ::ng-deep .p-inputtext {
-    @apply bg-background text-muted-foreground;
+    @apply bg-background text-foreground;
 
 
     // placeholder
     &::placeholder {
-        @apply text-muted-foreground;
+        @apply text-foreground;
     }
 }
+
 
 // Table
 ::ng-deep .p-datatable {
@@ -62,22 +63,26 @@
 
 // Paginator
 ::ng-deep .p-paginator {
-    @apply text-sm font-semibold text-muted-foreground bg-background;
+    @apply text-sm font-semibold text-foreground bg-background;
 
     padding-top: 1rem;
     padding-bottom: 1rem;
 
     .p-paginator-page {
-        @apply text-sm font-semibold text-muted-foreground;
+        @apply text-sm font-semibold text-foreground;
     }
 
     .p-paginator-current {
-        @apply text-sm font-semibold text-muted-foreground;
+        @apply text-sm font-semibold text-foreground;
     }
 
     .p-paginator-page.p-highlight {
         @apply bg-primary text-white;
         padding: 0rem;
+    }
+
+    .p-paginator-page:not(.p-disabled):not(.p-highlight):hover {
+        @apply bg-primary text-white;
     }
 
     .p-paginator-rpp-options {

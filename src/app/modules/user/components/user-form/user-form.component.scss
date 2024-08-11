@@ -1,0 +1,27 @@
+// Input
+::ng-deep .p-float-label {
+    @apply text-foreground border-foreground;
+
+    input {
+        @apply text-foreground;
+    }
+
+    label {
+        @apply text-foreground;
+    }
+}
+
+// Dropdown
+::ng-deep .p-dropdown {
+    @apply bg-background text-foreground border-foreground;
+
+    // panel
+    .p-dropdown-panel {
+        @apply bg-background text-foreground;
+    }
+
+    // item
+    .p-dropdown-item {
+        @apply bg-background text-foreground;
+    }
+}

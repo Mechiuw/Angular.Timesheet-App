@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 import { IWorkService } from './iwork.interface';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { PagedResponse, SingleResponse } from '../../../core/models/api.model';
 import { Work } from '../models/work.model';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../auth/services/auth.service';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkService implements IWorkService {
+  
 
   constructor(
     private readonly http: HttpClient,
   ) { }
+
+  private workSubject = new BehaviorSubject<Work[]>([]); 
+  works$: Observable<Work[]> = this.workSubject.asObservable(); // Observable for other components subscribe
  
   
   List(rows: number = 10, page: number = 1): Observable<PagedResponse<Work[]>> {
@@ -28,7 +31,6 @@ export class WorkService implements IWorkService {
     return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
   }
   Add(work: Work): Observable<SingleResponse<Work>> {
-    console.log(work);
     try {
       return this.http.post<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/`, work);
     } catch (error: any) {
@@ -47,6 +49,13 @@ export class WorkService implements IWorkService {
     } catch (error: any) {
       return error.message;
     }
+  }
+
+   // Update data 
+   updateWorks(): void {
+    this.List().subscribe(works => {
+      this.workSubject.next(works.data);
+    });
   }
   
 }

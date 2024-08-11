@@ -1,41 +1,60 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
-import { ButtonComponent } from "../../../../shared/components/button/button.component";
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { RoleService } from '../../../role/service/role.service';
 import { Role } from '../../../role/models/role.model';
 import { UserService } from '../../services/user.service';
-
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [FormsModule, FloatLabelModule, InputTextModule, DropdownModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, ButtonComponent, ToastModule],
+  imports: [
+    FormsModule,
+    FloatLabelModule,
+    InputTextModule,
+    DropdownModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AngularSvgIconModule,
+    NgClass,
+    NgIf,
+    ButtonComponent,
+    ToastModule,
+    ButtonModule,
+  ],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',
-  providers: [MessageService]
-  
+  providers: [MessageService],
 })
 export class UserFormComponent implements OnInit {
-
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
-  roles : Role[] = [];
+  roles: Role[] = [];
+  isLoadingSave: boolean = false;
 
   constructor(
-    private readonly formBuilder: FormBuilder, 
+    private readonly formBuilder: FormBuilder,
     private readonly router: Router,
     private readonly messageService: MessageService,
-    private readonly roleService : RoleService,
-    private readonly userService : UserService,
+    private readonly roleService: RoleService,
+    private readonly userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -46,16 +65,16 @@ export class UserFormComponent implements OnInit {
     });
 
     this.roleService.getAllRoles().subscribe({
-      next:(roles) => {
+      next: (roles) => {
         this.roles = roles;
       },
-      error:(error) => {
+      error: (error) => {
         this.messageService.add({
-          severity:'error',
-          summary:'Error',
-          detail:'Failed to load roles'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load roles',
         });
-      }
+      },
     });
   }
 
@@ -64,44 +83,57 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Form submitted');
+    this.isLoadingSave = true;
+
+    // console.log('Form submitted');
     this.submitted = true;
-    
+
     if (this.form.invalid) {
       console.log('Form is invalid');
       return;
     }
-    
+
     const { email, name, role } = this.form.value;
-    console.log(email);
-    console.log(name);
-    console.log(role);
-    
+    // console.log(email);
+    // console.log(name);
+    // console.log(role);
 
     const user = {
-      email : email,
-      name : name,
-      roleId : role.id
-    } 
+      email: email,
+      name: name,
+      roleId: role.id,
+    };
 
     this.userService.registerUser(user).subscribe({
       next: () => {
-        console.log('user registered successfully',user);
+        // console.log('user registered successfully',user);
         this.messageService.add({
           severity: 'success',
-          summary : 'Success',
-          detail: 'User saved Successfully'
+          summary: 'Success',
+          detail: 'User saved Successfully',
         });
-      },
-      error: (err:any)=>{
-        console.log('user failed register');
-        this.messageService.add({
-          severity : 'error',
-          summary : 'Error',
-          detail : err.error.responseMessage || 'An error occured'
-        })
-      }
-    })
 
+        // Disable loading
+        this.isLoadingSave = false;
+
+        // Data load
+        this.userService.updateUsers();
+
+        // Reset form
+        this.submitted = false;
+        this.form.reset();
+      },
+      error: (err: any) => {
+        // console.log('user failed register');
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error.data || 'An error occured',
+        });
+
+        // Disable loading
+        this.isLoadingSave = false;
+      },
+    });
   }
 }
