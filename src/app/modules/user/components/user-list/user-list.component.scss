@@ -8,12 +8,12 @@
 
 // Input
 ::ng-deep .p-inputtext {
-    @apply bg-background text-muted-foreground;
+    @apply bg-background text-foreground;
 
 
     // placeholder
     &::placeholder {
-        @apply text-muted-foreground;
+        @apply text-foreground;
     }
 }
 

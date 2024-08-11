@@ -1,0 +1,12 @@
+// Input
+::ng-deep .p-float-label {
+    @apply text-foreground;
+
+    input {
+        @apply text-foreground;
+    }
+
+    label {
+        @apply text-foreground;
+    }
+}
