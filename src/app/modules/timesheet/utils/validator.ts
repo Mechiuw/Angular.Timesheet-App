@@ -1,5 +1,6 @@
 export const VALIDATION_MESSAGE: any = {
-  required: ' %s field cannot be empty',
+  required: 'field %s tidak boleh kosong',
+  email: 'field %s harus berupa email',
   endTimeValidator: 'End time tidak boleh sebelum start time',
 };
 

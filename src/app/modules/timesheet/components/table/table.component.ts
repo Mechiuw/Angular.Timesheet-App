@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { Timesheet } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';

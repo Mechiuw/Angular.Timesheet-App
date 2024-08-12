@@ -10,23 +10,13 @@ import {
 import { WorkService } from '../../services/work.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
-
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-work-description-form',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    MatInputModule,
-    MatButtonModule,
-    ToastModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatInputModule, MatButtonModule],
   templateUrl: './work-form.component.html',
   styleUrl: './work-form.component.scss',
   providers: [MessageService],
@@ -35,6 +25,8 @@ export class WorkFormComponent implements OnInit {
   postWorkForm: FormGroup;
   isEdit: boolean = false;
   workId: string | null = null;
+  isModalOpen = false;
+  isLoadingSave: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -76,6 +68,8 @@ export class WorkFormComponent implements OnInit {
   }
 
   saveWork(): void {
+    this.isLoadingSave = true;
+
     if (this.postWorkForm.valid) {
       const formData = this.postWorkForm.value;
       let calculatedFee = Number(formData.fee) || 0;
@@ -94,46 +88,70 @@ export class WorkFormComponent implements OnInit {
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
-                detail: `Work has been successfully updated`,
+                detail: 'Work updated successfully',
+                life: 3000,
               });
-              this.router.navigate(['/works']);
+
+              // // Navigate back
+              // this.router.navigate(['/works']);
+
+              // Disable loading
+              this.isLoadingSave = false;
+
+              // Data load
+              this.workService.updateWorks();
             },
-            (error) => {
-              return error;
+            error => {
+              console.error('Error updating work:', error);
             }
           );
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error Occurred',
-            detail: `Invalid work ID for update`,
-          });
+          console.error('Invalid work ID for update');
         }
       } else {
         this.workService.Add(formData).subscribe(
-          () => {
+          (res) => {
+            // Notify success
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
-              detail: `Work has been successfully added`,
+              detail: 'Work created successfully',
+              life: 3000,
             });
-            this.router.navigate(['/works']);
+
+            // Disable loading
+            this.isLoadingSave = false;
+
+            // Data load
+            this.workService.updateWorks();
+
+            // Reset form
+            this.postWorkForm.reset();
           },
           (err) => {
+            // console.error('Error creating work:', err);
+
+            // notify error
             this.messageService.add({
               severity: 'error',
-              summary: 'Error Occurred',
-              detail: `Error creating work: ${err}`,
+              summary: 'Error',
+              detail: 'Error creating work: ' + err.error.data,
+              life: 3000,
             });
+
+            // Disable loading
+            this.isLoadingSave = false;
           }
         );
       }
     } else {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error Occurred',
-        detail: 'Form is invalid. Please fill out all required fields',
+        summary: 'Error',
+        detail: 'Error creating work',
+        life: 3000,
       });
+      this.isLoadingSave = false;
     }
   }
 

@@ -1,18 +1,27 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AngularSvgIconModule } from 'angular-svg-icon';
 import { MessageService } from 'primeng/api';
 import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
-import { ButtonComponent } from "../../../../shared/components/button/button.component";
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { RoleService } from '../../../role/service/role.service';
 import { Role } from '../../../role/models/role.model';
 import { UserService } from '../../services/user.service';
-
+import { ButtonModule } from 'primeng/button';
+import { ValidationMessageComponent } from "../../../../shared/components/validation-message/validation-message.component";
 
 @Component({
   selector: 'app-user-form',
@@ -29,7 +38,9 @@ import { UserService } from '../../services/user.service';
     NgIf,
     ButtonComponent,
     ToastModule,
-  ],
+    ButtonModule,
+    ValidationMessageComponent
+],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',
   providers: [MessageService],
@@ -39,9 +50,11 @@ export class UserFormComponent implements OnInit {
   submitted = false;
   passwordTextType!: boolean;
   roles: Role[] = [];
+  isLoadingSave: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
     private readonly messageService: MessageService,
     private readonly roleService: RoleService,
     private readonly userService: UserService
@@ -73,6 +86,9 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
+    this.isLoadingSave = true;
+
+    // console.log('Form submitted');
     this.submitted = true;
 
     if (this.form.invalid) {
@@ -94,14 +110,34 @@ export class UserFormComponent implements OnInit {
           summary: 'Success',
           detail: 'User saved Successfully',
         });
+
+        // Disable loading
+        this.isLoadingSave = false;
+
+        // Data load
+        this.userService.updateUsers();
+
+        // Reset form
+        this.submitted = false;
+        this.form.reset();
       },
       error: (err: any) => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: err.error.responseMessage || 'An error occurred',
+          detail: err.error.data || 'An error occured',
         });
+
+        // Disable loading
+        this.isLoadingSave = false;
       },
     });
+  }
+
+  isFormValid(field: string): boolean {
+    const control: AbstractControl = this.form.get(
+      field
+    ) as AbstractControl;
+    return control && control.invalid && (control.dirty || control.touched);
   }
 }

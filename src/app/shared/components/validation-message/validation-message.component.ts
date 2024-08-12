@@ -3,7 +3,7 @@ import { AbstractControl } from '@angular/forms';
 import {
   VALIDATION_MESSAGE,
   formatValidationMessage,
-} from '../../utils/validator';
+} from '../../../modules/timesheet/utils/validator';
 
 @Component({
   selector: 'app-validation-message',

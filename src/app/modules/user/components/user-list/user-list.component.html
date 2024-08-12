@@ -1,5 +1,4 @@
 <div class="card">
-  <p-toast/>
   <p-table
     #dt1
     [first]="first"
@@ -19,32 +18,34 @@
     [globalFilterFields]="['name', 'email', 'role']"
   >
     <ng-template pTemplate="caption">
-      <div class="flex">
-        <p-button
-          label="Clear"
-          [outlined]="true"
-          icon="pi pi-filter-slash"
-          (onClick)="clear(dt1)"
-        />
-        <span class="p-input-icon-left ml-auto">
-          <i class="pi pi-search"></i>
+      <div class="align-center flex w-full justify-end">
+        <span class="p-input-icon-left">
+          <i class="pi pi-search text-foreground"></i>
           <input
             pInputText
             type="text"
+            placeholder="Search by name"
+            class="w-full"
+            style="height: 2.5rem; max-width: 13rem"
             [(ngModel)]="searchValue"
-            (input)="applyFilterGlobal($event, 'contains')"
-            placeholder="Search keyword"
+            (keyup.enter)="applyFilterGlobal($event, 'contains')"
           />
         </span>
+        <button
+          class="hover:bg-primary-600 ml-2 flex-none rounded-md bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground"
+          (click)="applyFilterGlobal($event, 'contains')"
+        >
+          <span class="px-2">Search </span>
+        </button>
       </div>
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th>No</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Status</th>
+        <th class="text-xs font-semibold text-foreground">No</th>
+        <th class="text-xs font-semibold text-foreground">Name</th>
+        <th class="text-xs font-semibold text-foreground">Email</th>
+        <th class="text-xs font-semibold text-foreground">Role</th>
+        <th class="text-xs font-semibold text-foreground">Status</th>
       </tr>
     </ng-template>
 
@@ -59,11 +60,31 @@
 
     <ng-template pTemplate="body" let-user let-i="rowIndex">
       <tr *ngIf="!this.loading">
-        <td>{{ i + 1 }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-        <td>{{ user.status }}</td>
+        <td class="text-sm font-semibold text-foreground">{{ i + 1 }}</td>
+        <td class="text-sm font-semibold text-foreground">{{ user.name }}</td>
+        <td class="text-sm font-semibold text-foreground">{{ user.email }}</td>
+        <td class="text-sm font-semibold text-foreground">{{ user.role }}</td>
+        <td class="text-sm font-semibold text-foreground">
+          <span
+            *ngIf="user.status === StatusUsersEnum.ACTIVE"
+            class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20"
+            >{{ user.status }}
+          </span>
+          <span
+            *ngIf="
+              user.status === StatusUsersEnum.INACTIVE
+            "
+            class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-sm font-medium text-red-700 ring-1 ring-inset ring-red-600/10"
+          >
+            {{ user.status }}
+          </span>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td class="text-center text-foreground" colspan="5">No data found.</td>
       </tr>
     </ng-template>
   </p-table>

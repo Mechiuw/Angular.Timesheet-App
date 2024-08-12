@@ -56,6 +56,12 @@ export class UserListComponent implements OnInit {
   loading: boolean = true;
   rowsOption: number[] = [5, 10, 50];
 
+  // Data Enum Status User
+  StatusUsersEnum = {
+    ACTIVE: StatusUsers.ACTIVE,
+    INACTIVE: StatusUsers.INACTIVE,
+  };
+
   clear(table: Table) {
     this.searchValue = '';
     table.clear();
@@ -105,5 +111,13 @@ export class UserListComponent implements OnInit {
     }
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Subscribe to the observable to get real-time updates
+    this.userService.users$.subscribe((users) => {
+      this.users = users;
+    });
+
+    // Initial load
+    this.userService.updateUsers();
+  }
 }
