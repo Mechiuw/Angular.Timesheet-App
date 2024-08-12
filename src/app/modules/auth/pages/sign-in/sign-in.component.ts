@@ -64,12 +64,20 @@ export class SignInComponent implements OnInit {
         window.location.reload()
       },
       error: (err) => {
-        // console.log(err.error.responseMessage);
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Warn',
-          detail: err.error.data,
-        })
+        if(err.error.data){
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warn',
+            detail: err.error.data,
+          })
+        }else{
+          // if error server cannot be reach
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Warn',
+            detail: err.error.message,
+          })
+        }
       },
     });
 

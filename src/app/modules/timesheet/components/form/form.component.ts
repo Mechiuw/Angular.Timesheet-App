@@ -21,7 +21,7 @@ import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { Overtime, WorkOption } from '../../model/timesheet';
 import { OvertimeService } from '../../services/overtime.service';
-import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
 import { TimesheetService } from '../../services/timesheet.service';
 import Swal from 'sweetalert2';
 import { Observable, of, map, switchMap } from 'rxjs';
