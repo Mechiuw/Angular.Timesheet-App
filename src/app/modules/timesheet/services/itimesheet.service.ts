@@ -11,7 +11,6 @@ export interface ITimesheetService {
   SubmitTimesheet(id: any): Observable<any>;
   FetchWorkOptions(): Observable<WorkOption[]>;
   ValidateTime(overtimeForm: FormGroup): boolean;
-
   CalculateTotal(
     overtimeForm: FormGroup,
     workOptions$: Observable<WorkOption[]>

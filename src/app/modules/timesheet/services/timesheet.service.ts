@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  BehaviorSubject,
   catchError,
   map,
   Observable,
@@ -24,6 +25,8 @@ export class TimesheetService implements ITimesheetService {
   private readonly http = inject(HttpClient);
   private session = inject(SessionService);
 
+  private isLoading$ = new BehaviorSubject<boolean>(false);
+
   private fetchWorkData: WorkOption[] = [];
   private fetchTimesheetData: Timesheet[] = [];
   private fetchTimesheetDataID: TimesheetResponse = {} as TimesheetResponse;
@@ -32,6 +35,10 @@ export class TimesheetService implements ITimesheetService {
   private readonly token = this.session.get('token');
 
   private date: Date = new Date();
+
+  get isLoading(): Observable<boolean> {
+    return this.isLoading$.asObservable();
+  }
 
   GetTimesheet(): Observable<Timesheet[]> {
     const monthPrev = this.date.getMonth();
@@ -129,9 +136,10 @@ export class TimesheetService implements ITimesheetService {
     const startTime = new Date(overtimeForm.get('startTime')?.value);
     const endTime = new Date(overtimeForm.get('endTime')?.value);
 
-    const diff = endTime.getHours() - startTime.getHours();
+    const diff = (endTime.getTime() - startTime.getTime()) / (60 * 60 * 1000);
+    const checkMultiply = (diff % 1) == 0
 
-    return diff < 1;
+    return !(checkMultiply && (diff < 1));
   }
 
   CalculateTotal(

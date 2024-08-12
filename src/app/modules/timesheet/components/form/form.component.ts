@@ -99,14 +99,19 @@ export class FormComponent implements OnInit {
   }
 
   saveOvertime() {
-    if (this.hasEmptyField())
+    if (this.hasEmptyField()) {
       return this.errorAlert('All form fields must be filled out');
+    }
 
-    if (this.overtimeForm.invalid)
+    if (this.overtimeForm.invalid) {
       return this.errorAlert(' End time cannot be earlier than start time');
+    }
 
-    if (this.timesheetService.ValidateTime(this.overtimeForm))
-      return this.errorAlert('Minimum overtime of 1 hour');
+    if (this.timesheetService.ValidateTime(this.overtimeForm)) {
+      return this.errorAlert(
+        'Minimum overtime of 1 hour or must be a multiple of 1 hour'
+      );
+    }
 
     const formValue = this.overtimeForm.value;
 
@@ -118,14 +123,25 @@ export class FormComponent implements OnInit {
       workId: formValue.workID.id,
       total: formValue.total,
     };
-    this.OvertimeService.Save(overtime).subscribe(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Overtime saved successfully',
-      });
-      this.overtimeForm.reset();
-    });
+    this.OvertimeService.Save(overtime).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Overtime saved successfully',
+        });
+      },
+      (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error Occurred',
+          detail: 'Failed to create overtime',
+        });
+      },
+      () => {
+        this.overtimeForm.reset();
+      }
+    );
   }
 
   TimeValidatorForm(): ValidatorFn {
@@ -141,6 +157,7 @@ export class FormComponent implements OnInit {
       ) {
         return { checkTimeValidator: true };
       }
+
       return null;
     };
   }

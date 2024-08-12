@@ -1,4 +1,4 @@
-import { Component, ViewChild } from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import { TagModule } from "primeng/tag";
 import { IconFieldModule } from "primeng/iconfield";
 import { InputIconModule } from "primeng/inputicon";

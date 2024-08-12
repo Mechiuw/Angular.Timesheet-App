@@ -10,13 +10,25 @@ import {
 import { WorkService } from '../../services/work.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import { ToastrService } from 'ngx-toastr';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MessageService } from 'primeng/api';
+import {Button} from "primeng/button";
+import {ToastModule} from "primeng/toast";
+
 @Component({
   selector: 'app-work-description-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatIconModule, MatInputModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    Button,
+    ToastModule,
+  ],
   templateUrl: './work-form.component.html',
   styleUrl: './work-form.component.scss',
   providers: [MessageService],
@@ -101,7 +113,7 @@ export class WorkFormComponent implements OnInit {
               // Data load
               this.workService.updateWorks();
             },
-            error => {
+            (error) => {
               console.error('Error updating work:', error);
             }
           );

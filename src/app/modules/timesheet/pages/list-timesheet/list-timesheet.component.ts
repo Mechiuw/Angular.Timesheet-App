@@ -4,16 +4,16 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { Timesheet } from '../../model/timesheet';
 import { TimesheetService } from '../../services/timesheet.service';
+import {TitleHeaderComponent} from "../../../../shared/components/title-header/title-header.component";
 
 @Component({
   selector: 'app-list-timesheet',
   standalone: true,
-  imports: [TableComponent, TableModule, CommonModule],
+  imports: [TableComponent, TableModule, CommonModule, TitleHeaderComponent],
   templateUrl: './list-timesheet.component.html',
   styleUrl: './list-timesheet.component.scss',
 })
 export class ListTimesheetComponent implements OnInit {
-
   private readonly timesheetService = inject(TimesheetService);
   isLoading: boolean = true;
   title: string = 'Timesheet List';
@@ -21,20 +21,18 @@ export class ListTimesheetComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchData();
-    this.timesheetService.isLoading.subscribe((value) => {
-      this.isLoading = value
-    })
+    this.timesheetService.isLoading.subscribe((value: boolean) => {
+      this.isLoading = value;
+    });
   }
 
   timesheets: Timesheet[] = [];
 
   fetchData(): void {
-    this.timesheetService
-      .GetTimesheet()
-      .subscribe((response) => {
-        this.timesheets = response
-        this.isLoading = false;
-      });
+    this.timesheetService.GetTimesheet().subscribe((response) => {
+      this.timesheets = response;
+      this.isLoading = false;
+    });
   }
 
   refresh(): void {

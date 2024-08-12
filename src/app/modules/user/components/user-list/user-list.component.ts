@@ -15,6 +15,7 @@ import { PagedResponse } from '../../../../core/models/api.model';
 import { LazyLoadEvent, MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
 import { ToastModule } from 'primeng/toast';
+import {StatusUsers} from "../../../../core/constants/status-users";
 
 @Component({
   selector: 'app-user-list',
