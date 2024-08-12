@@ -17,25 +17,34 @@ import { UserService } from '../../services/user.service';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [FormsModule, FloatLabelModule, InputTextModule, DropdownModule, ReactiveFormsModule, RouterLink, AngularSvgIconModule, NgClass, NgIf, ButtonComponent, ToastModule],
+  imports: [
+    FormsModule,
+    FloatLabelModule,
+    InputTextModule,
+    DropdownModule,
+    ReactiveFormsModule,
+    RouterLink,
+    AngularSvgIconModule,
+    NgClass,
+    NgIf,
+    ButtonComponent,
+    ToastModule,
+  ],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',
-  providers: [MessageService]
-  
+  providers: [MessageService],
 })
 export class UserFormComponent implements OnInit {
-
   form!: FormGroup;
   submitted = false;
   passwordTextType!: boolean;
-  roles : Role[] = [];
+  roles: Role[] = [];
 
   constructor(
-    private readonly formBuilder: FormBuilder, 
-    private readonly router: Router,
+    private readonly formBuilder: FormBuilder,
     private readonly messageService: MessageService,
-    private readonly roleService : RoleService,
-    private readonly userService : UserService,
+    private readonly roleService: RoleService,
+    private readonly userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -46,16 +55,16 @@ export class UserFormComponent implements OnInit {
     });
 
     this.roleService.getAllRoles().subscribe({
-      next:(roles) => {
+      next: (roles) => {
         this.roles = roles;
       },
-      error:(error) => {
+      error: (error) => {
         this.messageService.add({
-          severity:'error',
-          summary:'Error',
-          detail:'Failed to load roles'
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load roles',
         });
-      }
+      },
     });
   }
 
@@ -64,44 +73,35 @@ export class UserFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log('Form submitted');
     this.submitted = true;
-    
+
     if (this.form.invalid) {
-      console.log('Form is invalid');
       return;
     }
-    
+
     const { email, name, role } = this.form.value;
-    console.log(email);
-    console.log(name);
-    console.log(role);
-    
 
     const user = {
-      email : email,
-      name : name,
-      roleId : role.id
-    } 
+      email: email,
+      name: name,
+      roleId: role.id,
+    };
 
     this.userService.registerUser(user).subscribe({
       next: () => {
-        console.log('user registered successfully',user);
         this.messageService.add({
           severity: 'success',
-          summary : 'Success',
-          detail: 'User saved Successfully'
+          summary: 'Success',
+          detail: 'User saved Successfully',
         });
       },
-      error: (err:any)=>{
-        console.log('user failed register');
+      error: (err: any) => {
         this.messageService.add({
-          severity : 'error',
-          summary : 'Error',
-          detail : err.error.responseMessage || 'An error occured'
-        })
-      }
-    })
-
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error.responseMessage || 'An error occurred',
+        });
+      },
+    });
   }
 }

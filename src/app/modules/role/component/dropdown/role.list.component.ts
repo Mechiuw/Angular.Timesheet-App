@@ -1,12 +1,15 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { RoleService } from '../../service/role.service';
 import { Role } from '../../models/role.model';
+import {NgForOf, NgIf} from "@angular/common";
 
 
 @Component({
   selector: 'app-select-dropdown',
   templateUrl: './role.list.component.html',
-  styleUrls: ['./role.list.component.scss']
+  standalone: true,
+  styleUrls: ['./role.list.component.scss'],
+  imports: [NgIf, NgForOf],
 })
 export class RoleDropdownComponent implements OnInit {
   @Input() placeholder: string = 'Choose the role';
@@ -24,14 +27,13 @@ export class RoleDropdownComponent implements OnInit {
   fetchData(): void {
     this.loading = true;
     this.roleService.getAllRoles().subscribe({
-      next: (response) => {
-        this.roles = response.data;
+      next: (response: Role[]) => {
+        this.roles = response;
         this.loading = false;
       },
       error: (error) => {
-        console.log('Error fetching data', error);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -39,6 +41,5 @@ export class RoleDropdownComponent implements OnInit {
     const selectElement = event.target as HTMLSelectElement;
     this.selectionChange.emit(selectElement.value);
   }
-
 }
 export default RoleDropdownComponent;

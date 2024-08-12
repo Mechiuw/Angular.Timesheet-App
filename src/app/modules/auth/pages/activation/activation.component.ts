@@ -27,19 +27,16 @@ export class ActivationComponent implements OnInit {
   ngOnInit(): void {
     // this.token = this.activatedRoute.snapshot.params['t'] || '';
     this.token$.next(this.activatedRoute.snapshot.queryParams["t"] || "");
-    console.log(this.isActivated$.value);
     this.onActivate();
   }
 
   // TODO : reconfig for API INtegration. mismatch model BE and FE
   onActivate() {
-    // console.log(this.token$.value);
     this.activationService.activate(this.token$.value).subscribe({
       next: (response) => {
         if (response.status?.code === 200) {
           this.isActivated$.next(true);
         } else {
-          console.log(response);
           this.isActivated$.next(false);
           this.messageService.add({
             severity: "warn",
@@ -49,7 +46,6 @@ export class ActivationComponent implements OnInit {
         }
       },
       error: (err) => {
-        // console.log(err.error.responseMessage);
         this.messageService.add({
           severity: "warn",
           summary: "Warn",

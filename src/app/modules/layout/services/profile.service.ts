@@ -2,7 +2,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
-import { ChangePasswordRequest, ProfileRequest, ProfileResponse } from '../models/profile.model';
+import {
+  ChangePasswordRequest,
+  ProfileRequest,
+  ProfileResponse,
+} from '../models/profile.model';
 import { SessionService } from '../../../core/services/session.service';
 
 @Injectable({
@@ -15,11 +19,8 @@ export class ProfileService {
   ) {}
 
   detailAccount(): Observable<ProfileResponse> {
-    const token = this.sessionService.get('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     return this.http
-      .get<ProfileResponse>(API_ENDPOINT.AUTH.DETAIL_PROFILE, { headers })
+      .get<ProfileResponse>(API_ENDPOINT.AUTH.DETAIL_PROFILE)
       .pipe(
         map((response) => {
           return response;
@@ -35,14 +36,11 @@ export class ProfileService {
   }
 
   uploadSignature(file: File): Observable<any> {
-    const token = this.sessionService.get('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
     const formData: FormData = new FormData();
     formData.append('image', file, file.name);
 
     return this.http
-      .post<any>(API_ENDPOINT.AUTH.UPLOAD_SIGNATURE, formData, { headers })
+      .post<any>(API_ENDPOINT.AUTH.UPLOAD_SIGNATURE, formData)
       .pipe(
         map((response) => {
           return response;
@@ -58,16 +56,8 @@ export class ProfileService {
   }
 
   updateProfile(payload: ProfileRequest): Observable<any> {
-    const token = this.sessionService.get('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    console.log('Token: ', token);
-    console.log('Headers: ', headers);
-
     return this.http
-      .put<ProfileRequest>(API_ENDPOINT.AUTH.UPDATE_ACCOUNTS, payload, {
-        headers,
-      })
+      .put<ProfileRequest>(API_ENDPOINT.AUTH.UPDATE_ACCOUNTS, payload)
       .pipe(
         map((response) => {
           return response;
@@ -83,16 +73,8 @@ export class ProfileService {
   }
 
   changePassword(payload: ChangePasswordRequest): Observable<any> {
-    const token = this.sessionService.get('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
-    console.log('Token: ', token);
-    console.log('Headers: ', headers);
-
     return this.http
-      .put<ProfileRequest>(API_ENDPOINT.AUTH.CHANGE_PASSWORD, payload, {
-        headers,
-      })
+      .put<ProfileRequest>(API_ENDPOINT.AUTH.CHANGE_PASSWORD, payload)
       .pipe(
         map((response) => {
           return response;

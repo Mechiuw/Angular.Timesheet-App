@@ -48,7 +48,6 @@ export class DetailTimesheetComponent implements OnInit {
         if (!response) {
           this.isLoading = false;
         }
-        // console.log('fetch response', response);
         this.detailTimesheet = response;
         // this.update.getDetail(this.detailTimesheet.timeSheetDetails);
         this.total = response.total || 0;
@@ -67,7 +66,7 @@ export class DetailTimesheetComponent implements OnInit {
 
   fetchWorkOptions(): void {
     this.workOptions$ = this.timesheetService
-      .fethcWorkOptions()
+      .FetchWorkOptions()
       .pipe(map((data) => data ?? []));
 
     this.workOptions$.subscribe((options) => {

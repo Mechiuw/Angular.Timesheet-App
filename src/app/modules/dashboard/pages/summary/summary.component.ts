@@ -1,19 +1,22 @@
-import { Component, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
-import { ChartModule } from "primeng/chart";
-import { StatusTimesheets } from "../../../../core/constants/status-timesheets";
-import { TitleHeaderComponent } from "../../../../shared/components/title-header/title-header.component";
-import { TimesheetTableComponent } from "../../../approval/components/timesheet-table/timesheet-table.component";
-import { Timesheet, TimesheetSummary } from "../../../approval/model/timesheet.model";
-import { SummaryTableComponent } from "../../components/summary/summary-table/summary-table.component";
-import { Chart, ChartOptions } from "../../models/chart.model";
-import { SummaryService } from "../../services/summary.service";
-import { RupiahFormatPipe } from "../../../../shared/pipes/rupiah-format.pipe";
-import { Roles } from "../../../../core/constants/roles";
-import { NgIf } from "@angular/common";
+import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ChartModule } from 'primeng/chart';
+import { StatusTimesheets } from '../../../../core/constants/status-timesheets';
+import { TitleHeaderComponent } from '../../../../shared/components/title-header/title-header.component';
+import { TimesheetTableComponent } from '../../../approval/components/timesheet-table/timesheet-table.component';
+import {
+  Timesheet,
+  TimesheetSummary,
+} from '../../../approval/model/timesheet.model';
+import { SummaryTableComponent } from '../../components/summary/summary-table/summary-table.component';
+import { Chart, ChartOptions } from '../../models/chart.model';
+import { SummaryService } from '../../services/summary.service';
+import { RupiahFormatPipe } from '../../../../shared/pipes/rupiah-format.pipe';
+import { Roles } from '../../../../core/constants/roles';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: "app-summary",
+  selector: 'app-summary',
   standalone: true,
   imports: [
     NgIf,
@@ -24,12 +27,12 @@ import { NgIf } from "@angular/common";
     SummaryTableComponent,
     TitleHeaderComponent,
   ],
-  templateUrl: "./summary.component.html",
-  styleUrl: "./summary.component.scss",
+  templateUrl: './summary.component.html',
+  styleUrl: './summary.component.scss',
 })
 export class SummaryComponent implements OnInit {
-  title = "Dashboard";
-  subtitle = "Timesheet Summary";
+  title = 'Dashboard';
+  subtitle = 'Timesheet Summary';
 
   pieData?: Chart;
   pieOptions?: ChartOptions;
@@ -41,13 +44,12 @@ export class SummaryComponent implements OnInit {
   submission: number = 0;
   submissionItems: number = 0;
 
-
   // Example Timesheet
   timesheets: TimesheetSummary[] = [];
   recentTimesheets: TimesheetSummary[] = [];
 
   // Data Role
-  paymentTitle: string = "Payment Estimation"
+  paymentTitle: string = 'Payment Estimation';
 
   // Data Loading
   isLoading: boolean = true;
@@ -58,38 +60,30 @@ export class SummaryComponent implements OnInit {
     StatusTimesheets.PENDING,
   ];
 
-  month: string = new Date().toLocaleString("default", { month: "long" });
+  month: string = new Date().toLocaleString('default', { month: 'long' });
 
   constructor(private readonly summaryService: SummaryService) {}
+
   ngOnInit() {
     this.summaryService.getSummary().subscribe((response) => {
       this.timesheets = response.data;
       this.isLoading = false;
       this.recentTimesheets = this.getRecentTimesheets();
     });
-    console.log(this.summaryService.role);
-    this.paymentTitle = this.summaryService.role === Roles.USER ? "Overtime Bonus" : this.paymentTitle
+    this.paymentTitle =
+      this.summaryService.role === Roles.USER
+        ? 'Overtime Bonus'
+        : this.paymentTitle;
     this.getPieChart();
-
-    // this.getLineChart();
-
-    // this.summaryService.getSummaryTrend().subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //   },
-    //   error: (err) => {
-    //     console.log("Error fetch data : " + err.error.message);
-    //   },
-    // })
-
   }
 
   private getRecentTimesheets() {
     return this.timesheets.slice(0, 3);
   }
+
   private getPieChart() {
     const pieDocumentStyle = getComputedStyle(document.documentElement);
-    const pieTextColor = pieDocumentStyle.getPropertyValue("--text-color");
+    const pieTextColor = pieDocumentStyle.getPropertyValue('--text-color');
     this.pieOptions = {
       plugins: {
         legend: {
@@ -114,8 +108,9 @@ export class SummaryComponent implements OnInit {
           );
           this.submission = data.length;
           this.submissionItems = data.reduce(
-            (acc, timesheet) => acc + timesheet.timeSheetDetails.length, 0
-          )
+            (acc, timesheet) => acc + timesheet.timeSheetDetails.length,
+            0
+          );
 
           data.forEach((element) => {
             switch (element.status) {
@@ -138,21 +133,21 @@ export class SummaryComponent implements OnInit {
             {
               data: getDataCounts(data),
               backgroundColor: [
-                pieDocumentStyle.getPropertyValue("--green-500"),
-                pieDocumentStyle.getPropertyValue("--red-500"),
-                pieDocumentStyle.getPropertyValue("--blue-500"),
+                pieDocumentStyle.getPropertyValue('--green-500'),
+                pieDocumentStyle.getPropertyValue('--red-500'),
+                pieDocumentStyle.getPropertyValue('--blue-500'),
               ],
               hoverBackgroundColor: [
-                pieDocumentStyle.getPropertyValue("--green-400"),
-                pieDocumentStyle.getPropertyValue("--red-400"),
-                pieDocumentStyle.getPropertyValue("--blue-400"),
+                pieDocumentStyle.getPropertyValue('--green-400'),
+                pieDocumentStyle.getPropertyValue('--red-400'),
+                pieDocumentStyle.getPropertyValue('--blue-400'),
               ],
             },
           ],
         };
       },
       error(err) {
-        console.log("Error fetch data : "+err.error.message);
+        return err;
       },
     });
   }

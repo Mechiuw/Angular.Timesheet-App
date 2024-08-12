@@ -1,0 +1,75 @@
+// Dialog
+::ng-deep .p-dialog {
+  @apply bg-background text-foreground;
+  border: white 1px solid;
+
+  .p-dialog-header {
+    @apply bg-background;
+
+    .p-dialog-title {
+      @apply text-foreground;
+    }
+  }
+
+  .p-dialog-content {
+    @apply bg-background;
+  }
+
+  .p-dialog-footer {
+    @apply bg-background;
+
+    .p-confirm-dialog-accept {
+      @apply bg-primary;
+      @apply text-white;
+    }
+
+    .p-confirm-dialog-reject {
+      @apply text-primary;
+    }
+  }
+}
+
+// Table
+::ng-deep .p-datatable {
+  @apply bg-background;
+
+  .p-datatable-loading-overlay {
+    display: none;
+  }
+
+  .p-datatable-header {
+    @apply bg-background;
+    border: none;
+  }
+
+  .p-datatable-thead {
+    @apply bg-background;
+
+    th {
+      @apply bg-background;
+    }
+
+    .p-sortable-column {
+      @apply bg-background;
+
+      .p-sortable-column-icon {
+        @apply text-foreground;
+        height: 1rem;
+        font-size: 1.5rem !important;
+      }
+    }
+  }
+
+  .p-datatable-tbody {
+    @apply bg-background;
+
+    tr {
+      @apply bg-background;
+    }
+  }
+
+  // .p-datatable-footer {
+  //     @apply bg-background;
+  //     border: none;
+  // }
+}

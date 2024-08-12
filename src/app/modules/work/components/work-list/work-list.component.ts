@@ -23,6 +23,7 @@ import { SkeletonModule } from "primeng/skeleton";
 import { ConfirmPopupModule } from "primeng/confirmpopup";
 import { ToastModule } from "primeng/toast";
 import { RouterLink } from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
   selector: "app-work-list",
@@ -55,7 +56,8 @@ export class WorkListComponent {
   constructor(
     private readonly workService: WorkService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private toaster: ToastrService
   ) {}
 
   @ViewChild("dt1") dt: Table | undefined;
@@ -89,10 +91,8 @@ export class WorkListComponent {
           rows = response.paging.rowsPerPage;
           this.works = response.data;
           this.isLoading = false;
-          console.log(response);
         },
         error: (error: any) => {
-          console.error("Error fetching users:", error);
           this.isLoading = false
         },
       });
@@ -103,10 +103,8 @@ export class WorkListComponent {
           rows = response.paging.rowsPerPage;
           this.works = response.data;
           this.isLoading = false;
-          console.log(response);
         },
-        error: (error: any) => {
-          console.error("Error fetching users:", error);
+        error: () => {
           this.isLoading = false
         },
       });
@@ -121,10 +119,9 @@ export class WorkListComponent {
           this.totalRecords = response.paging.totalRows;
           this.works = response.data;
           this.isLoading = false;
-          console.log(response);
         },
         error: (error: any) => {
-          console.error("Error fetching users:", error);
+          this.toaster.error('Failed to delete work', 'Error Occurred');
         },
       }));
   }

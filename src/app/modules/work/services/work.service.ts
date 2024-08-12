@@ -15,8 +15,8 @@ export class WorkService implements IWorkService {
   constructor(
     private readonly http: HttpClient,
   ) { }
- 
-  
+
+
   List(rows: number = 10, page: number = 1): Observable<PagedResponse<Work[]>> {
     try {
       return this.http.get<PagedResponse<Work[]>>(`${API_ENDPOINT.WORK}?paging=${page}&rowsPerPage=${rows}`)
@@ -28,7 +28,6 @@ export class WorkService implements IWorkService {
     return this.http.get<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/${id}`);
   }
   Add(work: Work): Observable<SingleResponse<Work>> {
-    console.log(work);
     try {
       return this.http.post<SingleResponse<Work>>(`${API_ENDPOINT.WORK}/`, work);
     } catch (error: any) {
@@ -48,5 +47,5 @@ export class WorkService implements IWorkService {
       return error.message;
     }
   }
-  
+
 }

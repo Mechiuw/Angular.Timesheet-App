@@ -7,7 +7,6 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { DropdownModule } from 'primeng/dropdown';
-import { NftHeaderComponent } from '../../../dashboard/components/nft/nft-header/nft-header.component';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,6 +14,7 @@ import { UserService } from '../../services/user.service';
 import { PagedResponse } from '../../../../core/models/api.model';
 import { LazyLoadEvent } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-user-list',
@@ -32,7 +32,6 @@ import { SkeletonModule } from 'primeng/skeleton';
     InputIconModule,
     MultiSelectModule,
     DropdownModule,
-    NftHeaderComponent,
     SkeletonModule,
   ],
 
@@ -40,7 +39,10 @@ import { SkeletonModule } from 'primeng/skeleton';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent implements OnInit {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private toaster: ToastrService
+  ) {}
 
   @ViewChild('dt1') dt: Table | undefined;
 
@@ -64,7 +66,7 @@ export class UserListComponent implements OnInit {
 
   loadUsers($event: LazyLoadEvent) {
     let rows = $event.rows;
-    this.loading = true
+    this.loading = true;
     this.page = Math.ceil(($event?.first ?? 0) / ($event?.rows ?? 1)) + 1;
 
     if (this.searchValue != '') {
@@ -76,12 +78,13 @@ export class UserListComponent implements OnInit {
           this.loading = false;
         },
         error: (error: any) => {
-          console.error('Error fetching users:', error);
+          this.toaster.error(
+            `Error fetching users: ${error}`,
+            'Error Occurred'
+          );
         },
       });
     } else {
-      console.log(this.searchValue);
-
       this.userService.getUsers(rows ?? 1, this.page).subscribe({
         next: (response: PagedResponse<User[]>) => {
           this.totalRecords = response.paging.totalRows;
@@ -90,7 +93,7 @@ export class UserListComponent implements OnInit {
           this.loading = false;
         },
         error: (error: any) => {
-          console.error('Error fetching users:', error);
+          this.toaster.error(error, 'Error Occurred');
         },
       });
     }
