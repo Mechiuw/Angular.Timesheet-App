@@ -10,7 +10,6 @@ import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { Overtime, Timesheet } from '../../model/timesheet';
 import { TimesheetService } from '../../services/timesheet.service';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -24,7 +23,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class UpdateButtonComponent implements OnInit {
   constructor(
-    private toaster: ToastrService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
   ) {}
@@ -74,20 +72,30 @@ export class UpdateButtonComponent implements OnInit {
             () => {
               this.formSubmitted.emit();
               this.update.clearWorks();
-              this.toaster.success('Your form has been updated', 'Success');
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Your form has been updated',
+              });
             },
             () => {
-              this.toaster.error(
-                'There was a problem updating your form. Please try again later.',
-                'Error Occurred'
-              );
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error Occurred',
+                detail:
+                  'There was a problem updating your form. Please try again later',
+              });
             }
           );
 
         this.router.navigate(['/timesheets/list']);
       },
       reject: () => {
-        this.toaster.info('You have rejected', 'Info');
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: `You have rejected`,
+        });
       },
     });
   }

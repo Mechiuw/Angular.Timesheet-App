@@ -59,12 +59,11 @@ export class TimesheetService implements ITimesheetService {
       map((response) => {
         this.fetchTimesheetDataID = {
           ...response.data,
-          // status: Status.Pending,
         };
         return this.fetchTimesheetDataID;
       }),
-      catchError(() => {
-        return of();
+      catchError((err) => {
+        return throwError(() => err.error.data);
       })
     );
   }
@@ -75,7 +74,7 @@ export class TimesheetService implements ITimesheetService {
     return this.http.post(reqUrl, timesheet).pipe(
       tap(() => {}),
       catchError((error) => {
-        return throwError(() => new Error(error));
+        return throwError(() => error.error.data);
       })
     );
   }

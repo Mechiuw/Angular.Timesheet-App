@@ -3,11 +3,13 @@ import { Observable, of } from 'rxjs';
 import { Overtime, WorkOption } from '../../model/timesheet';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import {RupiahFormatPipe} from "../../../../shared/pipes/rupiah-format.pipe";
+import {TooltipModule} from "primeng/tooltip";
 
 @Component({
   selector: 'app-edit-list',
   standalone: true,
-  imports: [CommonModule, TableModule],
+  imports: [CommonModule, TableModule, RupiahFormatPipe, TooltipModule],
   templateUrl: './edit-list.component.html',
   styleUrl: './edit-list.component.scss',
 })

@@ -5,8 +5,7 @@ import { Overtime, Timesheet } from '../../model/timesheet';
 import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ToastrService } from 'ngx-toastr';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-submit-button',
@@ -14,6 +13,7 @@ import { ConfirmationService } from 'primeng/api';
   imports: [ToastModule, ConfirmDialogModule],
   templateUrl: './submit-button.component.html',
   styleUrl: './submit-button.component.scss',
+  providers: [MessageService],
 })
 export class SubmitButtonComponent implements OnInit {
   @Output() formSubmitted = new EventEmitter<void>();
@@ -21,7 +21,7 @@ export class SubmitButtonComponent implements OnInit {
   timesheetDetails: Overtime[] = [];
 
   constructor(
-    private toaster: ToastrService,
+    private messageService: MessageService,
     private confirmationService: ConfirmationService,
     private readonly overtimeService: OvertimeService,
     private readonly timesheetService: TimesheetService
@@ -43,7 +43,11 @@ export class SubmitButtonComponent implements OnInit {
     this.ngOnInit();
 
     if (this.timesheetDetails.length === 0) {
-      this.toaster.error('Please add overtime first!', 'Error Occurred');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error Occurred',
+        detail: `Please add overtime first!`,
+      });
       return;
     }
 
@@ -57,33 +61,42 @@ export class SubmitButtonComponent implements OnInit {
       rejectButtonStyleClass: 'p-button-text',
       accept: () => {
         const timesheet: Timesheet = {
-          timeSheetDetails: this.timesheetDetails.map(overtime => {
+          timeSheetDetails: this.timesheetDetails.map((overtime) => {
             return {
-              "date": overtime.date,
-              "startTime": new Date(overtime.startTime),
-              "endTime": new Date(overtime.endTime),
-              "workId": overtime.workId,
-            }
-          })
+              date: overtime.date,
+              startTime: new Date(overtime.startTime),
+              endTime: new Date(overtime.endTime),
+              workId: overtime.workId,
+            };
+          }),
         };
 
         this.timesheetService.SaveTimesheet(timesheet).subscribe(
           () => {
             this.formSubmitted.emit();
             this.overtimeService.clearWorks();
-            this.toaster.success('Your form has been saved', 'Success');
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: `Your form has been saved`,
+            });
           },
           () => {
-            this.toaster.error(
-              'There was a problem submitting your form. Please try again later',
-              'Error Occurred'
-            );
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error Occurred',
+              detail: `There was a problem submitting your form. Please try again later`,
+            });
           }
         );
         this.router.navigate(['/timesheets/list']);
       },
       reject: () => {
-        this.toaster.info('You have rejected', 'Info');
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: `You have rejected`,
+        });
       },
     });
   }

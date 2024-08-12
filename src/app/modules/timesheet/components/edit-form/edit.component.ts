@@ -14,6 +14,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   ValidatorFn,
   Validators,
@@ -25,7 +26,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { Observable, of } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
+import { ButtonDirective } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageService, PrimeTemplate } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-edit',
@@ -39,18 +45,33 @@ import { ToastrService } from 'ngx-toastr';
     NgxMaterialTimepickerModule,
     MatSelectModule,
     ValidationMessageComponent,
+    ButtonDirective,
+    CalendarModule,
+    DropdownModule,
+    FloatLabelModule,
+    PrimeTemplate,
+    ToastModule,
+    FormsModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
-  providers: [provideNativeDateAdapter(), CurrencyPipe],
+  providers: [provideNativeDateAdapter(), CurrencyPipe, MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditComponent implements OnInit {
-  constructor(private toaster: ToastrService) {}
+  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
-    this.minDate = this.updateService.getMinDate();
-    this.maxDate = this.updateService.getMaxDate();
+    let today = new Date();
+    let month = today.getMonth();
+    let year = today.getFullYear();
+    let prevMonth = month === 0 ? 11 : month - 1;
+    let prevYear = prevMonth === 11 ? year - 1 : year;
+    this.minDate = new Date();
+    this.minDate.setMonth(prevMonth);
+    this.minDate.setFullYear(prevYear);
+    this.maxDate = new Date();
+    this.maxDate.setDate(today.getDate() - 1);
 
     this.overtimeForm.valueChanges.subscribe(() => {
       this.timesheetService.CalculateTotal(
@@ -67,9 +88,9 @@ export class EditComponent implements OnInit {
     OvertimeUpdateService
   );
 
-  minDate: Date | null = null;
-  maxDate: Date | null = null;
-  descriptionOptions: WorkOption[] = [];
+  date: Date | undefined;
+  minDate: Date | undefined;
+  maxDate: Date | undefined;
   @Input() workOptions$: Observable<WorkOption[]> = of([]);
 
   overtimeForm: FormGroup = new FormGroup(
@@ -85,12 +106,21 @@ export class EditComponent implements OnInit {
   );
 
   setFormValues(overtime: OvertimeResponse) {
+    this.workOptions$.subscribe((workOptions) => {
+      workOptions.forEach((opt) => {
+        if (opt.id == overtime.workId) {
+          this.overtimeForm.patchValue({
+            ...this.overtimeForm,
+            workID: opt,
+          });
+        }
+      });
+    });
     this.overtimeForm.patchValue({
       id: overtime.id,
-      selectedDate: overtime.date,
-      startTime: this.getTimeFromISO(overtime.startTime),
-      endTime: this.getTimeFromISO(overtime.endTime),
-      workID: overtime.workId,
+      selectedDate: new Date(overtime.date),
+      startTime: new Date(overtime.startTime),
+      endTime: new Date(overtime.endTime),
       total: overtime.total,
     });
     if (overtime.id) {
@@ -115,33 +145,35 @@ export class EditComponent implements OnInit {
       return this.errorAlert('Minimum overtime of 1 hour');
 
     const formValue = this.overtimeForm.value;
-    const selectedDate = formValue.selectedDate;
-    const startTimeISO = this.convertTimeToISO(
-      selectedDate,
-      formValue.startTime
-    );
-    const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
 
     const overtime: Overtime = {
       id: formValue.id,
       date: formValue.selectedDate,
-      startTime: startTimeISO,
-      endTime: endTimeISO,
-      workId: formValue.workID,
+      startTime: new Date(
+        formValue.selectedDate.setTime(formValue.startTime.getTime())
+      ),
+      endTime: new Date(
+        formValue.selectedDate.setTime(formValue.endTime.getTime())
+      ),
+      workId: formValue.workID.id,
       total: formValue.total,
     };
-    this.updateService.Update(overtime).subscribe(() => {
-      this.toaster.success('Overtime edited successfully', 'Success');
-      this.overtimeForm.reset();
-      this.overtimeForm.disable();
-    });
-  }
-
-  convertTimeToISO(date: Date, time: string): Date {
-    const [hours, minutes] = time.split(':').map(Number);
-    const convert = new Date(date);
-    convert.setHours(hours, minutes, 0, 0);
-    return convert;
+    this.updateService.Update(overtime).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Overtime edited successfully',
+        });
+        this.overtimeForm.reset();
+        this.overtimeForm.disable();
+      },
+      (err) => {
+        this.errorAlert(err);
+        this.overtimeForm.reset();
+        this.overtimeForm.disable();
+      }
+    );
   }
 
   TimeValidatorForm(): ValidatorFn {
@@ -152,8 +184,8 @@ export class EditComponent implements OnInit {
       if (
         startTime &&
         endTime &&
-        new Date(`1970-01-01T${endTime}:00`) <
-          new Date(`1970-01-01T${startTime}:00`)
+        new Date(formGroup.get('startTime')?.value) >
+          new Date(formGroup.get('endTime')?.value)
       ) {
         return { checkTimeValidator: true };
       }
@@ -184,13 +216,10 @@ export class EditComponent implements OnInit {
   }
 
   errorAlert(message: string) {
-    this.toaster.error(message, 'Error Occurred');
-  }
-
-  getTimeFromISO(dateTime: string): string {
-    const date = new Date(dateTime);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error Occurred',
+      detail: message,
+    });
   }
 }

@@ -22,7 +22,7 @@
     <p-floatLabel>
       <p-calendar
         [timeOnly]="true"
-        [hourFormat]="String(24)"
+        [hourFormat]="'24'"
         [iconDisplay]="'input'"
         [showIcon]="true"
         inputId="startTimePicker"
@@ -39,7 +39,7 @@
     <p-floatLabel>
       <p-calendar
         [timeOnly]="true"
-        [hourFormat]="String(24)"
+        [hourFormat]="'24'"
         [iconDisplay]="'input'"
         [showIcon]="true"
         inputId="endTimePicker"
@@ -53,16 +53,19 @@
       <label for="endTimePicker" class="text-foreground">End Time</label>
     </p-floatLabel>
 
-    <p-dropdown
-      [options]="(workOptions$ | async) ?? []"
-      formControlName="workID"
-      placeholder="Select Description"
-      inputId="description"
-      optionLabel="description"
-      [filter]="true"
-      filterBy="description"
-    >
-    </p-dropdown>
+    <p-floatLabel>
+      <p-dropdown
+        [options]="(workOptions$ | async) ?? []"
+        formControlName="workID"
+        placeholder="Select Description"
+        inputId="description"
+        optionLabel="description"
+        [filter]="true"
+        filterBy="description"
+      >
+      </p-dropdown>
+      <label for="description" class="text-foreground">Select Description</label>
+    </p-floatLabel>
 
     <button
       pButton
@@ -71,7 +74,8 @@
       size="small"
       label="Add"
       iconPos="right"
-      class="bg-primary p-2 border-0 min-w-20">
+      [disabled]="overtimeForm.invalid"
+      class="bg-primary p-2 border-0 min-w-24">
     </button>
   </form>
   <app-validation-message

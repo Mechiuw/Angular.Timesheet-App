@@ -17,6 +17,10 @@ import { LoadingComponent } from '../../components/loading/loading.component';
 import { CommonModule } from '@angular/common';
 import { map, Observable, of } from 'rxjs';
 import { EditListComponent } from '../../components/edit-list/edit-list.component';
+import { SubmitButtonComponent } from '../../components/submit-button/submit-button.component';
+import { TitleHeaderComponent } from '../../../../shared/components/title-header/title-header.component';
+import { MessageService } from 'primeng/api';
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-update-timesheet',
@@ -30,11 +34,17 @@ import { EditListComponent } from '../../components/edit-list/edit-list.componen
     LoadingComponent,
     CommonModule,
     EditListComponent,
+    SubmitButtonComponent,
+    TitleHeaderComponent,
+    ToastModule,
   ],
   templateUrl: './update-timesheet.component.html',
   styleUrls: ['./update-timesheet.component.scss'],
+  providers: [MessageService],
 })
 export class UpdateTimesheetComponent implements OnInit {
+  constructor(private messageService: MessageService) {}
+
   @ViewChild(EditComponent) formComponent!: EditComponent;
 
   private readonly updateService = inject(OvertimeUpdateService);
@@ -44,11 +54,13 @@ export class UpdateTimesheetComponent implements OnInit {
   date: Date = new Date();
   timesheetId: string = '';
   overtimeForm: Overtime[] = [];
-  overtimeRes: OvertimeResponse[] = [];
   totalPay: number = 0;
   isLoading: boolean = true;
   getData: boolean = false;
   workOptions$: Observable<WorkOption[]> = of([]);
+
+  title: string = 'Timesheet Update Form';
+  subtitle: string = 'Update';
 
   ngOnInit(): void {
     this.fetchWorkOptions();
@@ -74,14 +86,26 @@ export class UpdateTimesheetComponent implements OnInit {
               this.isLoading = false;
               this.getData = true;
             },
-            error: (err) => console.error('Error adding works', err),
+            error: (err) => {
+              this.isLoading = false;
+              this.getData = false;
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error Occurred',
+                detail: `Error adding works: ${err}`,
+              });
+            },
           });
         }
       },
       error: (err: any) => {
-        console.error('Error fetching timesheet', err);
         this.isLoading = false;
         this.getData = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error Occurred',
+          detail: `Error fetching timesheet: ${err}`,
+        });
       },
     });
   }
@@ -114,8 +138,6 @@ export class UpdateTimesheetComponent implements OnInit {
     if (selectedOvertime && this.formComponent) {
       const overtimeResponse = this.convertToOvertimeResponse(selectedOvertime);
       this.formComponent.setFormValues(overtimeResponse);
-      // console.log('selectedOvertime', selectedOvertime);
-      // console.log('overtimeResponse', overtimeResponse);
     }
   }
 

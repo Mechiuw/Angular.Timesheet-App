@@ -54,9 +54,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
         this.sortOvertimes();
         observer.next();
       } else {
-        console.warn(
-          `Overtime with ID ${overtime.id} not found. Update ignored.`
-        );
+        observer.error(`Overtime with ID ${overtime.id} not found. Update ignored.`)
       }
       observer.complete();
     });
