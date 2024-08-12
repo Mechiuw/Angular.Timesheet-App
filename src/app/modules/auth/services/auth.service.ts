@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { map, Observable, of } from "rxjs";
+import { catchError, map, Observable, of } from "rxjs";
 import { API_ENDPOINT } from "../../../core/constants/api-endpoint";
 import { SingleResponse } from "../../../core/models/api.model";
 import { UserInfo } from "../../../core/models/user-info.model";

@@ -24,4 +24,8 @@
     .p-dropdown-item {
         @apply bg-background text-foreground;
     }
+
+    .p-dropdown-items-wrapper {
+        @apply bg-background text-foreground w-full;
+    }
 }

@@ -13,7 +13,7 @@ import {
   WorkOption,
 } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
-import { ValidationMessageComponent } from '../validation-message/validation-message.component';
+import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   AbstractControl,

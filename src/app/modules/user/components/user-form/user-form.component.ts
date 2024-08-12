@@ -1,6 +1,7 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
@@ -20,6 +21,7 @@ import { RoleService } from '../../../role/service/role.service';
 import { Role } from '../../../role/models/role.model';
 import { UserService } from '../../services/user.service';
 import { ButtonModule } from 'primeng/button';
+import { ValidationMessageComponent } from "../../../../shared/components/validation-message/validation-message.component";
 
 @Component({
   selector: 'app-user-form',
@@ -37,7 +39,8 @@ import { ButtonModule } from 'primeng/button';
     ButtonComponent,
     ToastModule,
     ButtonModule,
-  ],
+    ValidationMessageComponent
+],
   templateUrl: './user-form.component.html',
   styleUrl: './user-form.component.scss',
   providers: [MessageService],
@@ -89,7 +92,7 @@ export class UserFormComponent implements OnInit {
     this.submitted = true;
 
     if (this.form.invalid) {
-      console.log('Form is invalid');
+      // console.log('Form is invalid');
       return;
     }
 
@@ -135,5 +138,12 @@ export class UserFormComponent implements OnInit {
         this.isLoadingSave = false;
       },
     });
+  }
+
+  isFormValid(field: string): boolean {
+    const control: AbstractControl = this.form.get(
+      field
+    ) as AbstractControl;
+    return control && control.invalid && (control.dirty || control.touched);
   }
 }

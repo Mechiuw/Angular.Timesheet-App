@@ -153,12 +153,12 @@ export class WorkListComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    // Initial load
+    this.workService.updateWorks();
+    
     // Subscribe to the observable to get real-time updates
     this.workService.works$.subscribe((works) => {
       this.works = works;
     });
-
-    // Initial load
-    this.workService.updateWorks();
   }
 }
