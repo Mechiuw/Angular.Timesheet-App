@@ -1,4 +1,5 @@
 <div class="card">
+  <p-toast/>
   <p-table
     #dt1
     [first]="first"
@@ -12,7 +13,6 @@
     [tableStyle]="{ 'min-width': '50rem' }"
     [rows]="rowsOption[0]"
     [rowHover]="true"
-    dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="rowsOption"
@@ -58,7 +58,7 @@
     </ng-template>
 
     <ng-template pTemplate="body" let-user let-i="rowIndex">
-      <tr *ngIf="this.loading === false">
+      <tr *ngIf="!this.loading">
         <td>{{ i + 1 }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.email }}</td>

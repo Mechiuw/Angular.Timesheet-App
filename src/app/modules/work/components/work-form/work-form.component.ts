@@ -12,7 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { ToastrService } from 'ngx-toastr';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-work-description-form',
@@ -24,20 +25,23 @@ import { ToastrService } from 'ngx-toastr';
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    ToastModule,
   ],
   templateUrl: './work-form.component.html',
   styleUrl: './work-form.component.scss',
+  providers: [MessageService],
 })
 export class WorkFormComponent implements OnInit {
   postWorkForm: FormGroup;
   isEdit: boolean = false;
   workId: string | null = null;
+
   constructor(
     private fb: FormBuilder,
     private workService: WorkService,
     private route: ActivatedRoute,
     private router: Router,
-    private toaster: ToastrService
+    private messageService: MessageService
   ) {
     this.postWorkForm = this.fb.group({
       description: ['', Validators.required],
@@ -87,10 +91,11 @@ export class WorkFormComponent implements OnInit {
           const id = this.workId.toString();
           this.workService.Update({ ...this.postWorkForm.value, id }).subscribe(
             () => {
-              this.toaster.success(
-                'Work has been successfully updated',
-                'Success'
-              );
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: `Work has been successfully updated`,
+              });
               this.router.navigate(['/works']);
             },
             (error) => {
@@ -98,24 +103,37 @@ export class WorkFormComponent implements OnInit {
             }
           );
         } else {
-          this.toaster.error('Invalid work ID for update', 'Error Occurred');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error Occurred',
+            detail: `Invalid work ID for update`,
+          });
         }
       } else {
         this.workService.Add(formData).subscribe(
           () => {
-            this.toaster.success('Work has been successfully added', 'Success');
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: `Work has been successfully added`,
+            });
             this.router.navigate(['/works']);
           },
           (err) => {
-            this.toaster.error(`Error creating work: ${err}`, 'Error Occurred');
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error Occurred',
+              detail: `Error creating work: ${err}`,
+            });
           }
         );
       }
     } else {
-      this.toaster.error(
-        'Form is invalid. Please fill out all required fields.',
-        'Error'
-      );
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error Occurred',
+        detail: 'Form is invalid. Please fill out all required fields',
+      });
     }
   }
 

@@ -1,29 +1,28 @@
-import { Component, ViewChild } from "@angular/core";
-import { TagModule } from "primeng/tag";
-import { IconFieldModule } from "primeng/iconfield";
-import { InputIconModule } from "primeng/inputicon";
-import { InputTextModule } from "primeng/inputtext";
-import { MultiSelectModule } from "primeng/multiselect";
-import { DropdownModule } from "primeng/dropdown";
-import { ButtonModule } from "primeng/button";
-import { FormsModule } from "@angular/forms";
-import { CommonModule } from "@angular/common";
-import { PagedResponse } from "../../../../core/models/api.model";
+import { Component, ViewChild } from '@angular/core';
+import { TagModule } from 'primeng/tag';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { DropdownModule } from 'primeng/dropdown';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { PagedResponse } from '../../../../core/models/api.model';
 import {
   ConfirmationService,
   LazyLoadEvent,
   MessageService,
-} from "primeng/api";
-import { Table, TableModule } from "primeng/table";
-import { TitleHeaderComponent } from "../../../../shared/components/title-header/title-header.component";
-import { WorkService } from "../../services/work.service";
-import { Work } from "../../models/work.model";
-import { RupiahFormatPipe } from "../../../../shared/pipes/rupiah-format.pipe";
-import { SkeletonModule } from "primeng/skeleton";
-import { ConfirmPopupModule } from "primeng/confirmpopup";
-import { ToastModule } from "primeng/toast";
-import { RouterLink } from "@angular/router";
-import {ToastrService} from "ngx-toastr";
+} from 'primeng/api';
+import { Table, TableModule } from 'primeng/table';
+import { TitleHeaderComponent } from '../../../../shared/components/title-header/title-header.component';
+import { WorkService } from '../../services/work.service';
+import { Work } from '../../models/work.model';
+import { RupiahFormatPipe } from '../../../../shared/pipes/rupiah-format.pipe';
+import { SkeletonModule } from 'primeng/skeleton';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { ToastModule } from 'primeng/toast';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: "app-work-list",
@@ -57,7 +56,6 @@ export class WorkListComponent {
     private readonly workService: WorkService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private toaster: ToastrService
   ) {}
 
   @ViewChild("dt1") dt: Table | undefined;
@@ -92,7 +90,7 @@ export class WorkListComponent {
           this.works = response.data;
           this.isLoading = false;
         },
-        error: (error: any) => {
+        error: () => {
           this.isLoading = false
         },
       });
@@ -120,8 +118,12 @@ export class WorkListComponent {
           this.works = response.data;
           this.isLoading = false;
         },
-        error: (error: any) => {
-          this.toaster.error('Failed to delete work', 'Error Occurred');
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error Occurred',
+            detail: `Failed to delete work`,
+          });
         },
       }));
   }

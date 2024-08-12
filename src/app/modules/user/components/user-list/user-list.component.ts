@@ -12,9 +12,9 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { PagedResponse } from '../../../../core/models/api.model';
-import { LazyLoadEvent } from 'primeng/api';
+import { LazyLoadEvent, MessageService } from 'primeng/api';
 import { SkeletonModule } from 'primeng/skeleton';
-import { ToastrService } from 'ngx-toastr';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-user-list',
@@ -33,15 +33,16 @@ import { ToastrService } from 'ngx-toastr';
     MultiSelectModule,
     DropdownModule,
     SkeletonModule,
+    ToastModule,
   ],
-
   templateUrl: './user-list.component.html',
   styleUrl: './user-list.component.scss',
+  providers: [MessageService],
 })
 export class UserListComponent implements OnInit {
   constructor(
     private userService: UserService,
-    private toaster: ToastrService
+    private messageService: MessageService
   ) {}
 
   @ViewChild('dt1') dt: Table | undefined;
@@ -78,10 +79,11 @@ export class UserListComponent implements OnInit {
           this.loading = false;
         },
         error: (error: any) => {
-          this.toaster.error(
-            `Error fetching users: ${error}`,
-            'Error Occurred'
-          );
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error Occurred',
+            detail: `Error fetching users: ${error}`,
+          });
         },
       });
     } else {
@@ -93,7 +95,11 @@ export class UserListComponent implements OnInit {
           this.loading = false;
         },
         error: (error: any) => {
-          this.toaster.error(error, 'Error Occurred');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error Occurred',
+            detail: error,
+          });
         },
       });
     }
