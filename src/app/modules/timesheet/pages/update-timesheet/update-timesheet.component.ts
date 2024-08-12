@@ -1,10 +1,9 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TimesheetService } from '../../services/timesheet.service';
 import {
   Overtime,
   OvertimeResponse,
-  Timesheet,
   TimesheetResponse,
   WorkOption,
 } from '../../model/timesheet';
@@ -65,13 +64,11 @@ export class UpdateTimesheetComponent implements OnInit {
     this.timesheetService.GetTimesheetById(this.timesheetId).subscribe({
       next: (response: TimesheetResponse) => {
         if (response) {
-          // console.log('fetch response', response);
           this.overtimeForm = response.timeSheetDetails;
           this.updateService.GetWorks(response.timeSheetDetails).subscribe({
             next: () => {
               this.updateService.List().subscribe((works) => {
                 this.overtimeForm = works;
-                // console.log('fetch', this.overtimeForm);
                 this.getTotal();
               });
               this.isLoading = false;
@@ -130,7 +127,7 @@ export class UpdateTimesheetComponent implements OnInit {
 
   fetchWorkOptions(): void {
     this.workOptions$ = this.timesheetService
-      .fethcWorkOptions()
+      .FetchWorkOptions()
       .pipe(map((data) => data ?? []));
   }
 }

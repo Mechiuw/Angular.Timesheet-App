@@ -8,6 +8,7 @@ import { OvertimeService } from '../../services/overtime.service';
 import { Overtime, WorkOption } from '../../model/timesheet';
 import { Observable, of, map } from 'rxjs';
 import { TimesheetService } from '../../services/timesheet.service';
+import {TitleHeaderComponent} from "../../../../shared/components/title-header/title-header.component";
 
 @Component({
   selector: 'app-create-timesheet',
@@ -18,6 +19,7 @@ import { TimesheetService } from '../../services/timesheet.service';
     ListComponent,
     FormComponent,
     CommonModule,
+    TitleHeaderComponent,
   ],
   templateUrl: './create-timesheet.component.html',
   styleUrl: './create-timesheet.component.scss',
@@ -31,6 +33,9 @@ export class CreateTimesheetComponent implements OnInit {
   date: Date = new Date();
   totalPay: number = 0;
   workOptions$: Observable<WorkOption[]> = of([]);
+
+  title: string = 'Timesheet New Form';
+  subtitle: string = 'Create';
 
   ngOnInit(): void {
     this.getTotal();
@@ -63,9 +68,8 @@ export class CreateTimesheetComponent implements OnInit {
   }
 
   fetchWorkOptions(): void {
-    // console.log('fetch work options', this.workOptions$);
     this.workOptions$ = this.timesheetService
-      .fethcWorkOptions()
+      .FetchWorkOptions()
       .pipe(map((data) => data ?? []));
   }
 }

@@ -20,18 +20,13 @@ export class EditListComponent implements OnInit {
 
   ngOnInit(): void {
     this.workOptions$.subscribe((options) => {
-      // console.log('Options:', options);
       options.forEach((option) => {
-        // console.log('Option ID:', option.id);
         this.workDescriptions[option.id] = option.description;
       });
-      // console.log('Work Descriptions:', this.workDescriptions);
     });
   }
 
   getWorkDescription(id: string): string {
-    // console.log('Work Descriptions ID:', id);
-    // console.log('Work Descriptions:', this.workDescriptions);
     return this.workDescriptions[id] || 'Unknown';
   }
 }

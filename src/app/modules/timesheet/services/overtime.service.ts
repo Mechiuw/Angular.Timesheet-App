@@ -51,27 +51,10 @@ export class OvertimeService implements IOvertimeService {
         this.sortOvertimes();
         observer.next();
         observer.complete();
-        console.log(this.works);
       } catch (error: any) {
         observer.error(`TodoService.Toggle.Erorr: ${error.message}`);
       }
     });
-  }
-
-  getMinDate(): Date {
-    return new Date(
-      this.today.getFullYear(),
-      this.today.getMonth() - 2,
-      this.today.getDate()
-    );
-  }
-
-  getMaxDate(): Date {
-    return new Date(
-      this.today.getFullYear(),
-      this.today.getMonth(),
-      this.today.getDate() - 1
-    );
   }
 
   getTotalPay(): Observable<number> {

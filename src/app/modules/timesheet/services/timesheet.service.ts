@@ -1,23 +1,26 @@
 import { inject, Injectable } from '@angular/core';
-import { ITimesheetService } from './itimesheet.service';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import {
-  Status,
-  Timesheet,
-  TimesheetResponse,
-  WorkOption,
-} from '../model/timesheet';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+  catchError,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+} from 'rxjs';
+import { Timesheet, TimesheetResponse, WorkOption } from '../model/timesheet';
+import { HttpClient } from '@angular/common/http';
 import { PagedResponse } from '../../../core/models/api.model';
 import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
 import { SessionService } from '../../../core/services/session.service';
 import { jwtDecode } from 'jwt-decode';
-// import { token } from '../../../core/interceptor/request.interceptor';
+import { ITimesheetService } from './itimesheet.service';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TimesheetService {
+export class TimesheetService implements ITimesheetService {
   private readonly http = inject(HttpClient);
   private session = inject(SessionService);
 
@@ -27,7 +30,6 @@ export class TimesheetService {
 
   private apiUrl = API_ENDPOINT.TIMESHEET;
   private readonly token = this.session.get('token');
-  // private readonly token = token;
 
   private date: Date = new Date();
 
@@ -43,7 +45,7 @@ export class TimesheetService {
 
         return this.fetchTimesheetData;
       }),
-      catchError((error) => {
+      catchError(() => {
         this.fetchTimesheetData = [];
         return of(this.fetchTimesheetData);
       })
@@ -55,17 +57,13 @@ export class TimesheetService {
 
     return this.http.get<{ data: TimesheetResponse }>(reqUrl).pipe(
       map((response) => {
-        // console.log('Fetch Work Data:', response.data.timeSheetDetails);
-        const timesheet = {
+        this.fetchTimesheetDataID = {
           ...response.data,
-          status: Status.Pending,
+          // status: Status.Pending,
         };
-
-        this.fetchTimesheetDataID = timesheet;
         return this.fetchTimesheetDataID;
       }),
-      catchError((error) => {
-        // console.error('Error fetching work options:', error);
+      catchError(() => {
         return of();
       })
     );
@@ -75,12 +73,9 @@ export class TimesheetService {
     const reqUrl = `${this.apiUrl}/`;
 
     return this.http.post(reqUrl, timesheet).pipe(
-      tap((response) => {
-        // console.log('Timesheet saved successfully:', response);
-      }),
+      tap(() => {}),
       catchError((error) => {
-        // console.error('Error saving timesheet:', error);
-        return throwError(error);
+        return throwError(() => new Error(error));
       })
     );
   }
@@ -89,12 +84,9 @@ export class TimesheetService {
     const reqUrl = `${this.apiUrl}/${id}`;
 
     return this.http.put(reqUrl, timesheet).pipe(
-      tap((response) => {
-        // console.log('Timesheet edited successfully:', response);
-      }),
+      tap(() => {}),
       catchError((error) => {
-        // console.error('Error Edited timesheet:', error);
-        return throwError(error);
+        return throwError(() => new Error(error));
       })
     );
   }
@@ -103,12 +95,9 @@ export class TimesheetService {
     const reqUrl = `${this.apiUrl}/${id}`;
 
     return this.http.delete(reqUrl).pipe(
-      tap((response) => {
-        // console.log('Timesheet deleted successfully:', response);
-      }),
+      tap(() => {}),
       catchError((error) => {
-        // console.error('Error deleting timesheet:', error);
-        return throwError(error);
+        return throwError(() => new Error(error));
       })
     );
   }
@@ -117,32 +106,75 @@ export class TimesheetService {
     const reqUrl = `${this.apiUrl}/${id}/submit`;
 
     return this.http.put(reqUrl, {}).pipe(
-      tap((response) => {
-        // console.log('Timesheet submited successfully:', response);
-      }),
+      tap(() => {}),
       catchError((error) => {
-        // console.error('Error submiting timesheet:', error);
-        return throwError(error);
+        return throwError(() => new Error(error));
       })
     );
   }
 
-  GetWorkOptions(): WorkOption[] {
-    return this.fetchWorkData;
-  }
-
-  fethcWorkOptions(): Observable<WorkOption[]> {
+  FetchWorkOptions(): Observable<WorkOption[]> {
     return this.http.get<PagedResponse<WorkOption[]>>(API_ENDPOINT.WORK).pipe(
       map((response) => {
         this.fetchWorkData = response.data;
-        // console.log('Fetch Work Data:', this.fetchWorkData);
         return this.fetchWorkData;
       }),
-      catchError((error) => {
-        // console.error('Error fetching work options:', error);
+      catchError(() => {
         this.fetchWorkData = [];
         return of(this.fetchWorkData);
       })
     );
+  }
+
+  ValidateTime(overtimeForm: FormGroup): boolean {
+    const startTime = new Date(overtimeForm.get('startTime')?.value);
+    const endTime = new Date(overtimeForm.get('endTime')?.value);
+
+    const diff = endTime.getHours() - startTime.getHours();
+
+    return diff < 1;
+  }
+
+  CalculateTotal(
+    overtimeForm: FormGroup,
+    workOptions$: Observable<WorkOption[]>
+  ): void {
+    const startTime = new Date(overtimeForm.get('startTime')?.value);
+    const endTime = new Date(overtimeForm.get('endTime')?.value);
+    const workID = overtimeForm.get('workID')?.value?.id;
+
+    if (startTime && endTime && workID) {
+      workOptions$
+        .pipe(
+          map((options: WorkOption[]) =>
+            options.find((option) => option.id === workID)
+          ),
+          switchMap((work) => {
+            if (!work) {
+              return of(0);
+            }
+
+            const fee = work.fee;
+
+            if (startTime > endTime) {
+              return of(0);
+            }
+
+            const overtimeHours = endTime.getHours() - startTime.getHours();
+
+            if (
+              overtimeHours >= 2 &&
+              work.description.toLowerCase().startsWith('interview')
+            ) {
+              return of(overtimeHours * 50000);
+            }
+
+            return of(overtimeHours * fee);
+          })
+        )
+        .subscribe((total) => {
+          overtimeForm.get('total')?.setValue(total, { emitEvent: false });
+        });
+    }
   }
 }

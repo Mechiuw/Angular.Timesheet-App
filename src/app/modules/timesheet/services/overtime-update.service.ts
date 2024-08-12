@@ -126,7 +126,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
   }
 
   private calculateWorkTotal(work: Overtime): Observable<number> {
-    return this.timesheetService.fethcWorkOptions().pipe(
+    return this.timesheetService.FetchWorkOptions().pipe(
       map((workOptions) => {
         const description = workOptions.find(
           (option) => option.id === work.workId

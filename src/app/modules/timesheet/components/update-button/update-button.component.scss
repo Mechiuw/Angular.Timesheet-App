@@ -1,0 +1,30 @@
+// Dialog
+::ng-deep .p-dialog {
+  @apply bg-background text-foreground;
+  border: white 1px solid;
+
+  .p-dialog-header {
+    @apply bg-background;
+
+    .p-dialog-title {
+      @apply text-foreground;
+    }
+  }
+
+  .p-dialog-content {
+    @apply bg-background;
+  }
+
+  .p-dialog-footer {
+    @apply bg-background;
+
+    .p-confirm-dialog-accept {
+      @apply bg-primary;
+      @apply text-white;
+    }
+
+    .p-confirm-dialog-reject {
+      @apply text-primary;
+    }
+  }
+}

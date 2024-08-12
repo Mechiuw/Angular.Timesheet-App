@@ -1,0 +1,96 @@
+
+// Input
+::ng-deep .p-inputtext {
+  @apply bg-background text-foreground;
+
+
+  // placeholder
+  &::placeholder {
+    @apply text-foreground;
+  }
+}
+
+// Table
+::ng-deep .p-datatable {
+  @apply bg-background;
+
+  .p-datatable-loading-overlay {
+    display: none;
+  }
+
+  .p-datatable-header {
+    @apply bg-background;
+    border: none;
+  }
+
+  .p-datatable-thead {
+    @apply bg-background;
+
+    th {
+      @apply bg-background;
+    }
+
+    .p-sortable-column {
+      @apply bg-background;
+
+      .p-sortable-column-icon {
+        @apply text-foreground;
+        height: 1rem;
+        font-size: 1.5rem !important;
+      }
+    }
+  }
+
+  .p-datatable-tbody {
+    @apply bg-background;
+
+    tr {
+      @apply bg-background;
+    }
+  }
+
+  // .p-datatable-footer {
+  //     @apply bg-background;
+  //     border: none;
+  // }
+}
+
+// Dialog
+::ng-deep .p-dialog {
+  @apply bg-background text-foreground;
+  border: white 1px solid;
+
+  .p-dialog-header {
+    @apply bg-background;
+
+    .p-dialog-title {
+      @apply text-foreground;
+    }
+  }
+
+  .p-dialog-content {
+    @apply bg-background;
+  }
+}
+
+// Confirm
+::ng-deep .p-confirm-popup {
+  @apply bg-background text-foreground;
+
+  .p-confirm-popup-message {
+    @apply text-foreground;
+  }
+}
+
+// Toast
+::ng-deep .p-toast {
+
+  .p-toast-message {
+    @apply bg-background;
+
+    .p-toast-message-content {
+      border: 0;
+    }
+  }
+
+}
