@@ -55,7 +55,6 @@ import { ToastModule } from 'primeng/toast';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormComponent implements OnInit {
-  date: Date | undefined;
   minDate: Date | undefined;
   maxDate: Date | undefined;
   @Input() workOptions$: Observable<WorkOption[]> = of([]);
@@ -96,6 +95,16 @@ export class FormComponent implements OnInit {
         this.workOptions$
       );
     });
+    this.overtimeForm.get('startTime')?.valueChanges.subscribe((time: Date) => {
+      if (time){
+        this.OvertimeService.SetTimeMinuteToZero(time)
+      }
+    })
+    this.overtimeForm.get('endTime')?.valueChanges.subscribe((time: Date) => {
+      if (time){
+        this.OvertimeService.SetTimeMinuteToZero(time)
+      }
+    })
   }
 
   saveOvertime() {
@@ -114,12 +123,15 @@ export class FormComponent implements OnInit {
     }
 
     const formValue = this.overtimeForm.value;
+    const newDate = new Date(formValue.selectedDate.toISOString())
+    const newStart = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), formValue.startTime.getHours(), formValue.startTime.getMinutes())
+    const newEnd = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate(), formValue.endTime.getHours(), formValue.endTime.getMinutes())
 
     const overtime: Overtime = {
       id: new Date().getTime(),
-      date: formValue.selectedDate,
-      startTime: formValue.selectedDate.setTime(formValue.startTime.getTime()),
-      endTime: formValue.selectedDate.setTime(formValue.endTime.getTime()),
+      date: newDate,
+      startTime: newStart,
+      endTime: newEnd,
       workId: formValue.workID.id,
       total: formValue.total,
     };
@@ -131,7 +143,7 @@ export class FormComponent implements OnInit {
           detail: 'Overtime saved successfully',
         });
       },
-      (error) => {
+      () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error Occurred',

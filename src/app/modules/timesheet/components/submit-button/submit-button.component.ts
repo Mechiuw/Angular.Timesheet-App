@@ -63,13 +63,14 @@ export class SubmitButtonComponent implements OnInit {
         const timesheet: Timesheet = {
           timeSheetDetails: this.timesheetDetails.map((overtime) => {
             return {
-              date: overtime.date,
+              date: new Date(overtime.date),
               startTime: new Date(overtime.startTime),
               endTime: new Date(overtime.endTime),
               workId: overtime.workId,
             };
           }),
         };
+
 
         this.timesheetService.SaveTimesheet(timesheet).subscribe(
           () => {
@@ -87,9 +88,11 @@ export class SubmitButtonComponent implements OnInit {
               summary: 'Error Occurred',
               detail: `There was a problem submitting your form. Please try again later`,
             });
+          },
+          () => {
+            this.router.navigate(['/timesheets/list']);
           }
         );
-        this.router.navigate(['/timesheets/list']);
       },
       reject: () => {
         this.messageService.add({

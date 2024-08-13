@@ -3,10 +3,9 @@
 
 }
 @if (!getData && !isLoading) {
-  <div class="flex h-[80vh] items-center justify-center border">
+  <div class="flex min-h-full items-center justify-center border">
     <p class="text-xl font-bold text-primary">Sorry, No Data Found</p>
   </div>
-
 }
 @if (getData) {
   <div class="mx-auto p-4 lg:container sm:px-8">

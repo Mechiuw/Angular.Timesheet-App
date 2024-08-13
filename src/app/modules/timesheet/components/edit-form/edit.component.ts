@@ -32,6 +32,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { MessageService, PrimeTemplate } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { OvertimeService } from '../../services/overtime.service';
 
 @Component({
   selector: 'app-edit',
@@ -59,7 +60,10 @@ import { ToastModule } from 'primeng/toast';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditComponent implements OnInit {
-  constructor(private messageService: MessageService) {}
+  constructor(
+    private messageService: MessageService,
+    private overtimeService: OvertimeService
+  ) {}
 
   ngOnInit(): void {
     let today = new Date();
@@ -79,6 +83,16 @@ export class EditComponent implements OnInit {
         this.workOptions$
       );
     });
+    this.overtimeForm.get('startTime')?.valueChanges.subscribe((time: Date) => {
+      if (time) {
+        this.overtimeService.SetTimeMinuteToZero(time);
+      }
+    });
+    this.overtimeForm.get('endTime')?.valueChanges.subscribe((time: Date) => {
+      if (time) {
+        this.overtimeService.SetTimeMinuteToZero(time);
+      }
+    });
     this.overtimeForm.disable();
   }
 
@@ -88,7 +102,6 @@ export class EditComponent implements OnInit {
     OvertimeUpdateService
   );
 
-  date: Date | undefined;
   minDate: Date | undefined;
   maxDate: Date | undefined;
   @Input() workOptions$: Observable<WorkOption[]> = of([]);
@@ -142,7 +155,9 @@ export class EditComponent implements OnInit {
     }
 
     if (this.timesheetService.ValidateTime(this.overtimeForm))
-      return this.errorAlert('Minimum overtime of 1 hour');
+      return this.errorAlert(
+        'Minimum overtime of 1 hour or must be a multiple of 1 hour'
+      );
 
     const formValue = this.overtimeForm.value;
 
@@ -222,4 +237,6 @@ export class EditComponent implements OnInit {
       detail: message,
     });
   }
+
+  protected readonly Date = Date;
 }

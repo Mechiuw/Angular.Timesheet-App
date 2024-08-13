@@ -27,6 +27,15 @@
   }
 }
 
+::ng-deep .p-timepicker{
+  .p-separator {
+    @apply hidden
+  }
+  .p-minute-picker {
+    @apply hidden
+  }
+}
+
 ::ng-deep .p-dropdown {
   @apply bg-background text-foreground max-w-48;
 

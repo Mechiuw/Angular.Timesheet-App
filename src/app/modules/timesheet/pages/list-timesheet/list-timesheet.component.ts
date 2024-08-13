@@ -5,21 +5,29 @@ import { TableModule } from 'primeng/table';
 import { Timesheet } from '../../model/timesheet';
 import { TimesheetService } from '../../services/timesheet.service';
 import {TitleHeaderComponent} from "../../../../shared/components/title-header/title-header.component";
+import {LoadingComponent} from "../../components/loading/loading.component";
 
 @Component({
   selector: 'app-list-timesheet',
   standalone: true,
-  imports: [TableComponent, TableModule, CommonModule, TitleHeaderComponent],
+  imports: [
+    TableComponent,
+    TableModule,
+    CommonModule,
+    TitleHeaderComponent,
+    LoadingComponent,
+  ],
   templateUrl: './list-timesheet.component.html',
   styleUrl: './list-timesheet.component.scss',
 })
 export class ListTimesheetComponent implements OnInit {
   private readonly timesheetService = inject(TimesheetService);
-  isLoading: boolean = true;
+  isLoading: boolean | undefined;
   title: string = 'Timesheet List';
   subtitle: string = 'Created Timesheets';
 
   ngOnInit(): void {
+    this.isLoading = true;
     this.fetchData();
     this.timesheetService.isLoading.subscribe((value: boolean) => {
       this.isLoading = value;

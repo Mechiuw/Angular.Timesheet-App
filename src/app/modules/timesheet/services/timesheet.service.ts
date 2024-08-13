@@ -133,13 +133,15 @@ export class TimesheetService implements ITimesheetService {
   }
 
   ValidateTime(overtimeForm: FormGroup): boolean {
-    const startTime = new Date(overtimeForm.get('startTime')?.value);
-    const endTime = new Date(overtimeForm.get('endTime')?.value);
+    let startTime = new Date(overtimeForm.get('startTime')?.value);
+    let endTime = new Date(overtimeForm.get('endTime')?.value);
 
+    startTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDay(), startTime.getHours(), startTime.getMinutes(), 0)
+    endTime = new Date(endTime.getFullYear(), endTime.getMonth(), endTime.getDay(), endTime.getHours(), endTime.getMinutes(), 0)
     const diff = (endTime.getTime() - startTime.getTime()) / (60 * 60 * 1000);
     const checkMultiply = (diff % 1) == 0
 
-    return !(checkMultiply && (diff < 1));
+    return !(checkMultiply && (diff >= 1));
   }
 
   CalculateTotal(
