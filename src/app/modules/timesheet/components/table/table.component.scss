@@ -72,4 +72,18 @@
   //     @apply bg-background;
   //     border: none;
   // }
+
+
+}
+
+// Button
+.btn-share {
+  ::ng-deep .p-button {
+    @apply bg-card h-7 w-7 text-black dark:text-foreground border-0;
+    @apply text-white;
+  }
+
+  ::ng-deep .p-button-icon {
+    @apply text-foreground;
+  }
 }

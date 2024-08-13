@@ -110,12 +110,15 @@ export class TimesheetService implements ITimesheetService {
 
   SubmitTimesheet(id: any): Observable<any> {
     const reqUrl = `${this.apiUrl}/${id}/submit`;
-
+    this.isLoading$.next(true)
     return this.http.put(reqUrl, {}).pipe(
-      tap(() => {}),
+      tap(() => {
+        this.isLoading$.next(false)
+      }),
       catchError((error) => {
+        this.isLoading$.next(false)
         return throwError(() => new Error(error));
-      })
+      }),
     );
   }
 

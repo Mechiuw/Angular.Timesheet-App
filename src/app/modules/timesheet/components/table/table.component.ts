@@ -26,10 +26,16 @@ import { TooltipModule } from 'primeng/tooltip';
   providers: [MessageService],
 })
 export class TableComponent {
+
+  isLoading: boolean = false;
   constructor(
     private messageService: MessageService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) {
+    this.timesheetService.isLoading.subscribe((value: boolean) => {
+      this.isLoading = value
+    })
+  }
 
   private router = inject(Router);
   private timesheetService = inject(TimesheetService);
@@ -51,8 +57,15 @@ export class TableComponent {
       rejectIcon: 'none',
       rejectButtonStyleClass: 'p-button-text',
       accept: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: 'Submitting your timesheet..',
+          sticky: true,
+        })
         this.timesheetService.SubmitTimesheet(id).subscribe(
           () => {
+            this.messageService.clear()
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
@@ -61,20 +74,22 @@ export class TableComponent {
             this.refresh.emit();
           },
           () => {
+            this.messageService.clear()
             this.messageService.add({
               severity: 'error',
               summary: 'Error Occurred',
               detail:
                 'Failed to submit timesheet, submit only on the 19th and 20th each month',
             });
-          }
+          },
+          
         );
       },
       reject: () => {
         this.messageService.add({
           severity: 'info',
           summary: 'Info',
-          detail: 'You have rejected',
+          detail: 'You have canceled the action',
         });
       },
     });
@@ -117,7 +132,7 @@ export class TableComponent {
         this.messageService.add({
           severity: 'info',
           summary: 'Info',
-          detail: 'You have rejected',
+          detail: 'You have canceled the action',
         });
       },
     });
