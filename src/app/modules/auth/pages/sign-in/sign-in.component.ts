@@ -66,10 +66,5 @@ export class SignInComponent implements OnInit {
       },
     });
 
-    // this.authService.loginDummy().subscribe((token) => {
-    //   console.log("SignIn.loginDummy : "+token);
-    //   console.log("SignIn.currentUser : "+ this.authService.currentUser?.email);
-    //   // this.router.navigate(['/dashboard']);
-    // });
   }
 }

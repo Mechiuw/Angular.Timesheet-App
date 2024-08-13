@@ -71,7 +71,7 @@ export class UserFormComponent implements OnInit {
       next: (roles) => {
         this.roles = roles;
       },
-      error: (error) => {
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -88,7 +88,6 @@ export class UserFormComponent implements OnInit {
   onSubmit() {
     this.isLoadingSave = true;
 
-    // console.log('Form submitted');
     this.submitted = true;
 
     if (this.form.invalid) {

@@ -1,10 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import {
-  Timesheet,
-  TimesheetResponse,
-  WorkOption,
-} from '../../model/timesheet';
+import { TimesheetResponse, WorkOption } from '../../model/timesheet';
 import { ActivatedRoute } from '@angular/router';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { CommonModule } from '@angular/common';
@@ -70,12 +66,9 @@ export class DetailTimesheetComponent implements OnInit {
       .pipe(map((data) => data ?? []));
 
     this.workOptions$.subscribe((options) => {
-      // console.log('Options:', options);
       options.forEach((option) => {
-        // console.log('Option ID:', option.id);
         this.workDescriptions[option.id] = option.description;
       });
-      // console.log('Work Descriptions:', this.workDescriptions);
     });
   }
 
