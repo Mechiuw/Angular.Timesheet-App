@@ -38,13 +38,13 @@ export class Menu {
       separator: true,
       items: [
         {
-          icon: 'assets/icons/heroicons/outline/bell.svg',
+          icon: 'assets/icons/heroicons/outline/queue-list.svg',
           label: 'Timesheets',
           route: '/timesheets',
           role: [Roles.USER, Roles.MANAGER],
           children: [
             {
-              label: 'New Form',
+              label: 'Create',
               route: '/timesheets/create',
               role: [Roles.USER, Roles.MANAGER],
             },
@@ -56,7 +56,7 @@ export class Menu {
           ],
         },
         {
-          icon: 'assets/icons/heroicons/outline/bell.svg',
+          icon: 'assets/icons/heroicons/outline/document-check.svg',
           label: 'Approvals',
           route: '/approvals',
           role: [Roles.ADMIN, Roles.USER, Roles.MANAGER, Roles.BENEFIT],

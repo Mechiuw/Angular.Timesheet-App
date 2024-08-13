@@ -1,0 +1,66 @@
+::ng-deep .p-inputtext {
+  @apply bg-background text-foreground p-2;
+
+  // placeholder
+  &::placeholder {
+    @apply text-foreground;
+  }
+}
+
+::ng-deep .p-datepicker {
+  @apply bg-background text-foreground;
+
+  .p-datepicker-header {
+    @apply bg-background text-foreground;
+  }
+
+  .p-button-text {
+    @apply text-primary;
+  }
+
+  table td {
+    @apply max-w-64 max-h-10 p-0;
+  }
+
+  .p-calendar {
+    @apply max-h-10;
+  }
+}
+
+::ng-deep .p-timepicker{
+  .p-separator {
+    @apply hidden
+  }
+  .p-minute-picker {
+    @apply hidden
+  }
+}
+
+::ng-deep .p-dropdown {
+  @apply bg-background text-foreground max-w-48;
+
+  .p-dropdown-trigger {
+    @apply max-w-8
+  }
+
+  .p-inputtext {
+    @apply p-1.5 pr-0 overflow-hidden
+  }
+
+  .p-dropdown-items {
+    @apply bg-background text-foreground;
+  }
+
+  .p-dropdown-item {
+    @apply bg-background text-foreground hover:bg-foreground/10 px-2;
+  }
+
+  .p-dropdown-header {
+    @apply bg-background text-foreground p-0;
+  }
+
+  .p-disabled {
+    @apply text-muted
+  }
+
+}

@@ -6,12 +6,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { TimesheetService } from '../../services/timesheet.service';
-import {
-  Overtime,
-  OvertimeResponse,
-  Timesheet,
-  WorkOption,
-} from '../../model/timesheet';
+import { Overtime, OvertimeResponse, WorkOption } from '../../model/timesheet';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
 import { ValidationMessageComponent } from '../../../../shared/components/validation-message/validation-message.component';
 import { CommonModule, CurrencyPipe } from '@angular/common';
@@ -19,6 +14,7 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   ValidatorFn,
   Validators,
@@ -29,8 +25,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import Swal from 'sweetalert2';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { ButtonDirective } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { DropdownModule } from 'primeng/dropdown';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { MessageService, PrimeTemplate } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { OvertimeService } from '../../services/overtime.service';
 
 @Component({
   selector: 'app-edit',
@@ -44,19 +46,52 @@ import { map, Observable, of, switchMap } from 'rxjs';
     NgxMaterialTimepickerModule,
     MatSelectModule,
     ValidationMessageComponent,
+    ButtonDirective,
+    CalendarModule,
+    DropdownModule,
+    FloatLabelModule,
+    PrimeTemplate,
+    ToastModule,
+    FormsModule,
   ],
   templateUrl: './edit.component.html',
   styleUrls: ['./edit.component.scss'],
-  providers: [provideNativeDateAdapter(), CurrencyPipe],
+  providers: [provideNativeDateAdapter(), CurrencyPipe, MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditComponent implements OnInit {
+  constructor(
+    private messageService: MessageService,
+    private overtimeService: OvertimeService
+  ) {}
+
   ngOnInit(): void {
-    this.minDate = this.updateService.getMinDate();
-    this.maxDate = this.updateService.getMaxDate();
+    let today = new Date();
+    let month = today.getMonth();
+    let year = today.getFullYear();
+    let prevMonth = month === 0 ? 11 : month - 1;
+    let prevYear = prevMonth === 11 ? year - 1 : year;
+    this.minDate = new Date();
+    this.minDate.setMonth(prevMonth);
+    this.minDate.setFullYear(prevYear);
+    this.maxDate = new Date();
+    this.maxDate.setDate(today.getDate() - 1);
 
     this.overtimeForm.valueChanges.subscribe(() => {
-      this.calculateTotal();
+      this.timesheetService.CalculateTotal(
+        this.overtimeForm,
+        this.workOptions$
+      );
+    });
+    this.overtimeForm.get('startTime')?.valueChanges.subscribe((time: Date) => {
+      if (time) {
+        this.overtimeService.SetTimeMinuteToZero(time);
+      }
+    });
+    this.overtimeForm.get('endTime')?.valueChanges.subscribe((time: Date) => {
+      if (time) {
+        this.overtimeService.SetTimeMinuteToZero(time);
+      }
     });
     this.overtimeForm.disable();
   }
@@ -67,9 +102,8 @@ export class EditComponent implements OnInit {
     OvertimeUpdateService
   );
 
-  minDate: Date | null = null;
-  maxDate: Date | null = null;
-  descriptionOptions: WorkOption[] = [];
+  minDate: Date | undefined;
+  maxDate: Date | undefined;
   @Input() workOptions$: Observable<WorkOption[]> = of([]);
 
   overtimeForm: FormGroup = new FormGroup(
@@ -85,12 +119,21 @@ export class EditComponent implements OnInit {
   );
 
   setFormValues(overtime: OvertimeResponse) {
+    this.workOptions$.subscribe((workOptions) => {
+      workOptions.forEach((opt) => {
+        if (opt.id == overtime.workId) {
+          this.overtimeForm.patchValue({
+            ...this.overtimeForm,
+            workID: opt,
+          });
+        }
+      });
+    });
     this.overtimeForm.patchValue({
       id: overtime.id,
-      selectedDate: overtime.date,
-      startTime: this.getTimeFromISO(overtime.startTime),
-      endTime: this.getTimeFromISO(overtime.endTime),
-      workID: overtime.workId,
+      selectedDate: new Date(overtime.date),
+      startTime: new Date(overtime.startTime),
+      endTime: new Date(overtime.endTime),
       total: overtime.total,
     });
     if (overtime.id) {
@@ -111,57 +154,41 @@ export class EditComponent implements OnInit {
       return this.errorAlert('Cannot add new overtime');
     }
 
-    if (this.timeValidated())
-      return this.errorAlert('Minimum overtime of 1 hour');
+    if (this.timesheetService.ValidateTime(this.overtimeForm))
+      return this.errorAlert(
+        'Minimum overtime of 1 hour or must be a multiple of 1 hour'
+      );
 
     const formValue = this.overtimeForm.value;
-    const selectedDate = formValue.selectedDate;
-    const startTimeISO = this.convertTimeToISO(
-      selectedDate,
-      formValue.startTime
-    );
-    const endTimeISO = this.convertTimeToISO(selectedDate, formValue.endTime);
 
     const overtime: Overtime = {
       id: formValue.id,
       date: formValue.selectedDate,
-      startTime: startTimeISO,
-      endTime: endTimeISO,
-      workId: formValue.workID,
+      startTime: new Date(
+        formValue.selectedDate.setTime(formValue.startTime.getTime())
+      ),
+      endTime: new Date(
+        formValue.selectedDate.setTime(formValue.endTime.getTime())
+      ),
+      workId: formValue.workID.id,
       total: formValue.total,
     };
-    this.updateService.Update(overtime).subscribe(() => {
-      // console.log({ overtime });
-      Swal.fire({
-        icon: 'success',
-        text: 'Overtime edited successfully',
-        timer: 1000,
-      });
-      this.overtimeForm.reset();
-      this.overtimeForm.disable();
-    });
-  }
-
-  convertTimeToISO(date: Date, time: string): Date {
-    const [hours, minutes] = time.split(':').map(Number);
-    const convert = new Date(date);
-    convert.setHours(hours, minutes, 0, 0);
-    return convert;
-  }
-
-  timeValidated(): boolean {
-    const start = this.overtimeForm.get('startTime')?.value;
-    const end = this.overtimeForm.get('endTime')?.value;
-
-    const startTime = new Date(`1970-01-01T${start}:00`).getTime();
-    const endTime = new Date(`1970-01-01T${end}:00`).getTime();
-
-    const diff = (endTime - startTime) / (1000 * 60 * 60);
-
-    if (diff < 1) {
-      return true;
-    }
-    return false;
+    this.updateService.Update(overtime).subscribe(
+      () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Overtime edited successfully',
+        });
+        this.overtimeForm.reset();
+        this.overtimeForm.disable();
+      },
+      (err) => {
+        this.errorAlert(err);
+        this.overtimeForm.reset();
+        this.overtimeForm.disable();
+      }
+    );
   }
 
   TimeValidatorForm(): ValidatorFn {
@@ -172,58 +199,13 @@ export class EditComponent implements OnInit {
       if (
         startTime &&
         endTime &&
-        new Date(`1970-01-01T${endTime}:00`) <
-          new Date(`1970-01-01T${startTime}:00`)
+        new Date(formGroup.get('startTime')?.value) >
+          new Date(formGroup.get('endTime')?.value)
       ) {
         return { checkTimeValidator: true };
       }
       return null;
     };
-  }
-
-  calculateTotal(): void {
-    const startTime = this.overtimeForm.get('startTime')?.value;
-    const endTime = this.overtimeForm.get('endTime')?.value;
-    const workID = this.overtimeForm.get('workID')?.value;
-
-    if (startTime && endTime && workID) {
-      this.workOptions$
-        .pipe(
-          map((options: WorkOption[]) =>
-            options.find((option) => option.id === workID)
-          ),
-          switchMap((work) => {
-            if (!work) {
-              return of(0);
-            }
-
-            const fee = work.fee;
-
-            const start = new Date(`1970-01-01T${startTime}:00`);
-            const end = new Date(`1970-01-01T${endTime}:00`);
-
-            if (start > end) {
-              return of(0);
-            }
-
-            const overtimeHours = Math.floor(
-              (end.getTime() - start.getTime()) / (1000 * 60 * 60)
-            );
-
-            if (
-              overtimeHours >= 2 &&
-              work.description.toLowerCase().startsWith('interview')
-            ) {
-              return of(overtimeHours * 50000);
-            }
-
-            return of(overtimeHours * fee);
-          })
-        )
-        .subscribe((total) => {
-          this.overtimeForm.get('total')?.setValue(total, { emitEvent: false });
-        });
-    }
   }
 
   isFormValid(field: string): boolean {
@@ -249,16 +231,12 @@ export class EditComponent implements OnInit {
   }
 
   errorAlert(message: string) {
-    Swal.fire({
-      icon: 'error',
-      text: message,
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error Occurred',
+      detail: message,
     });
   }
 
-  getTimeFromISO(dateTime: string): string {
-    const date = new Date(dateTime);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
+  protected readonly Date = Date;
 }

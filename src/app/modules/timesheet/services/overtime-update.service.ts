@@ -54,9 +54,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
         this.sortOvertimes();
         observer.next();
       } else {
-        console.warn(
-          `Overtime with ID ${overtime.id} not found. Update ignored.`
-        );
+        observer.error(`Overtime with ID ${overtime.id} not found. Update ignored.`)
       }
       observer.complete();
     });
@@ -126,7 +124,7 @@ export class OvertimeUpdateService implements IOvertimeUpdateService {
   }
 
   private calculateWorkTotal(work: Overtime): Observable<number> {
-    return this.timesheetService.fethcWorkOptions().pipe(
+    return this.timesheetService.FetchWorkOptions().pipe(
       map((workOptions) => {
         const description = workOptions.find(
           (option) => option.id === work.workId

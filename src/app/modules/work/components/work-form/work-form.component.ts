@@ -12,21 +12,21 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
+import {Button} from "primeng/button";
+import {ToastModule} from "primeng/toast";
 
 @Component({
   selector: 'app-work-description-form',
   standalone: true,
   imports: [
     CommonModule,
-    ButtonModule,
     FormsModule,
     ReactiveFormsModule,
     MatIconModule,
     MatInputModule,
     MatButtonModule,
+    Button,
     ToastModule,
   ],
   templateUrl: './work-form.component.html',
@@ -52,6 +52,7 @@ export class WorkFormComponent implements OnInit {
       fee: [null, Validators.required],
     });
   }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const id = params.get('id');
@@ -91,14 +92,11 @@ export class WorkFormComponent implements OnInit {
 
       formData.fee = calculatedFee;
 
-      // console.log('Form Data Before Posting:', formData);
-
       if (this.isEdit) {
         if (this.workId !== null) {
           const id = this.workId.toString();
           this.workService.Update({ ...this.postWorkForm.value, id }).subscribe(
             () => {
-              // Notify success
               this.messageService.add({
                 severity: 'success',
                 summary: 'Success',
@@ -116,18 +114,7 @@ export class WorkFormComponent implements OnInit {
               this.workService.updateWorks();
             },
             (error) => {
-              // console.error('Error updating work:', error);
-
-              // notify error
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Error creating work: ' + error.error.data,
-                life: 3000,
-              });
-
-              // Disable loading
-              this.isLoadingSave = false;
+              console.error('Error updating work:', error);
             }
           );
         } else {
@@ -170,17 +157,12 @@ export class WorkFormComponent implements OnInit {
         );
       }
     } else {
-      // console.error('Form is invalid');
-
-      // notify error
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
         detail: 'Error creating work',
         life: 3000,
       });
-
-      // Disable loading
       this.isLoadingSave = false;
     }
   }

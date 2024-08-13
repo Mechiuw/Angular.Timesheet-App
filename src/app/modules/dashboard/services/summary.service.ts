@@ -1,23 +1,22 @@
-import { Role } from "./../../role/models/role.model";
-import { Injectable } from "@angular/core";
-import { ISummaryService } from "./isummary.interface";
-import { map, Observable } from "rxjs";
-import { PagedResponse } from "../../../core/models/api.model";
+import { Injectable } from '@angular/core';
+import { ISummaryService } from './isummary.interface';
+import { map, Observable } from 'rxjs';
+import { PagedResponse } from '../../../core/models/api.model';
 import {
   Timesheet,
   TimesheetSummary,
-} from "../../approval/model/timesheet.model";
-import { HttpClient } from "@angular/common/http";
-import { API_ENDPOINT } from "../../../core/constants/api-endpoint";
-import { AuthService } from "../../auth/services/auth.service";
-import { Roles } from "../../../core/constants/roles";
-import { StatusTimesheets } from "../../../core/constants/status-timesheets";
+} from '../../approval/model/timesheet.model';
+import { HttpClient } from '@angular/common/http';
+import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
+import { AuthService } from '../../auth/services/auth.service';
+import { Roles } from '../../../core/constants/roles';
+import { StatusTimesheets } from '../../../core/constants/status-timesheets';
 
 @Injectable({
   providedIn: "root",
 })
 export class SummaryService implements ISummaryService {
-  role!: string 
+  role!: string
   constructor(
     private readonly http: HttpClient,
     private readonly authService: AuthService
@@ -41,17 +40,8 @@ export class SummaryService implements ISummaryService {
     return this.http
       .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET + this.params)
   }
-  // getSummaryTrend(): Observable<any> {
-  //   const top = this.month
-  //   const bottom = top - 6
-  //   let params: string = `?rowsPerPage=10000&year=${this.year}&period=${bottom}:${this.month}`
-  //   console.log(params);
-  //   return this.http
-  //     .get<PagedResponse<Timesheet[]>>(API_ENDPOINT.TIMESHEET + params)
-      
-  // }
   getSummary(): Observable<PagedResponse<TimesheetSummary[]>> {
-    
+
 
     let status = "&status=";
 
@@ -64,14 +54,12 @@ export class SummaryService implements ISummaryService {
     } else status = `&userId=${this.authService.currentUser?.id!}`;
 
     this.params += status;
-    console.log(this.params);
     return this.http
       .get<PagedResponse<TimesheetSummary[]>>(
         API_ENDPOINT.TIMESHEET + this.params
       )
       .pipe(
         map((response) => {
-          console.log(response);
           return response;
         })
       );

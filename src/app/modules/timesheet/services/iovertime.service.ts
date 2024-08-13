@@ -6,4 +6,5 @@ export interface IOvertimeService {
   Get(id: number): Observable<Overtime>;
   Save(overtime: Overtime): Observable<void>;
   Delete(id: number): Observable<void>;
+  SetTimeMinuteToZero(time: Date): void;
 }

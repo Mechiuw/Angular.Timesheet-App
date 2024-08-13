@@ -24,7 +24,6 @@ import { TitleHeaderComponent } from '../../shared/components/title-header/title
   styleUrl: './work.component.scss',
 })
 export class WorkComponent {
-  // NFT Header
   title: string = 'Master Data';
   subtitle: string = 'Works';
 }

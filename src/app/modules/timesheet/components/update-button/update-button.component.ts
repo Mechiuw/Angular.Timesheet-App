@@ -7,21 +7,29 @@ import {
   Output,
 } from '@angular/core';
 import { OvertimeUpdateService } from '../../services/overtime-update.service';
-import { Overtime, Status, Timesheet } from '../../model/timesheet';
-import Swal from 'sweetalert2';
+import { Overtime, Timesheet } from '../../model/timesheet';
 import { TimesheetService } from '../../services/timesheet.service';
 import { Router } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-update-button',
   standalone: true,
-  imports: [],
+  imports: [ToastModule, ConfirmDialogModule],
   templateUrl: './update-button.component.html',
   styleUrl: './update-button.component.scss',
 })
 export class UpdateButtonComponent implements OnInit {
+  constructor(
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
+  ) {}
+
   @Input() timesheetId: string = '';
   @Output() formSubmitted = new EventEmitter<void>();
+
   ngOnInit(): void {
     this.update.List().subscribe((data) => {
       this.timesheetDetails = data;
@@ -37,58 +45,58 @@ export class UpdateButtonComponent implements OnInit {
   timesheet: Timesheet = {} as Timesheet;
   timesheetDetails: Overtime[] = [];
 
-  onclick() {
-    if (this.timesheetDetails.length === 0) {
-      Swal.fire({
-        icon: 'error',
-        text: 'Please add overtime first!',
-      });
-      return;
-    }
-
-    Swal.fire({
-      title: 'Update?',
-      icon: 'question',
-      text: 'Are you sure you want to update form?',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, update!',
-    }).then((result) => {
-      if (result.isConfirmed) {
+  confirm(event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure that you want to update?',
+      header: 'Update Confirmation',
+      icon: 'pi pi-question',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Confirmed',
+          detail: 'You have accepted',
+        });
         const timesheet: Timesheet = {
           timeSheetDetails: this.timesheetDetails.map(
             ({ total, ...overtime }) => overtime
           ),
         };
 
-        // console.log(timesheet);
-        // console.log(this.timesheetId);
         this.timesheetService
           .UpdateTimesheet(this.timesheetId, timesheet)
           .subscribe(
-            (response) => {
+            () => {
               this.formSubmitted.emit();
               this.update.clearWorks();
-              Swal.fire({
-                title: 'Success!',
-                text: 'Your form has been updated.',
-                icon: 'success',
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'Your form has been updated',
               });
             },
-            (error) => {
-              Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: 'There was a problem updating your form. Please try again later.',
+            () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error Occurred',
+                detail:
+                  'There was a problem updating your form. Please try again later',
               });
             }
           );
 
-        setTimeout(() => {
-          this.router.navigate(['/timesheets/list']);
-        }, 3000);
-      }
+        this.router.navigate(['/timesheets/list']);
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: `You have rejected`,
+        });
+      },
     });
   }
 }

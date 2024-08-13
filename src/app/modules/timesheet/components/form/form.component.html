@@ -1,94 +1,81 @@
-<div class="">
+<div class="card">
+  <p-toast/>
   <form
     [formGroup]="overtimeForm"
-    class="flex items-center justify-center gap-3 rounded-md border-2 border-primary p-3"
+    class="flex items-start md:items-center justify-between gap-3 pb-2 border-b-2 border-primary flex-col md:flex-row"
   >
-    <mat-form-field class="">
-      <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [min]="minDate"
-        [max]="maxDate"
-        [matDatepicker]="picker"
+    <p-floatLabel>
+      <p-calendar
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [readonlyInput]="true"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        dateFormat="dd/mm/yy"
+        inputId="overtime_date"
         formControlName="selectedDate"
-        readonly
+        appendTo="body"
       />
-      <mat-hint class="text-slate-800 dark:text-white">MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+      <label for="overtime_date" class="text-foreground">Overtime Date</label>
+    </p-floatLabel>
 
-    <div class="flex items-center justify-center gap-3">
-      <div>
-        <input
-          class="w-24"
-          placeholder="Start time"
-          aria-label="Start time"
-          formControlName="startTime"
-          [ngxTimepicker]="startTimePicker"
-          [format]="24"
-          readonly
-        />
-        <ngx-material-timepicker #startTimePicker></ngx-material-timepicker>
-        <p class="mt-1 text-center font-bold text-primary">Start time</p>
-      </div>
-
-      <p class="mb-7 font-bold text-primary">:</p>
-
-      <div>
-        <input
-          class="w-24"
-          placeholder="End time"
-          aria-label="End time"
-          formControlName="endTime"
-          [ngxTimepicker]="endTimePicker"
-          [format]="24"
-          readonly
-        />
-        <ngx-material-timepicker #endTimePicker></ngx-material-timepicker>
-        <p class="mt-1 text-center font-bold text-primary">End time</p>
-      </div>
-    </div>
-
-    <mat-form-field>
-      <mat-label>Description</mat-label>
-      <mat-select formControlName="workID">
-        <mat-option
-          *ngFor="let workOption of workOptions$ | async"
-          [value]="workOption.id"
-        >
-          {{ workOption.description }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Pay</mat-label>
-      <input
-        matInput
-        formControlName="total"
-        placeholder="Total amount "
-        type="number"
-        readonly
-      />
-    </mat-form-field>
-
-    <button type="button" (click)="saveOvertime()">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="mb-2 size-12 text-primary"
+    <p-floatLabel>
+      <p-calendar
+        [timeOnly]="true"
+        [hourFormat]="'24'"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        inputId="startTimePicker"
+        formControlName="startTime"
+        appendTo="body"
       >
-        <path
-          fill-rule="evenodd"
-          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-          clip-rule="evenodd"
-        />
-      </svg>
+        <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+          <i class="pi pi-clock pointer-events-none" (click)="clickCallBack($event)"></i>
+        </ng-template>
+      </p-calendar>
+      <label for="startTimePicker" class="text-foreground">Start Time</label>
+    </p-floatLabel>
+
+    <p-floatLabel>
+      <p-calendar
+        [timeOnly]="true"
+        [hourFormat]="'24'"
+        [iconDisplay]="'input'"
+        [showIcon]="true"
+        inputId="endTimePicker"
+        formControlName="endTime"
+        appendTo="body"
+      >
+        <ng-template pTemplate="inputicon" let-clickCallBack="clickCallBack">
+          <i class="pi pi-clock pointer-events-none" (click)="clickCallBack($event)"></i>
+        </ng-template>
+      </p-calendar>
+      <label for="endTimePicker" class="text-foreground">End Time</label>
+    </p-floatLabel>
+
+    <p-floatLabel>
+      <p-dropdown
+        [options]="(workOptions$ | async) ?? []"
+        formControlName="workID"
+        placeholder="Select Description"
+        inputId="description"
+        optionLabel="description"
+        [filter]="true"
+        filterBy="description"
+      >
+      </p-dropdown>
+      <label for="description" class="text-foreground">Select Description</label>
+    </p-floatLabel>
+
+    <button
+      pButton
+      (click)="saveOvertime()"
+      icon="pi pi-plus"
+      size="small"
+      label="Add"
+      iconPos="right"
+      [disabled]="overtimeForm.invalid"
+      class="bg-primary p-2 border-0 min-w-24">
     </button>
   </form>
   <app-validation-message

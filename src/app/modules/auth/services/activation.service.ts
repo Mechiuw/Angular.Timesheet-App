@@ -23,7 +23,6 @@ export class ActivationService {
     let decodedParam;
     try {
       decodedParam = atob(param);
-      console.log("auth.activate : " + decodedParam);
       try {
         this.isActivated$.next(true);
         return this.http

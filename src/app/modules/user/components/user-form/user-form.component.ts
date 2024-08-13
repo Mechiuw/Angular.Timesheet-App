@@ -71,7 +71,7 @@ export class UserFormComponent implements OnInit {
       next: (roles) => {
         this.roles = roles;
       },
-      error: (error) => {
+      error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -88,18 +88,13 @@ export class UserFormComponent implements OnInit {
   onSubmit() {
     this.isLoadingSave = true;
 
-    // console.log('Form submitted');
     this.submitted = true;
 
     if (this.form.invalid) {
-      // console.log('Form is invalid');
       return;
     }
 
     const { email, name, role } = this.form.value;
-    // console.log(email);
-    // console.log(name);
-    // console.log(role);
 
     const user = {
       email: email,
@@ -109,7 +104,6 @@ export class UserFormComponent implements OnInit {
 
     this.userService.registerUser(user).subscribe({
       next: () => {
-        // console.log('user registered successfully',user);
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -127,7 +121,6 @@ export class UserFormComponent implements OnInit {
         this.form.reset();
       },
       error: (err: any) => {
-        // console.log('user failed register');
         this.messageService.add({
           severity: 'error',
           summary: 'Error',

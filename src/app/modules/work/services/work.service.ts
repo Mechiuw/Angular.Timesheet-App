@@ -10,16 +10,15 @@ import { API_ENDPOINT } from '../../../core/constants/api-endpoint';
   providedIn: 'root'
 })
 export class WorkService implements IWorkService {
-  
 
   constructor(
     private readonly http: HttpClient,
   ) { }
 
-  private workSubject = new BehaviorSubject<Work[]>([]); 
+  private workSubject = new BehaviorSubject<Work[]>([]);
   works$: Observable<Work[]> = this.workSubject.asObservable(); // Observable for other components subscribe
- 
-  
+
+
   List(rows: number = 10, page: number = 1): Observable<PagedResponse<Work[]>> {
     try {
       return this.http.get<PagedResponse<Work[]>>(`${API_ENDPOINT.WORK}?paging=${page}&rowsPerPage=${rows}`)
@@ -51,12 +50,11 @@ export class WorkService implements IWorkService {
     }
   }
 
-   // Update data 
+   // Update data
    updateWorks(): void {
     this.List().subscribe(works => {
       this.workSubject.next(works.data);
     });
   }
-  
+
 }
-  

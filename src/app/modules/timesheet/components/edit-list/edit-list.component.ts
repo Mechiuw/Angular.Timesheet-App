@@ -3,11 +3,13 @@ import { Observable, of } from 'rxjs';
 import { Overtime, WorkOption } from '../../model/timesheet';
 import { TableModule } from 'primeng/table';
 import { CommonModule } from '@angular/common';
+import {RupiahFormatPipe} from "../../../../shared/pipes/rupiah-format.pipe";
+import {TooltipModule} from "primeng/tooltip";
 
 @Component({
   selector: 'app-edit-list',
   standalone: true,
-  imports: [CommonModule, TableModule],
+  imports: [CommonModule, TableModule, RupiahFormatPipe, TooltipModule],
   templateUrl: './edit-list.component.html',
   styleUrl: './edit-list.component.scss',
 })
@@ -20,18 +22,13 @@ export class EditListComponent implements OnInit {
 
   ngOnInit(): void {
     this.workOptions$.subscribe((options) => {
-      // console.log('Options:', options);
       options.forEach((option) => {
-        // console.log('Option ID:', option.id);
         this.workDescriptions[option.id] = option.description;
       });
-      // console.log('Work Descriptions:', this.workDescriptions);
     });
   }
 
   getWorkDescription(id: string): string {
-    // console.log('Work Descriptions ID:', id);
-    // console.log('Work Descriptions:', this.workDescriptions);
     return this.workDescriptions[id] || 'Unknown';
   }
 }

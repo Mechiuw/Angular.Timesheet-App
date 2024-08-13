@@ -125,7 +125,6 @@ export class YourProfileComponent implements OnInit {
         name: this.profile.name,
         phone: this.profile.phone,
       };
-      console.log('Payload: ', payload);
       this.loading = true;
       this.profileService.updateProfile(payload).subscribe({
         next: (response) => {
@@ -168,7 +167,6 @@ export class YourProfileComponent implements OnInit {
     const payload: ChangePasswordRequest = {
       newPassword: this.newPassword,
     };
-    console.log('Payload: ', payload);
     this.loadingUpload = true;
     this.profileService.changePassword(payload).subscribe({
       next: (response) => {

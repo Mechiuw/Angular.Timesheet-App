@@ -211,3 +211,16 @@ $angular-tailwind-theme: mat.define-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Toast
+::ng-deep .p-toast {
+
+  .p-toast-message {
+    @apply bg-background;
+
+    .p-toast-message-content {
+      border: 0;
+    }
+  }
+
+}

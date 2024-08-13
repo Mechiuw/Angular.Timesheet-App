@@ -12,7 +12,6 @@
     [tableStyle]="{ 'min-width': '50rem' }"
     [rows]="rowsOption[0]"
     [rowHover]="true"
-    dataKey="id"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="rowsOption"
@@ -60,7 +59,7 @@
     </ng-template>
 
     <ng-template pTemplate="body" let-user let-i="rowIndex">
-      <tr *ngIf="this.loading === false">
+      <tr *ngIf="!this.loading">
         <td class="text-sm font-semibold text-foreground">{{ i + 1 }}</td>
         <td class="text-sm font-semibold text-foreground">{{ user.name }}</td>
         <td class="text-sm font-semibold text-foreground">{{ user.email }}</td>

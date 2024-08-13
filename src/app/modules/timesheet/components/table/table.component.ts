@@ -1,20 +1,42 @@
-import { Component, inject, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, Input, Output, EventEmitter } from '@angular/core';
 import { Timesheet } from '../../model/timesheet';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TimesheetService } from '../../services/timesheet.service';
-import Swal from 'sweetalert2';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-table',
   standalone: true,
-  imports: [CommonModule, TableModule, SkeletonModule],
+  imports: [
+    CommonModule,
+    TableModule,
+    SkeletonModule,
+    ToastModule,
+    ConfirmDialogModule,
+    TooltipModule,
+  ],
   templateUrl: './table.component.html',
   styleUrl: './table.component.scss',
+  providers: [MessageService],
 })
 export class TableComponent {
+
+  isLoading: boolean = false;
+  constructor(
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {
+    this.timesheetService.isLoading.subscribe((value: boolean) => {
+      this.isLoading = value
+    })
+  }
+
   private router = inject(Router);
   private timesheetService = inject(TimesheetService);
 
@@ -25,27 +47,51 @@ export class TableComponent {
     this.router.navigate(['/timesheets/update/' + id]);
   }
 
-  submitTimesheet(id: any) {
-    Swal.fire({
-      title: 'Are you sure Proceed?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, submit it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.timesheetService.SubmitTimesheet(id).subscribe({
-          next: (response) => {
-            Swal.fire('Submitted!', 'Your timesheet has been submitted.', 'success');
+  submitTimesheet(id: any, event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure that you want to submit?',
+      header: 'Submit Confirmation',
+      icon: 'pi pi-question',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: 'Submitting your timesheet..',
+          sticky: true,
+        })
+        this.timesheetService.SubmitTimesheet(id).subscribe(
+          () => {
+            this.messageService.clear()
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your timesheet has been submitted',
+            });
             this.refresh.emit();
           },
-          error: (err) => {
-            Swal.fire('Error!', 'Failed to submit timesheet, submit only on the 19th and 20th each month.', 'error');
+          () => {
+            this.messageService.clear()
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error Occurred',
+              detail:
+                'Failed to submit timesheet, submit only on the 19th and 20th each month',
+            });
           },
+          
+        );
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: 'You have canceled the action',
         });
-      } 
+      },
     });
   }
 
@@ -53,37 +99,42 @@ export class TableComponent {
     this.router.navigate(['/timesheets/view/' + id]);
   }
 
-  deleteTimesheet(id: string) {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
-    }).then((result) => {
-      if (result.isConfirmed) {
+  deleteTimesheet(id: string, event: Event) {
+    this.confirmationService.confirm({
+      target: event.target as EventTarget,
+      message: 'Are you sure that you want to delete?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptIcon: 'none',
+      rejectIcon: 'none',
+      rejectButtonStyleClass: 'p-button-text',
+      accept: () => {
         this.timesheetService.DeleteTimesheet(id).subscribe(
-          (response) => {
-            // console.log('Timesheet deleted successfully', response);
-            Swal.fire(
-              'Deleted!',
-              'Your timesheet has been deleted.',
-              'success'
-            );
+          () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Success',
+              detail: 'Your timesheet has been deleted',
+            });
             this.refresh.emit();
           },
-          (error) => {
-            // console.error('Error deleting timesheet', error);
-            Swal.fire(
-              'Error!',
-              'There was a problem deleting the timesheet. Please try again later.',
-              'error'
-            );
+          () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error Occurred',
+              detail:
+                'There was a problem deleting the timesheet. Please try again later',
+            });
           }
         );
-      }
+      },
+      reject: () => {
+        this.messageService.add({
+          severity: 'info',
+          summary: 'Info',
+          detail: 'You have canceled the action',
+        });
+      },
     });
   }
 }

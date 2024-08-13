@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { TagModule } from 'primeng/tag';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { PagedResponse } from '../../../../core/models/api.model';
+import {Component, OnInit, ViewChild} from "@angular/core";
+import { TagModule } from "primeng/tag";
+import { IconFieldModule } from "primeng/iconfield";
+import { InputIconModule } from "primeng/inputicon";
+import { InputTextModule } from "primeng/inputtext";
+import { MultiSelectModule } from "primeng/multiselect";
+import { DropdownModule } from "primeng/dropdown";
+import { ButtonModule } from "primeng/button";
+import { FormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { PagedResponse } from "../../../../core/models/api.model";
 import {
   ConfirmationService,
   LazyLoadEvent,
@@ -91,9 +91,8 @@ export class WorkListComponent implements OnInit {
           this.works = response.data;
           this.isLoading = false;
         },
-        error: (error: any) => {
-          console.error('Error fetching works:', error);
-          this.isLoading = false;
+        error: () => {
+          this.isLoading = false
         },
       });
     } else {
@@ -104,9 +103,8 @@ export class WorkListComponent implements OnInit {
           this.works = response.data;
           this.isLoading = false;
         },
-        error: (error: any) => {
-          console.error('Error fetching works:', error);
-          this.isLoading = false;
+        error: () => {
+          this.isLoading = false
         },
       });
     }
@@ -120,8 +118,12 @@ export class WorkListComponent implements OnInit {
           this.works = response.data;
           this.isLoading = false;
         },
-        error: (error: any) => {
-          console.error('Error fetching works:', error);
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error Occurred',
+            detail: `Failed to delete work`,
+          });
         },
       })
     );
@@ -155,7 +157,7 @@ export class WorkListComponent implements OnInit {
   ngOnInit(): void {
     // Initial load
     this.workService.updateWorks();
-    
+
     // Subscribe to the observable to get real-time updates
     this.workService.works$.subscribe((works) => {
       this.works = works;

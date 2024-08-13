@@ -29,10 +29,6 @@ export class SignInComponent implements OnInit {
     private readonly messageService: MessageService
   ) {}
 
-  // onClick() {
-  //   alert('Button clicked');
-  // }
-
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
@@ -59,32 +55,16 @@ export class SignInComponent implements OnInit {
 
     this.authService.login({ email, password }).subscribe({
       next: () => {
-        console.log(this.authService.currentUser);
-        this.router.navigate(['/dashboard']);
-        window.location.reload()
+        this.router.navigate(['/dashboard']).then(r => r);
       },
       error: (err) => {
-        if(err.error.data){
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Warn',
-            detail: err.error.data,
-          })
-        }else{
-          // if error server cannot be reach
-          this.messageService.add({
-            severity: 'warn',
-            summary: 'Warn',
-            detail: err.error.message,
-          })
-        }
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Warn',
+          detail: err.error.data,
+        })
       },
     });
 
-    // this.authService.loginDummy().subscribe((token) => {
-    //   console.log("SignIn.loginDummy : "+token);
-    //   console.log("SignIn.currentUser : "+ this.authService.currentUser?.email);
-    //   // this.router.navigate(['/dashboard']);
-    // });
   }
 }
